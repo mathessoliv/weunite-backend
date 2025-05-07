@@ -1,5 +1,11 @@
 package com.example.weuniteauth.service;
 
+import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
+import com.example.weuniteauth.dto.user.UserResponseDTO;
+import com.example.weuniteauth.exceptions.user.UserAlreadyExistsException;
+import com.example.weuniteauth.exceptions.user.UserNotFoundException;
+import com.example.weuniteauth.mapper.UserMapper;
+import com.example.weuniteauth.model.User;
 import com.example.weuniteauth.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +18,14 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -36,24 +46,6 @@ public class UserService {
         userRepository.save(newUser);
 
         return userMapper.toUserResponseDto(newUser);
-    }
-
-    @Transactional
-    public UserResponseDTO updateUser(UpdateUserRequestDTO userDTO, String username) {
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User", username));
-
-        if (!user.getUsername().equals(userDTO.username()) &&
-                userRepository.existsByUsername(userDTO.username())) {
-            throw new UserAlreadyExistsException(userDTO.username());
-        }
-
-        userMapper.updateUserFromDto(userDTO, user);
-
-        userRepository.save(user);
-
-        return userMapper.toUserResponseDto(user);
     }
 
     @Transactional
@@ -80,15 +72,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User", username));
 
         return userMapper.toUserResponseDto(user);
-    }
-
-    @Transactional
-    public List<UserResponseDTO> searchUsersByUsername(String username) {
-        List<User> users = userRepository.findByUsernameContaining(username);
-
-        return users.stream()
-                .map(userMapper::toUserResponseDto)
-                .toList();
     }
 
     @Transactional
