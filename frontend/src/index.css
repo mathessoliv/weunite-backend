@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Remova todas as definições de scrollbar personalizado que adicionamos anteriormente */
+
+html,
+body {
+    overflow-x: hidden; /* Evita scroll horizontal */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 100% da altura da viewport */
+    overflow: hidden; /* Esconde qualquer overflow além da viewport */
+}
+
+.feed-container {
+    flex: 1; /* Ocupa todo o espaço restante */
+    overflow-y: auto; /* Adiciona scroll vertical apenas ao feed se necessário */
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar,
+.custom-scrollbar-light::-webkit-scrollbar,
+.feed-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 0px;
+    border-radius: 5px;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-track,
+.custom-scrollbar-light::-webkit-scrollbar-track,
+.feed-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb,
+.custom-scrollbar-light::-webkit-scrollbar-thumb,
+.feed-scrollbar::-webkit-scrollbar-thumb {
+    background: #959595;
+    border-radius: 2px;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar-light::-webkit-scrollbar-thumb:hover,
+.feed-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #959595;
+}
