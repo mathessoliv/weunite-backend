@@ -1,25 +1,19 @@
-package com.example.weuniteauth.dto.user;
+package com.example.weuniteauth.dto.auth.signup;
 
 import com.example.weuniteauth.dto.common.UserBaseDTO;
 
 import java.time.LocalDateTime;
 
-/**
- * Response DTO for user information.
- * Uses the UserBaseDTO structure.
- */
-public record UserResponseDTO(
+
+public record SignUpResponseDTO(
         String id,
         String name,
         String username,
         String email,
         LocalDateTime createdAt
 ) {
-    /**
-     * Creates a UserResponseDTO from a UserBaseDTO.
-     */
-    public static UserResponseDTO from(UserBaseDTO userBase) {
-        return new UserResponseDTO(
+    public static SignUpResponseDTO from(UserBaseDTO userBase) {
+        return new SignUpResponseDTO(
                 userBase.id(),
                 userBase.name(),
                 userBase.username(),
