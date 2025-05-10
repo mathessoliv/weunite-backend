@@ -41,7 +41,6 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginRequestDTO requestDTO) {// username e senha
 
-
         User user = userService.findUserEntityByUsername(requestDTO.username());
 
         if (!passwordEncoder.matches(requestDTO.password(), user.getPassword())) {
