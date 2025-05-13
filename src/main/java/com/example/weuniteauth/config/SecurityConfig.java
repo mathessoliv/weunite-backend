@@ -24,7 +24,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify-email").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/send-reset-password").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-reset-token/{username}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-reset-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/reset-password/{username}").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2

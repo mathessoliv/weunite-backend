@@ -115,7 +115,7 @@ public class AuthService {
 
     @Transactional
     public AuthDTO verifyResetPasswordToken(VerifyResetTokenRequestDTO requestDTO) {
-        User user = userService.findUserEntityByUsername(requestDTO.verificationToken());
+        User user = userService.findUserByVerificationToken(requestDTO.verificationToken());
 
         return authMapper.toVerifyResetTokenResponseDTO("Código verificado!");
     }
