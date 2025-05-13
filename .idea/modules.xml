@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/weunite-auth.iml" filepath="$PROJECT_DIR$/weunite-auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/weunite-auth.iml" filepath="$PROJECT_DIR$/.idea/weunite-auth.iml" />
     </modules>
   </component>
 </project>
