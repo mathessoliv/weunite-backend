@@ -1,9 +1,7 @@
 package com.example.weuniteauth.service.jwt;
 
 import com.example.weuniteauth.domain.User;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -12,30 +10,37 @@ import java.time.Instant;
 public class JwtService {
 
     private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
-    private static final Long DEFAULT_TOKEN_EXPIRATION_SECONDS = 15 * 24 * 60 * 60 * 1000L;
+    private static final Long DEFAULT_TOKEN_EXPIRATION_MILLIS = 15 * 24 * 60 * 60 * 1000L;
 
-    public JwtService(JwtEncoder jwtEncoder) {
+    public JwtService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public String generateToken(User user) {
-        return generateToken(user, DEFAULT_TOKEN_EXPIRATION_SECONDS);
+        return generateToken(user, DEFAULT_TOKEN_EXPIRATION_MILLIS);
     }
 
-    public String generateToken(User user, Long expirationInSeconds) {
+    public String generateToken(User user, Long expirationInMillis) {
         Instant now = Instant.now();
 
-        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
+        JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("weunite")
-                .subject(user.getId().toString())
-                .expiresAt(now.plusMillis(expirationInSeconds))
-                .issuedAt(now);
+                .subject(user.getUsername())
+                .claims(userClaims -> {
+                    userClaims.put("roles", user.getRoles());
+                    userClaims.put("id", user.getId().toString());
+                })
+                .issuedAt(now)
+                .expiresAt(now.plusMillis(expirationInMillis))
+                .build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claimsBuilder.build())).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public Long getDefaultExpirationTime() {
-        return DEFAULT_TOKEN_EXPIRATION_SECONDS;
+    public Long getDefaultTokenExpirationTime() {
+        return DEFAULT_TOKEN_EXPIRATION_MILLIS;
     }
 }

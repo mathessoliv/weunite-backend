@@ -1,12 +1,9 @@
 package com.example.weuniteauth.service;
 
-import com.example.weuniteauth.dto.auth.resetpassword.*;
-import com.example.weuniteauth.dto.auth.verifyemail.VerifyEmailRequestDTO;
-import com.example.weuniteauth.dto.auth.verifyemail.VerifyEmailResponseDTO;
-import com.example.weuniteauth.dto.auth.login.LoginRequestDTO;
-import com.example.weuniteauth.dto.auth.login.LoginResponseDTO;
-import com.example.weuniteauth.dto.auth.signup.SignUpResponseDTO;
+import com.example.weuniteauth.dto.AuthDTO;
+import com.example.weuniteauth.dto.auth.*;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
+import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.auth.NotVerifiedEmailException;
 import com.example.weuniteauth.service.mail.EmailService;
 import com.example.weuniteauth.mapper.AuthMapper;
@@ -39,7 +36,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public LoginResponseDTO login(LoginRequestDTO requestDTO) {// username e senha
+    public AuthDTO login(LoginRequestDTO requestDTO) {
 
         User user = userService.findUserEntityByUsername(requestDTO.username());
 
@@ -52,35 +49,58 @@ public class AuthService {
         }
 
         String jwtValue = jwtService.generateToken(user);
-        Long expiresIn = jwtService.getDefaultExpirationTime();
+        Long expiresIn = jwtService.getDefaultTokenExpirationTime();
 
-        return authMapper.toLoginResponseDTO(jwtValue, expiresIn);
+        return authMapper.toLoginResponseDTO(
+                "Login realizado com sucesso!",
+                user.getId().toString(),
+                user.getUsername(),
+                user.getEmail(),
+                jwtValue,
+                expiresIn,
+                user.getName(),
+                user.getProfileImg(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
+        );
     }
 
     @Transactional
-    public SignUpResponseDTO signup(CreateUserRequestDTO requestDTO) {
+    public AuthDTO signup(CreateUserRequestDTO requestDTO) {
 
         User newUser = userService.createUser(requestDTO);
 
         emailService.sendVerificationEmailAsync(requestDTO.email(), newUser.getVerificationToken());
 
-        return authMapper.toSignUpResponseDTO(newUser);
+        return authMapper.toSignUpResponseDTO("Cadastro concluído! Verifique seu email", newUser.getUsername());
     }
 
     @Transactional
-    public VerifyEmailResponseDTO verifyEmail(VerifyEmailRequestDTO requestDTO) {
-        String verificationCode = requestDTO.verificationCode();
-        User user = userService.findUserByVerificationToken(verificationCode);
+    public AuthDTO verifyEmail(VerifyEmailRequestDTO requestDTO) {
+        User user = userService.findUserByVerificationToken(requestDTO.verificationCode());
+
         userService.verifyUserEmail(user);
 
         String jwtValue = jwtService.generateToken(user);
-        Long expiresIn = jwtService.getDefaultExpirationTime();
+        Long expiresIn = jwtService.getDefaultTokenExpirationTime();
 
-        return authMapper.toVerifyEmailResponseDTO(user.getUsername(), true, "E-mail verificado com sucesso", jwtValue, expiresIn);
+        emailService.sendWelcomeEmail(user.getEmail());
+        return authMapper.toVerifyEmailResponseDTO(
+                "Email verificado com sucesso!",
+                user.getId().toString(),
+                user.getUsername(),
+                user.getEmail(),
+                jwtValue,
+                expiresIn,
+                user.getName(),
+                user.getProfileImg(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
+        );
     }
 
     @Transactional
-    public SendResetPasswordResponseDTO sendResetPassword(SendResetPasswordRequestDTO requestDTO) {
+    public AuthDTO sendResetPassword(SendResetPasswordRequestDTO requestDTO) {
         User user = userService.findUserEntityByEmail(requestDTO.email());
 
         if (!user.isEmailVerified()) {
@@ -94,20 +114,21 @@ public class AuthService {
     }
 
     @Transactional
-    public VerifyResetTokenResponseDTO verifyResetPasswordToken(VerifyResetTokenRequestDTO requestDTO) {
-        User user = userService.findUserByVerificationToken(requestDTO.verificationToken());
+    public AuthDTO verifyResetPasswordToken(VerifyResetTokenRequestDTO requestDTO) {
+        User user = userService.findUserEntityByUsername(requestDTO.verificationToken());
+
         return authMapper.toVerifyResetTokenResponseDTO("Código verificado!");
-    };
+    }
 
     @Transactional
-    public ResetPasswordResponseDTO resetPassword(ResetPasswordRequestDTO requestDTO) {
-        User user = userService.findUserByVerificationToken(requestDTO.verificationToken());
+    public AuthDTO resetPassword(ResetPasswordRequestDTO requestDTO, String verificationToken) {
+        User user = userService.findUserByVerificationToken(verificationToken);
 
         user.setPassword(passwordEncoder.encode(requestDTO.newPassword()));
         user.setVerificationToken(null);
         user.setVerificationTokenExpires(null);
 
         emailService.sendPasswordResetSuccessEmail(user.getEmail());
-        return authMapper.toResetPasswordResponseDTO("Senha redefinida");
+        return authMapper.toResetPasswordResponseDTO("Senha redefinida!");
     }
 }

@@ -1,87 +1,108 @@
 package com.example.weuniteauth.mapper;
 
 import com.example.weuniteauth.domain.User;
-import com.example.weuniteauth.dto.common.ExtendedTokenResponseDTO;
-import com.example.weuniteauth.dto.common.MessageResponseDTO;
-import com.example.weuniteauth.dto.common.TokenResponseDTO;
-import com.example.weuniteauth.dto.common.UserBaseDTO;
-import java.time.LocalDateTime;
+import com.example.weuniteauth.dto.AuthDTO;
+import com.example.weuniteauth.dto.UserDTO;
+import com.example.weuniteauth.dto.auth.LoginRequestDTO;
+import com.example.weuniteauth.dto.auth.ResetPasswordRequestDTO;
+import com.example.weuniteauth.dto.auth.SendResetPasswordRequestDTO;
+import com.example.weuniteauth.dto.auth.VerifyEmailRequestDTO;
+import com.example.weuniteauth.dto.auth.VerifyResetTokenRequestDTO;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-10T10:09:08-0300",
+    date = "2025-05-12T23:40:18-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
 public class AuthMapperImpl implements AuthMapper {
 
     @Override
-    public TokenResponseDTO toTokenResponseDTO(String accessToken, Long expiresIn) {
-        if ( accessToken == null && expiresIn == null ) {
+    public User toEntity(LoginRequestDTO loginRequestDTO) {
+        if ( loginRequestDTO == null ) {
             return null;
         }
 
-        String accessToken1 = null;
-        accessToken1 = accessToken;
-        Long expiresIn1 = null;
-        expiresIn1 = expiresIn;
+        User user = new User();
 
-        TokenResponseDTO tokenResponseDTO = new TokenResponseDTO( accessToken1, expiresIn1 );
+        user.setUsername( loginRequestDTO.username() );
+        user.setPassword( loginRequestDTO.password() );
 
-        return tokenResponseDTO;
+        return user;
     }
 
     @Override
-    public UserBaseDTO toUserBaseDTO(User user) {
-        if ( user == null ) {
+    public User toEntity(VerifyEmailRequestDTO verifyEmailRequestDTO) {
+        if ( verifyEmailRequestDTO == null ) {
             return null;
         }
 
-        String id = null;
-        String name = null;
-        String username = null;
-        String email = null;
+        User user = new User();
 
-        if ( user.getId() != null ) {
-            id = String.valueOf( user.getId() );
-        }
-        name = user.getName();
-        username = user.getUsername();
-        email = user.getEmail();
+        user.setVerificationToken( verifyEmailRequestDTO.verificationCode() );
 
-        LocalDateTime createdAt = null;
-
-        UserBaseDTO userBaseDTO = new UserBaseDTO( id, name, username, email, createdAt );
-
-        return userBaseDTO;
+        return user;
     }
 
     @Override
-    public ExtendedTokenResponseDTO toExtendedTokenResponseDTO(String username, boolean verified, String message, String accessToken, Long expiresIn) {
-        if ( username == null && message == null && accessToken == null && expiresIn == null ) {
+    public User toEntity(SendResetPasswordRequestDTO sendResetPasswordRequestDTO) {
+        if ( sendResetPasswordRequestDTO == null ) {
             return null;
         }
 
-        String username1 = null;
-        username1 = username;
-        boolean verified1 = false;
-        verified1 = verified;
+        User user = new User();
+
+        user.setEmail( sendResetPasswordRequestDTO.email() );
+
+        return user;
+    }
+
+    @Override
+    public User toEntity(VerifyResetTokenRequestDTO verifyResetTokenRequestDTO) {
+        if ( verifyResetTokenRequestDTO == null ) {
+            return null;
+        }
+
+        User user = new User();
+
+        user.setVerificationToken( verifyResetTokenRequestDTO.verificationToken() );
+
+        return user;
+    }
+
+    @Override
+    public User toEntity(ResetPasswordRequestDTO resetPasswordRequestDTO) {
+        if ( resetPasswordRequestDTO == null ) {
+            return null;
+        }
+
+        User user = new User();
+
+        user.setPassword( resetPasswordRequestDTO.newPassword() );
+
+        return user;
+    }
+
+    @Override
+    public AuthDTO toSignUpResponseDTO(String message, String username) {
+        if ( message == null && username == null ) {
+            return null;
+        }
+
         String message1 = null;
         message1 = message;
-        String accessToken1 = null;
-        accessToken1 = accessToken;
-        Long expiresIn1 = null;
-        expiresIn1 = expiresIn;
 
-        ExtendedTokenResponseDTO extendedTokenResponseDTO = new ExtendedTokenResponseDTO( username1, verified1, message1, accessToken1, expiresIn1 );
+        UserDTO user = null;
 
-        return extendedTokenResponseDTO;
+        AuthDTO authDTO = new AuthDTO( message1, user );
+
+        return authDTO;
     }
 
     @Override
-    public MessageResponseDTO toMessageResponseDTO(String message) {
+    public AuthDTO toSendResetPasswordResponseDTO(String message) {
         if ( message == null ) {
             return null;
         }
@@ -90,8 +111,44 @@ public class AuthMapperImpl implements AuthMapper {
 
         message1 = message;
 
-        MessageResponseDTO messageResponseDTO = new MessageResponseDTO( message1 );
+        UserDTO user = null;
 
-        return messageResponseDTO;
+        AuthDTO authDTO = new AuthDTO( message1, user );
+
+        return authDTO;
+    }
+
+    @Override
+    public AuthDTO toVerifyResetTokenResponseDTO(String message) {
+        if ( message == null ) {
+            return null;
+        }
+
+        String message1 = null;
+
+        message1 = message;
+
+        UserDTO user = null;
+
+        AuthDTO authDTO = new AuthDTO( message1, user );
+
+        return authDTO;
+    }
+
+    @Override
+    public AuthDTO toResetPasswordResponseDTO(String message) {
+        if ( message == null ) {
+            return null;
+        }
+
+        String message1 = null;
+
+        message1 = message;
+
+        UserDTO user = null;
+
+        AuthDTO authDTO = new AuthDTO( message1, user );
+
+        return authDTO;
     }
 }

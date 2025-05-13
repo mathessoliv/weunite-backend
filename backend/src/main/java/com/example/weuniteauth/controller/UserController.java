@@ -1,9 +1,7 @@
 package com.example.weuniteauth.controller;
 
-import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
-import com.example.weuniteauth.dto.user.UserResponseDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +18,15 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponseDTO> getUser(@PathVariable String username) {
-        UserResponseDTO user = userService.getUser(username);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> getUser(@PathVariable String username) {
+        UserDTO userDTO = userService.getUser(username);
+        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        UserResponseDTO user = userService.getUser(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        UserDTO userDTO = userService.getUser(id);
+        return ResponseEntity.ok(userDTO);
     }
 
 

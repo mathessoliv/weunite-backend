@@ -1,4 +1,4 @@
-package com.example.weuniteauth.dto.auth.resetpassword;
+package com.example.weuniteauth.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Table(name = "tb_user")
-public class User {
+public class User extends BaseEntity {
 
     public User(String name, String username, String email, String password) {
         this.name = name;
@@ -27,10 +27,6 @@ public class User {
         this.emailVerified = false;
         this.isPrivate = false;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -55,6 +51,9 @@ public class User {
 
     @Column(nullable = false)
     private boolean isPrivate;
+
+    @Column
+    private String profileImg;
 
     @Column(nullable = false)
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

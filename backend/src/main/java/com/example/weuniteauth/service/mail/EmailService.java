@@ -30,6 +30,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @Async
     public void sendEmail(String to,
                           String subject,
                           String template,
@@ -71,6 +72,7 @@ public class EmailService {
         return result;
     }
 
+
     @Async
     public void sendVerificationEmailAsync(String to, String verificationCode) {
         Map<String, Object> templateVars = new HashMap<>();
@@ -78,6 +80,7 @@ public class EmailService {
         sendEmail(to, "Verificação de email", "verification.html", templateVars);
     }
 
+    @Async
     public void sendVerificationEmailClub(String to, String cnpj, String name, String username, String email) {
         Map<String, Object> templateVars = new HashMap<>();
         templateVars.put("cnpj", cnpj);
@@ -87,17 +90,20 @@ public class EmailService {
         sendEmail(to, "Solicitação de cadastro WeUnite", "verificationClub.html", templateVars);
     }
 
+    @Async
     public void sendPasswordResetRequestEmail(String to, String verificationCode) {
         Map<String, Object> templateVars = new HashMap<>();
         templateVars.put("verificationCode", verificationCode);
         sendEmail(to, "Redefinição de senha", "passwordResetRequest.html", templateVars);
     }
 
+    @Async
     public void sendPasswordResetSuccessEmail(String to) {
         Map<String, Object> templateVars = new HashMap<>();
         sendEmail(to, "Senha redefinida com sucesso!", "passwordResetSuccess.html", templateVars);
     }
 
+    @Async
     public void sendWelcomeEmail(String to) {
         Map<String, Object> templateVars = new HashMap<>();
         sendEmail(to, "Bem-vindo a WeUnite!", "welcome.html", templateVars);

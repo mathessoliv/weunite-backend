@@ -2,11 +2,13 @@ package com.example.weuniteauth.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
+import lombok.Setter;
+import java.time.Instant;
+import java.util.Date;
 
 @MappedSuperclass
 @Getter
+@Setter
 public abstract class BaseEntity {
 
     @Id
@@ -14,17 +16,17 @@ public abstract class BaseEntity {
     private Long id;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }
