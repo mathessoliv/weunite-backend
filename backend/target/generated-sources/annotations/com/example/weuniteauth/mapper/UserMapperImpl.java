@@ -1,15 +1,15 @@
 package com.example.weuniteauth.mapper;
 
 import com.example.weuniteauth.domain.User;
-import com.example.weuniteauth.dto.common.UserBaseDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-10T10:09:08-0300",
+    date = "2025-05-12T23:40:18-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -32,24 +32,53 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public UserBaseDTO toUserBaseDTO(User user) {
-        if ( user == null ) {
+    public UserDTO toDeleteUserDTO(String message, String username) {
+        if ( message == null && username == null ) {
             return null;
         }
 
+        String username1 = null;
+        username1 = username;
+
+        String id = null;
         String name = null;
-        String username = null;
         String email = null;
+        String profileImg = null;
+        String jwt = null;
+        Long expiresIn = null;
+        Instant createdAt = null;
+        Instant updatedAt = null;
 
-        name = user.getName();
-        username = user.getUsername();
-        email = user.getEmail();
+        UserDTO userDTO = new UserDTO( id, name, username1, email, profileImg, jwt, expiresIn, createdAt, updatedAt );
 
-        String id = user.getId().toString();
-        LocalDateTime createdAt = null;
+        return userDTO;
+    }
 
-        UserBaseDTO userBaseDTO = new UserBaseDTO( id, name, username, email, createdAt );
+    @Override
+    public UserDTO toGetUser(String message, String id, String name, String username, String email, Instant createdAt, Instant updatedAt) {
+        if ( message == null && id == null && name == null && username == null && email == null && createdAt == null && updatedAt == null ) {
+            return null;
+        }
 
-        return userBaseDTO;
+        String id1 = null;
+        id1 = id;
+        String name1 = null;
+        name1 = name;
+        String username1 = null;
+        username1 = username;
+        String email1 = null;
+        email1 = email;
+        Instant createdAt1 = null;
+        createdAt1 = createdAt;
+        Instant updatedAt1 = null;
+        updatedAt1 = updatedAt;
+
+        String profileImg = null;
+        String jwt = null;
+        Long expiresIn = null;
+
+        UserDTO userDTO = new UserDTO( id1, name1, username1, email1, profileImg, jwt, expiresIn, createdAt1, updatedAt1 );
+
+        return userDTO;
     }
 }

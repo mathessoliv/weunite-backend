@@ -25,36 +25,36 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundResourceException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundResourceException(NotFoundResourceException ex) {
-        logger.error(ex.getMessage(), ex.getErrorCode());
-        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        logger.error(ex.getMessage(), ex.getError());
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getError());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateResourceException(DuplicateResourceException ex) {
-        logger.error(ex.getMessage(), ex.getErrorCode());
-        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        logger.error(ex.getMessage(), ex.getError());
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getError());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<ErrorResponse> handleBusinessRuleException(BusinessRuleException ex) {
-        logger.error(ex.getMessage(), ex.getErrorCode());
-        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        logger.error(ex.getMessage(), ex.getError());
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getError());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmailSendingException.class)
     public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailSendingException ex) {
         logger.error(ex.getMessage(), ex.getCause());
-        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getError());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(LoadingEmailTemplateException.class)
     public ResponseEntity<ErrorResponse> handleLoadingEmailTemplateException(LoadingEmailTemplateException ex) {
         logger.error(ex.getMessage(), ex.getCause());
-        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getErrorCode());
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getError());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

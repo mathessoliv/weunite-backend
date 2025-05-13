@@ -1,58 +1,52 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.dto.auth.resetpassword.ResetPasswordResponseDTO;
-import com.example.weuniteauth.dto.auth.resetpassword.SendResetPasswordResponseDTO;
-import com.example.weuniteauth.dto.auth.resetpassword.VerifyResetTokenResponseDTO;
-import com.example.weuniteauth.dto.auth.verifyemail.VerifyEmailResponseDTO;
-import com.example.weuniteauth.dto.auth.login.LoginResponseDTO;
-import com.example.weuniteauth.dto.auth.signup.SignUpResponseDTO;
-import com.example.weuniteauth.dto.common.ExtendedTokenResponseDTO;
-import com.example.weuniteauth.dto.common.MessageResponseDTO;
-import com.example.weuniteauth.dto.common.TokenResponseDTO;
-import com.example.weuniteauth.dto.common.UserBaseDTO;
 import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.dto.AuthDTO;
+import com.example.weuniteauth.dto.UserDTO;
+import com.example.weuniteauth.dto.auth.*;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.time.Instant;
 
 @Mapper(componentModel = "spring")
 public interface AuthMapper {
 
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "password", source = "password")
+    User toEntity(LoginRequestDTO loginRequestDTO);
 
-    TokenResponseDTO toTokenResponseDTO(String accessToken, Long expiresIn);
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "verificationToken", source = "verificationCode")
+    User toEntity(VerifyEmailRequestDTO verifyEmailRequestDTO);
 
-    default LoginResponseDTO toLoginResponseDTO(String accessToken, Long expiresIn) {
-        TokenResponseDTO tokenResponse = toTokenResponseDTO(accessToken, expiresIn);
-        return LoginResponseDTO.from(tokenResponse);
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "email", source = "email")
+    User toEntity(SendResetPasswordRequestDTO sendResetPasswordRequestDTO);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "verificationToken", source = "verificationToken")
+    User toEntity(VerifyResetTokenRequestDTO verifyResetTokenRequestDTO);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "password", source = "newPassword")
+    User toEntity(ResetPasswordRequestDTO resetPasswordRequestDTO);
+
+    AuthDTO toSignUpResponseDTO(String message, String username);
+
+    default AuthDTO toVerifyEmailResponseDTO(String message, String userId, String username, String email, String jwt, Long expiresIn, String name, String profileImg, Instant createdAt, Instant updatedAt) {
+        return new AuthDTO(message, new UserDTO(userId, name, username, email, profileImg, jwt, expiresIn, createdAt, updatedAt));
     }
 
-    UserBaseDTO toUserBaseDTO(User user);
-
-    default SignUpResponseDTO toSignUpResponseDTO(User user) {
-        UserBaseDTO userBase = toUserBaseDTO(user);
-        return SignUpResponseDTO.from(userBase);
+    default AuthDTO toLoginResponseDTO(String message, String userId, String username, String email, String jwt, Long expiresIn, String name, String profileImg, Instant createdAt, Instant updatedAt) {
+        return new AuthDTO(message, new UserDTO(userId, name, username, email, profileImg, jwt, expiresIn, createdAt, updatedAt));
     }
 
+    AuthDTO toSendResetPasswordResponseDTO(String message);
 
-    ExtendedTokenResponseDTO toExtendedTokenResponseDTO(String username, boolean verified, String message, String accessToken, Long expiresIn);
+    AuthDTO toVerifyResetTokenResponseDTO(String message);
 
-    default VerifyEmailResponseDTO toVerifyEmailResponseDTO(String username, boolean verified, String message, String accessToken, Long expiresIn) {
-        ExtendedTokenResponseDTO extendedResponse = toExtendedTokenResponseDTO(username, verified, message, accessToken, expiresIn);
-        return VerifyEmailResponseDTO.from(extendedResponse);
-    }
-
-    MessageResponseDTO toMessageResponseDTO(String message);
-
-    default SendResetPasswordResponseDTO toSendResetPasswordResponseDTO(String message) {
-        MessageResponseDTO messageResponse = toMessageResponseDTO(message);
-        return SendResetPasswordResponseDTO.from(messageResponse);
-    }
-
-    default VerifyResetTokenResponseDTO toVerifyResetTokenResponseDTO(String message) {
-        MessageResponseDTO messageResponse = toMessageResponseDTO(message);
-        return VerifyResetTokenResponseDTO.from(messageResponse);
-    }
-
-    default ResetPasswordResponseDTO toResetPasswordResponseDTO(String message) {
-        MessageResponseDTO messageResponse = toMessageResponseDTO(message);
-        return ResetPasswordResponseDTO.from(messageResponse);
-    }
+    AuthDTO toResetPasswordResponseDTO(String message);
 }

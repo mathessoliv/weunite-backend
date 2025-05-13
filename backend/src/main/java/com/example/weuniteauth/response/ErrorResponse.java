@@ -1,18 +1,17 @@
 package com.example.weuniteauth.response;
 
 import lombok.Getter;
-
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 public class ErrorResponse {
     private String message;
-    private String errorCode;
-    private LocalDateTime timestamp;
+    private String error;
+    private Instant timestamp;
 
-    public ErrorResponse(String message, String errorCode) {
+    public ErrorResponse(String message, String error) {
         this.message = message;
-        this.errorCode = errorCode;
-        this.timestamp = LocalDateTime.now();
+        this.error = error;
+        this.timestamp = Instant.now();
     }
 }

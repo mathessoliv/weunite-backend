@@ -1,4 +1,4 @@
-package com.example.weuniteauth.dto.auth.login;
+package com.example.weuniteauth.dto.auth;
 
 import com.example.weuniteauth.validations.ValidPassword;
 import jakarta.validation.constraints.NotNull;

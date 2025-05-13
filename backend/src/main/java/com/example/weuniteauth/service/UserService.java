@@ -1,8 +1,9 @@
 package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
-import com.example.weuniteauth.dto.user.UserResponseDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.exceptions.auth.ExpiredTokenException;
+import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.user.UserAlreadyExistsException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.UserMapper;
@@ -43,7 +44,7 @@ public class UserService {
         boolean userExists = userRepository.existsByUsernameOrEmail(userDTO.username(), userDTO.email());
 
         if (userExists) {
-            throw new UserAlreadyExistsException("Usuário já existente");
+            throw new UserAlreadyExistsException();
         }
 
         String encodedPassword = passwordEncoder.encode(userDTO.password());
@@ -70,55 +71,55 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public UserResponseDTO deleteUser(String username) {
+    public UserDTO deleteUser(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User", username));
+                .orElseThrow(() -> new UserNotFoundException());
 
         userRepository.delete(user);
 
-        return userMapper.toUserResponseDto(user);
+        return userMapper.toDeleteUserDTO("Usuário deletado com sucesso", username);
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDTO getUser(Long id) {
+    public UserDTO getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User", id.toString()));
+                .orElseThrow(() -> new UserNotFoundException());
 
-        return userMapper.toUserResponseDto(user);
+        return userMapper.toGetUser("Usuário encontrado com sucesso", user.getId().toString(), user.getName(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDTO getUser(String username) {
+    public UserDTO getUser(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User", username));
+                .orElseThrow(() -> new UserNotFoundException());
 
-        return userMapper.toUserResponseDto(user);
+        return userMapper.toGetUser("Usuário encontrado com sucesso", user.getId().toString(), user.getName(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
     }
 
     @Transactional(readOnly = true)
-    public User findUserEntityByUsername(String username) {
+    protected User findUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User", username));
+                .orElseThrow(() -> new UserNotFoundException());
     }
 
     @Transactional(readOnly = true)
-    public User findUserEntityByEmail(String email) {
+    protected User findUserEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Email", email));
+                .orElseThrow(() -> new UserNotFoundException());
     }
 
     @Transactional(readOnly = true)
-    public User findUserByVerificationToken(String verificationToken) {
+    protected User findUserByVerificationToken(String verificationToken) {
         return userRepository.findByVerificationToken(verificationToken)
-                .orElseThrow(() -> new UserNotFoundException("Código", verificationToken));
+                .orElseThrow(() -> new InvalidTokenException());
     }
 
     @Transactional
-    public User verifyUserEmail(User user) {
+    protected User verifyUserEmail(User user) {
         Date now = new Date();
 
         if (user.getVerificationTokenExpires().before(now)) {
-            throw new ExpiredTokenException("Código expirado");
+            throw new ExpiredTokenException();
         }
 
         user.setEmailVerified(true);
