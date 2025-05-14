@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 @Validated
 public class UserController {
 
@@ -17,7 +17,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<UserDTO> getUser(@PathVariable String username) {
         UserDTO userDTO = userService.getUser(username);
         return ResponseEntity.ok(userDTO);
@@ -26,6 +26,12 @@ public class UserController {
     @GetMapping("/id/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO userDTO = userService.getUser(id);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable String username) {
+        UserDTO userDTO = userService.deleteUser(username);
         return ResponseEntity.ok(userDTO);
     }
 

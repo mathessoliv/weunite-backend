@@ -8,8 +8,6 @@ public record UserDTO(
         String username,
         String email,
         String profileImg,
-        String jwt,
-        Long expiresIn,
         Instant createdAt,
         Instant updatedAt
 ) {

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Set;
 
 @Service
@@ -116,9 +116,9 @@ public class UserService {
 
     @Transactional
     protected User verifyUserEmail(User user) {
-        Date now = new Date();
+        Instant now = Instant.now();
 
-        if (user.getVerificationTokenExpires().before(now)) {
+        if (user.getVerificationTokenExpires().isBefore(now)) {
             throw new ExpiredTokenException();
         }
 
@@ -133,8 +133,8 @@ public class UserService {
         SecureRandom generator = new SecureRandom();
         int randomNumber = 100000 + generator.nextInt(900000);
 
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + TOKEN_EXPIRATION_MINUTES * 60 * 1000);
+        Instant now = Instant.now();
+        Instant expirationDate = now.plusSeconds(TOKEN_EXPIRATION_MINUTES * 60);
 
         user.setVerificationToken(String.valueOf(randomNumber));
         user.setVerificationTokenExpires(expirationDate);
