@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/send-reset-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify-reset-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/reset-password/{username}").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
