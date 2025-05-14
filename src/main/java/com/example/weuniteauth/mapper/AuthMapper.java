@@ -19,7 +19,7 @@ public interface AuthMapper {
     User toEntity(LoginRequestDTO loginRequestDTO);
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "verificationToken", source = "verificationCode")
+    @Mapping(target = "verificationToken", source = "verificationToken")
     User toEntity(VerifyEmailRequestDTO verifyEmailRequestDTO);
 
     @BeanMapping(ignoreByDefault = true)
@@ -36,12 +36,12 @@ public interface AuthMapper {
 
     AuthDTO toSignUpResponseDTO(String message, String username);
 
-    default AuthDTO toVerifyEmailResponseDTO(String message, String userId, String username, String email, String jwt, Long expiresIn, String name, String profileImg, Instant createdAt, Instant updatedAt) {
-        return new AuthDTO(message, new UserDTO(userId, name, username, email, profileImg, jwt, expiresIn, createdAt, updatedAt));
+    default AuthDTO toVerifyEmailResponseDTO(String message, User user, String jwt, Long expiresIn) {
+        return new AuthDTO(message, new UserDTO(user.getId().toString(), user.getName(), user.getUsername(), user.getEmail(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt()), jwt, expiresIn);
     }
 
-    default AuthDTO toLoginResponseDTO(String message, String userId, String username, String email, String jwt, Long expiresIn, String name, String profileImg, Instant createdAt, Instant updatedAt) {
-        return new AuthDTO(message, new UserDTO(userId, name, username, email, profileImg, jwt, expiresIn, createdAt, updatedAt));
+    default AuthDTO toLoginResponseDTO(String message, User user, String jwt, Long expiresIn) {
+        return new AuthDTO(message, new UserDTO(user.getId().toString(), user.getName(), user.getUsername(), user.getEmail(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt()), jwt, expiresIn);
     }
 
     AuthDTO toSendResetPasswordResponseDTO(String message);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-14T09:48:54-0300",
+    date = "2025-05-14T11:15:30-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -41,7 +41,7 @@ public class AuthMapperImpl implements AuthMapper {
 
         User user = new User();
 
-        user.setVerificationToken( verifyEmailRequestDTO.verificationCode() );
+        user.setVerificationToken( verifyEmailRequestDTO.verificationToken() );
 
         return user;
     }
@@ -95,8 +95,10 @@ public class AuthMapperImpl implements AuthMapper {
         message1 = message;
 
         UserDTO user = null;
+        String jwt = null;
+        Long expiresIn = null;
 
-        AuthDTO authDTO = new AuthDTO( message1, user );
+        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
 
         return authDTO;
     }
@@ -112,8 +114,10 @@ public class AuthMapperImpl implements AuthMapper {
         message1 = message;
 
         UserDTO user = null;
+        String jwt = null;
+        Long expiresIn = null;
 
-        AuthDTO authDTO = new AuthDTO( message1, user );
+        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
 
         return authDTO;
     }
@@ -129,8 +133,10 @@ public class AuthMapperImpl implements AuthMapper {
         message1 = message;
 
         UserDTO user = null;
+        String jwt = null;
+        Long expiresIn = null;
 
-        AuthDTO authDTO = new AuthDTO( message1, user );
+        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
 
         return authDTO;
     }
@@ -146,8 +152,10 @@ public class AuthMapperImpl implements AuthMapper {
         message1 = message;
 
         UserDTO user = null;
+        String jwt = null;
+        Long expiresIn = null;
 
-        AuthDTO authDTO = new AuthDTO( message1, user );
+        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
 
         return authDTO;
     }

@@ -53,15 +53,9 @@ public class AuthService {
 
         return authMapper.toLoginResponseDTO(
                 "Login realizado com sucesso!",
-                user.getId().toString(),
-                user.getUsername(),
-                user.getEmail(),
+                user,
                 jwtValue,
-                expiresIn,
-                user.getName(),
-                user.getProfileImg(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
+                expiresIn
         );
     }
 
@@ -77,25 +71,19 @@ public class AuthService {
 
     @Transactional
     public AuthDTO verifyEmail(VerifyEmailRequestDTO requestDTO) {
-        User user = userService.findUserByVerificationToken(requestDTO.verificationCode());
+        User user = userService.findUserByVerificationToken(requestDTO.verificationToken());
 
         userService.verifyUserEmail(user);
 
         String jwtValue = jwtService.generateToken(user);
         Long expiresIn = jwtService.getDefaultTokenExpirationTime();
 
-        emailService.sendWelcomeEmail(user.getEmail());
+        emailService.sendWelcomeEmail(user.getEmail(), user.getName());
         return authMapper.toVerifyEmailResponseDTO(
                 "Email verificado com sucesso!",
-                user.getId().toString(),
-                user.getUsername(),
-                user.getEmail(),
+                user,
                 jwtValue,
-                expiresIn,
-                user.getName(),
-                user.getProfileImg(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
+                expiresIn
         );
     }
 
@@ -131,4 +119,5 @@ public class AuthService {
         emailService.sendPasswordResetSuccessEmail(user.getEmail());
         return authMapper.toResetPasswordResponseDTO("Senha redefinida!");
     }
+
 }

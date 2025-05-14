@@ -74,9 +74,9 @@ public class EmailService {
 
 
     @Async
-    public void sendVerificationEmailAsync(String to, String verificationCode) {
+    public void sendVerificationEmailAsync(String to, String verificationToken) {
         Map<String, Object> templateVars = new HashMap<>();
-        templateVars.put("verificationCode", verificationCode);
+        templateVars.put("verificationToken", verificationToken);
         sendEmail(to, "Verificação de email", "verification.html", templateVars);
     }
 
@@ -91,9 +91,9 @@ public class EmailService {
     }
 
     @Async
-    public void sendPasswordResetRequestEmail(String to, String verificationCode) {
+    public void sendPasswordResetRequestEmail(String to, String verificationToken) {
         Map<String, Object> templateVars = new HashMap<>();
-        templateVars.put("verificationCode", verificationCode);
+        templateVars.put("verificationToken", verificationToken);
         sendEmail(to, "Redefinição de senha", "passwordResetRequest.html", templateVars);
     }
 
@@ -104,8 +104,9 @@ public class EmailService {
     }
 
     @Async
-    public void sendWelcomeEmail(String to) {
+    public void sendWelcomeEmail(String to, String name) {
         Map<String, Object> templateVars = new HashMap<>();
+        templateVars.put("name", name);
         sendEmail(to, "Bem-vindo a WeUnite!", "welcome.html", templateVars);
     }
 }
