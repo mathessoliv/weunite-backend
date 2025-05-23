@@ -141,6 +141,5 @@ hs_err_pid*
 replay_pid*
 
 *.env
-.dockerignore
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij
