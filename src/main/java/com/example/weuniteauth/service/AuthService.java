@@ -70,8 +70,17 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthDTO verifyEmail(VerifyEmailRequestDTO requestDTO) {
-        User user = userService.findUserByVerificationToken(requestDTO.verificationToken());
+    public AuthDTO verifyEmail(VerifyEmailRequestDTO requestDTO, String email) {
+
+        User user = userService.findUserEntityByEmail(email);
+
+        if (user.getVerificationToken() == null) {
+            throw new InvalidTokenException();
+        }
+
+        if (!user.getVerificationToken().equals(requestDTO.verificationToken())) {
+            throw new InvalidTokenException();
+        }
 
         userService.verifyUserEmail(user);
 
@@ -102,8 +111,12 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthDTO verifyResetPasswordToken(VerifyResetTokenRequestDTO requestDTO) {
-        User user = userService.findUserByVerificationToken(requestDTO.verificationToken());
+    public AuthDTO verifyResetPasswordToken(VerifyResetTokenRequestDTO requestDTO, String email) {
+        User user = userService.findUserEntityByEmail(email);
+
+        if (!user.getVerificationToken().equals(requestDTO.verificationToken())) {
+            throw new InvalidTokenException();
+        }
 
         return authMapper.toVerifyResetTokenResponseDTO("Código verificado!");
     }

@@ -2,6 +2,7 @@ package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
+import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
 import com.example.weuniteauth.exceptions.auth.ExpiredTokenException;
 import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.user.UserAlreadyExistsException;
@@ -31,7 +32,6 @@ public class UserService {
 
     private static final int TOKEN_EXPIRATION_MINUTES = 10;
 
-    @Autowired
     public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -142,5 +142,19 @@ public class UserService {
         return user;
     }
 
+    public UserDTO updateUser(UpdateUserRequestDTO requestDTO, String username) {
+        User user = findUserEntityByUsername(username);
 
+        if (userRepository.existsByUsername(requestDTO.username())) {
+            throw new UserAlreadyExistsException();
+        }
+
+        user.setUsername(requestDTO.username());
+        user.setName(requestDTO.name());
+        user.setBio(requestDTO.bio());
+
+        userRepository.save(user);
+
+        return userMapper.toUpdateUserDTO("Usuário atualizado com sucesso!", user);
+    }
 }
