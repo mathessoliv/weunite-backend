@@ -3,13 +3,14 @@ package com.example.weuniteauth.mapper;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
+import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
 import java.time.Instant;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-14T09:56:40-0300",
+    date = "2025-05-17T23:52:31-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -32,22 +33,40 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
+    public User toEntity(UpdateUserRequestDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        User user = new User();
+
+        user.setName( dto.name() );
+        user.setUsername( dto.username() );
+        user.setBio( dto.bio() );
+
+        return user;
+    }
+
+    @Override
     public UserDTO toDeleteUserDTO(String message, String username) {
         if ( message == null && username == null ) {
             return null;
         }
 
+        String message1 = null;
+        message1 = message;
         String username1 = null;
         username1 = username;
 
         String id = null;
         String name = null;
+        String bio = null;
         String email = null;
         String profileImg = null;
         Instant createdAt = null;
         Instant updatedAt = null;
 
-        UserDTO userDTO = new UserDTO( id, name, username1, email, profileImg, createdAt, updatedAt );
+        UserDTO userDTO = new UserDTO( message1, id, name, username1, bio, email, profileImg, createdAt, updatedAt );
 
         return userDTO;
     }
@@ -58,6 +77,8 @@ public class UserMapperImpl implements UserMapper {
             return null;
         }
 
+        String message1 = null;
+        message1 = message;
         String id1 = null;
         id1 = id;
         String name1 = null;
@@ -71,9 +92,10 @@ public class UserMapperImpl implements UserMapper {
         Instant updatedAt1 = null;
         updatedAt1 = updatedAt;
 
+        String bio = null;
         String profileImg = null;
 
-        UserDTO userDTO = new UserDTO( id1, name1, username1, email1, profileImg, createdAt1, updatedAt1 );
+        UserDTO userDTO = new UserDTO( message1, id1, name1, username1, bio, email1, profileImg, createdAt1, updatedAt1 );
 
         return userDTO;
     }

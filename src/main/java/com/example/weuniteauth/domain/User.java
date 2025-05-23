@@ -51,6 +51,9 @@ public class User extends BaseEntity {
     @Column
     private String profileImg;
 
+    @Column(length = 500)
+    private String bio;
+
     @Column(nullable = false)
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "tb_user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

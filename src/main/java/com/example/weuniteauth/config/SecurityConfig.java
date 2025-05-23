@@ -22,12 +22,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-email").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-email/{email}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/send-reset-password").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-reset-token").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-reset-token/{email}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/reset-password/{username}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/user/update/{username}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/user/{username}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/username/{username}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/id/{id}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2

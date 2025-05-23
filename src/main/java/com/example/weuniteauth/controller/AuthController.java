@@ -33,9 +33,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(loginRequest);
     }
 
-    @PostMapping("/verify-email")
-    public ResponseEntity<AuthDTO> verifyEmail(@RequestBody VerifyEmailRequestDTO verifyEmailRequestDTO) {
-        AuthDTO verifyEmailResponseDTO = authService.verifyEmail(verifyEmailRequestDTO);
+    @PostMapping("/verify-email/{email}")
+    public ResponseEntity<AuthDTO> verifyEmail(@RequestBody VerifyEmailRequestDTO verifyEmailRequestDTO, @PathVariable String email) {
+        AuthDTO verifyEmailResponseDTO = authService.verifyEmail(verifyEmailRequestDTO, email);
         return ResponseEntity.status(HttpStatus.OK).body(verifyEmailResponseDTO);
     }
 
@@ -45,9 +45,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(sendResetPasswordResponseDTO);
     }
 
-    @PostMapping("/verify-reset-token")
-    public ResponseEntity<AuthDTO> verifyResetToken(@RequestBody VerifyResetTokenRequestDTO verifyResetTokenRequestDTO) {
-        AuthDTO verifyResetTokenResponseDTO = authService.verifyResetPasswordToken(verifyResetTokenRequestDTO);
+    @PostMapping("/verify-reset-token/{email}")
+    public ResponseEntity<AuthDTO> verifyResetToken(@RequestBody VerifyResetTokenRequestDTO verifyResetTokenRequestDTO, @PathVariable String email) {
+        AuthDTO verifyResetTokenResponseDTO = authService.verifyResetPasswordToken(verifyResetTokenRequestDTO, email);
         return ResponseEntity.status(HttpStatus.OK).body(verifyResetTokenResponseDTO);
     }
 
