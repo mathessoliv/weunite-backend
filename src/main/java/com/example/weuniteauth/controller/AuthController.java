@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<AuthDTO> signup(@RequestBody @Valid CreateUserRequestDTO createUserRequestDTO) {
-        AuthDTO signUpResponseDTO = authService.signup(createUserRequestDTO);
+        AuthDTO signUpResponseDTO = authService.signUp(createUserRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(signUpResponseDTO);
     }
 

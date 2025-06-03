@@ -23,11 +23,13 @@ public class AuthService {
     private final JwtService jwtService;
     private final EmailService emailService;
 
-    public AuthService(UserService userService,
-                       PasswordEncoder passwordEncoder,
-                       AuthMapper authMapper,
-                       JwtService jwtService,
-                       EmailService emailService) {
+    public AuthService(
+            UserService userService,
+            PasswordEncoder passwordEncoder,
+            AuthMapper authMapper,
+            JwtService jwtService,
+            EmailService emailService
+    ) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authMapper = authMapper;
@@ -60,13 +62,16 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthDTO signup(CreateUserRequestDTO requestDTO) {
+    public AuthDTO signUp(CreateUserRequestDTO requestDTO) {
 
         User newUser = userService.createUser(requestDTO);
 
         emailService.sendVerificationEmailAsync(requestDTO.email(), newUser.getVerificationToken());
 
-        return authMapper.toSignUpResponseDTO("Cadastro concluído! Verifique seu email", newUser.getUsername());
+        return authMapper.toSignUpResponseDTO(
+                "Cadastro concluído! Verifique seu email",
+                newUser.getUsername()
+        );
     }
 
     @Transactional
