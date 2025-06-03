@@ -25,14 +25,19 @@ import java.util.Set;
 @Service
 public class UserService {
 
+    private static final int TOKEN_EXPIRATION_MINUTES = 10;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
-    private static final int TOKEN_EXPIRATION_MINUTES = 10;
-
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserService(
+            UserRepository userRepository,
+            UserMapper userMapper,
+            PasswordEncoder passwordEncoder,
+            RoleRepository roleRepository
+    ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -54,12 +59,6 @@ public class UserService {
         newUser.setPassword(encodedPassword);
 
         Role roleUser = roleRepository.findByName(Role.Values.BASIC.name());
-
-        if (roleUser == null) {
-            roleUser = new Role();
-            roleUser.setName(Role.Values.BASIC.name());
-            roleUser = roleRepository.save(roleUser);
-        }
 
         newUser.setRoles(Set.of(roleUser));
 
