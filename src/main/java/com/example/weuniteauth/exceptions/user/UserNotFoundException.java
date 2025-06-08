@@ -4,6 +4,6 @@ import com.example.weuniteauth.exceptions.NotFoundResourceException;
 
 public class UserNotFoundException extends NotFoundResourceException {
     public UserNotFoundException() {
-        super("Usuário não encontrado");
+        super("Usuário");
     }
 }
