@@ -3,6 +3,7 @@ package com.example.weuniteauth.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,16 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Post extends BaseEntity {
+public class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
@@ -50,5 +60,15 @@ public class Post extends BaseEntity {
     public void removeComment(Comment comment) {
         this.comments.remove(comment);
         comment.setPost(null);
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
     }
 }
