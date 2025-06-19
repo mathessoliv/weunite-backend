@@ -30,6 +30,8 @@ public interface UserMapper {
 
     UserDTO toGetUser(String message, String id, String name, String username, String email, Instant createdAt, Instant updatedAt);
 
+    UserDTO toReturnPost(String id, String name, String username, String profileImg, Instant createdAt, Instant updatedAt);
+
     default UserDTO toUpdateUserDTO(String message, User user) {
         return new UserDTO(message, user.getId().toString(), user.getName(), user.getUsername(), user.getBio(), user.getEmail(), user.getProfileImg(), user.getCreatedAt(), user.getUpdatedAt());
     }

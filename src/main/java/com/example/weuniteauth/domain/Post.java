@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -14,6 +16,12 @@ import java.util.Set;
 @Builder
 @Entity
 public class Post {
+
+    public Post (User author, String text, String image) {
+        this.author = author;
+        this.text = text;
+        this.image = image;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +36,7 @@ public class Post {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @Column(length = 200)
+    @Column(length = 500)
     private String text;
 
     private String image;
@@ -39,8 +47,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<Comment> comments = new HashSet<>();
-
+    private ArrayList<Comment> comments = new ArrayList<>();
 
     public void addLike(Like like) {
         this.likes.add(like);
