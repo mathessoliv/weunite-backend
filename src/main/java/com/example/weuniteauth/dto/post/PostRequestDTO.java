@@ -4,7 +4,7 @@ import com.example.weuniteauth.validations.ValidPost;
 import jakarta.validation.constraints.NotNull;
 
 @ValidPost
-public record CreatePostRequestDTO(
+public record PostRequestDTO(
     @NotNull
     Long authorId,
 

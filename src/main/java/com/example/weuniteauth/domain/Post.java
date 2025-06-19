@@ -47,7 +47,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private ArrayList<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public void addLike(Like like) {
         this.likes.add(like);

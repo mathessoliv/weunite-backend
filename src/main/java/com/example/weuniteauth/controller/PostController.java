@@ -1,18 +1,14 @@
 package com.example.weuniteauth.controller;
 
 
-import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.dto.PostDTO;
-import com.example.weuniteauth.dto.post.CreatePostRequestDTO;
+import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -26,9 +22,15 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<PostDTO> createPost(@RequestBody @Valid CreatePostRequestDTO post) {
+    public ResponseEntity<PostDTO> createPost(@RequestBody @Valid PostRequestDTO post) {
         PostDTO createdPost = postService.createPost(post);
         return ResponseEntity.status(HttpStatus.OK).body(createdPost);
+    }
+
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<PostDTO> updatePost( @PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
+        PostDTO updatedPost = postService.updatePost(postId, post);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
 }

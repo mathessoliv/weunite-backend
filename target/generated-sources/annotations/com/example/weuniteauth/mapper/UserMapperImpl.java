@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-18T23:32:26-0300",
+    date = "2025-06-19T12:43:08-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -96,34 +96,6 @@ public class UserMapperImpl implements UserMapper {
         String profileImg = null;
 
         UserDTO userDTO = new UserDTO( message1, id1, name1, username1, bio, email1, profileImg, createdAt1, updatedAt1 );
-
-        return userDTO;
-    }
-
-    @Override
-    public UserDTO toReturnPost(String id, String name, String username, String profileImg, Instant createdAt, Instant updatedAt) {
-        if ( id == null && name == null && username == null && profileImg == null && createdAt == null && updatedAt == null ) {
-            return null;
-        }
-
-        String id1 = null;
-        id1 = id;
-        String name1 = null;
-        name1 = name;
-        String username1 = null;
-        username1 = username;
-        String profileImg1 = null;
-        profileImg1 = profileImg;
-        Instant createdAt1 = null;
-        createdAt1 = createdAt;
-        Instant updatedAt1 = null;
-        updatedAt1 = updatedAt;
-
-        String message = null;
-        String bio = null;
-        String email = null;
-
-        UserDTO userDTO = new UserDTO( message, id1, name1, username1, bio, email, profileImg1, createdAt1, updatedAt1 );
 
         return userDTO;
     }

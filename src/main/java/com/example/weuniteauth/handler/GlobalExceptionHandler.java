@@ -3,6 +3,7 @@ package com.example.weuniteauth.handler;
 import com.example.weuniteauth.exceptions.BusinessRuleException;
 import com.example.weuniteauth.exceptions.DuplicateResourceException;
 import com.example.weuniteauth.exceptions.NotFoundResourceException;
+import com.example.weuniteauth.exceptions.UnauthorizedException;
 import com.example.weuniteauth.exceptions.mail.EmailSendingException;
 import com.example.weuniteauth.exceptions.mail.LoadingEmailTemplateException;
 import com.example.weuniteauth.response.ErrorResponse;
@@ -22,6 +23,13 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        logger.error(ex.getMessage(), ex);
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), "INTERNAL_SERVER_ERROR");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(NotFoundResourceException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundResourceException(NotFoundResourceException ex) {
@@ -69,11 +77,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        logger.error(ex.getMessage(), ex);
-        ErrorResponse response = new ErrorResponse(ex.getMessage(), "INTERNAL_SERVER_ERROR");
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException ex) {
+        logger.error(ex.getMessage(), ex.getError());
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), ex.getError());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 }
