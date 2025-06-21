@@ -28,7 +28,7 @@ public class PostController {
     }
 
     @PutMapping("/update/{postId}")
-    public ResponseEntity<PostDTO> updatePost( @PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
+    public ResponseEntity<PostDTO> updatePost(@PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
         PostDTO updatedPost = postService.updatePost(postId, post);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
@@ -39,4 +39,9 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<PostDTO> deletePost(@PathVariable Long postId) {
+        PostDTO post = postService.deletePost(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
 }

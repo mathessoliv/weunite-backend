@@ -10,10 +10,11 @@ import static org.springframework.http.RequestEntity.post;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper {
-    default PostDTO toPostDTO(Post post) {
+
+    default PostDTO toPostDTO(Post post, String message) {
         User author = post.getAuthor();
         return new PostDTO(
-                "Publicação criada com sucesso!",
+                message,
                 post.getId().toString(),
                 post.getText(),
                 post.getImage(),

@@ -39,7 +39,7 @@ public class PostService {
 
         postRepository.save(createdPost);
 
-        return postMapper.toPostDTO(createdPost);
+        return postMapper.toPostDTO(createdPost, "Publicação criada com sucesso!");
     }
 
     @Transactional
@@ -56,7 +56,7 @@ public class PostService {
 
         postRepository.save(existingPost);
 
-        return postMapper.toPostDTO(existingPost);
+        return postMapper.toPostDTO(existingPost, "Publicação atualizada com sucesso!");
     }
 
     @Transactional(readOnly = true)
@@ -64,6 +64,15 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        return postMapper.toPostDTO(post);
+        return postMapper.toPostDTO(post, "Publicação consultada com sucesso!");
+    }
+
+    @Transactional
+    public PostDTO deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        postRepository.delete(post);
+        return postMapper.toPostDTO(post, "Publicação excluída com sucesso");
     }
 }
