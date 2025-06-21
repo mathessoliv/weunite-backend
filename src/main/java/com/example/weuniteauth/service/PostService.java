@@ -10,7 +10,7 @@ import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,11 +44,10 @@ public class PostService {
 
     @Transactional
     public PostDTO updatePost(Long postId, PostRequestDTO updatedPost) {
-
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        if (!updatedPost.authorId().equals(existingPost.getAuthor().getId()))  {
+        if (!updatedPost.authorId().equals(existingPost.getAuthor().getId())) {
             throw new UnauthorizedException("Você precisar estar logado para atualizar esta publicação");
         }
 
@@ -58,5 +57,13 @@ public class PostService {
         postRepository.save(existingPost);
 
         return postMapper.toPostDTO(existingPost);
+    }
+
+    @Transactional(readOnly = true)
+    public PostDTO getPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        return postMapper.toPostDTO(post);
     }
 }

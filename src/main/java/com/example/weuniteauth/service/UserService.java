@@ -12,12 +12,10 @@ import com.example.weuniteauth.domain.Role;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.repository.RoleRepository;
 import com.example.weuniteauth.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Set;
