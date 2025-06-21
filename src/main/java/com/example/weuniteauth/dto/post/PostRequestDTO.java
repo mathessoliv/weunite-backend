@@ -5,12 +5,10 @@ import jakarta.validation.constraints.NotNull;
 
 @ValidPost
 public record PostRequestDTO(
-    @NotNull
-    Long authorId,
 
-    String text,
+        String text,
 
-    String image
+        String image
 
 ) {
 }

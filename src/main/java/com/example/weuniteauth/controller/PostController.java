@@ -21,15 +21,15 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<PostDTO> createPost(@RequestBody @Valid PostRequestDTO post) {
-        PostDTO createdPost = postService.createPost(post);
+    @PostMapping("/create/{authorId}")
+    public ResponseEntity<PostDTO> createPost(@PathVariable Long authorId, @RequestBody @Valid PostRequestDTO post) {
+        PostDTO createdPost = postService.createPost(authorId, post);
         return ResponseEntity.status(HttpStatus.OK).body(createdPost);
     }
 
-    @PutMapping("/update/{postId}")
-    public ResponseEntity<PostDTO> updatePost(@PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
-        PostDTO updatedPost = postService.updatePost(postId, post);
+    @PutMapping("/update/{authorId}/{postId}")
+    public ResponseEntity<PostDTO> updatePost(@PathVariable Long authorId, @PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
+        PostDTO updatedPost = postService.updatePost(authorId, postId, post);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
@@ -39,9 +39,9 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<PostDTO> deletePost(@PathVariable Long postId) {
-        PostDTO post = postService.deletePost(postId);
+    @DeleteMapping("/delete/{authorId}/{postId}")
+    public ResponseEntity<PostDTO> deletePost(@PathVariable Long authorId, @PathVariable Long postId) {
+        PostDTO post = postService.deletePost(authorId, postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 }

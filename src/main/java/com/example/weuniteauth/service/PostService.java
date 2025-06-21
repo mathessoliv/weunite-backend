@@ -27,8 +27,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostDTO createPost(PostRequestDTO post) {
-        User user = userRepository.findById(post.authorId())
+    public PostDTO createPost(Long authorId, PostRequestDTO post) {
+        User user = userRepository.findById(authorId)
                 .orElseThrow(UserNotFoundException::new);
 
         Post createdPost = new Post(
@@ -43,12 +43,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostDTO updatePost(Long postId, PostRequestDTO updatedPost) {
+    public PostDTO updatePost(Long authorId, Long postId, PostRequestDTO updatedPost) {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        if (!updatedPost.authorId().equals(existingPost.getAuthor().getId())) {
-            throw new UnauthorizedException("Você precisar estar logado para atualizar esta publicação");
+        if (!authorId.equals(existingPost.getAuthor().getId())) {
+            throw new UnauthorizedException("Você precisa estar logado para atualizar esta publicação");
         }
 
         existingPost.setText(updatedPost.text());
@@ -68,9 +68,13 @@ public class PostService {
     }
 
     @Transactional
-    public PostDTO deletePost(Long postId) {
+    public PostDTO deletePost(Long authorId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
+
+        if (!authorId.equals(post.getAuthor().getId())) {
+            throw new UnauthorizedException("Você precisa estar logado para deletar essa publicação!");
+        }
 
         postRepository.delete(post);
         return postMapper.toPostDTO(post, "Publicação excluída com sucesso");
