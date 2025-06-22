@@ -12,7 +12,13 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "tb_post_like", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
-public class Like{
+public class Like {
+
+    public Like(Post post, User user) {
+        this.post = post;
+        this.user = user;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,11 +35,6 @@ public class Like{
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    public Like(Post post, User user) {
-        this.post = post;
-        this.user = user;
-    }
 
     @PrePersist
     protected void onCreate() {

@@ -3,14 +3,13 @@ package com.example.weuniteauth.mapper;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
-import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
 import java.time.Instant;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-19T12:43:08-0300",
+    date = "2025-06-21T23:28:34-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -28,21 +27,6 @@ public class UserMapperImpl implements UserMapper {
         user.setUsername( dto.username() );
         user.setEmail( dto.email() );
         user.setPassword( dto.password() );
-
-        return user;
-    }
-
-    @Override
-    public User toEntity(UpdateUserRequestDTO dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        User user = new User();
-
-        user.setName( dto.name() );
-        user.setUsername( dto.username() );
-        user.setBio( dto.bio() );
 
         return user;
     }

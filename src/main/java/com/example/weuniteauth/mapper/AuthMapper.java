@@ -13,27 +13,6 @@ import java.time.Instant;
 @Mapper(componentModel = "spring")
 public interface AuthMapper {
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "password", source = "password")
-    User toEntity(LoginRequestDTO loginRequestDTO);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "verificationToken", source = "verificationToken")
-    User toEntity(VerifyEmailRequestDTO verifyEmailRequestDTO);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "email", source = "email")
-    User toEntity(SendResetPasswordRequestDTO sendResetPasswordRequestDTO);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "verificationToken", source = "verificationToken")
-    User toEntity(VerifyResetTokenRequestDTO verifyResetTokenRequestDTO);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "password", source = "newPassword")
-    User toEntity(ResetPasswordRequestDTO resetPasswordRequestDTO);
-
     AuthDTO toSignUpResponseDTO(String message, String username);
 
     default AuthDTO toVerifyEmailResponseDTO(String message, User user, String jwt, Long expiresIn) {
