@@ -50,7 +50,7 @@ public class LikeService {
     }
 
     @Transactional
-    public LikeDTO togglelike(Long userId, Long postId) {
+    public LikeDTO toggleLike(Long userId, Long postId) {
         User liker = userRepository.findById(userId).
                 orElseThrow(UserNotFoundException::new);
 
@@ -66,5 +66,4 @@ public class LikeService {
             return unlike(like);
         }
     }
-
 }
