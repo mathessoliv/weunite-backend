@@ -11,6 +11,9 @@ import com.example.weuniteauth.mapper.LikeMapper;
 import com.example.weuniteauth.repository.LikeRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,5 +67,17 @@ public class LikeService {
         Set<Like> likes = likeRepository.findByUser(user);
 
         return likeMapper.toLikeDTOSet(likes);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<LikeDTO> getLikes(Long userId, int pagina, int items) {
+        User user = userRepository.findById(userId).
+                orElseThrow(UserNotFoundException::new);
+
+        Pageable pageable = PageRequest.of(pagina, items);
+
+        Page<Like> likes = likeRepository.findByUser(user, pageable);
+
+        return likeMapper.toLikeDTOSet(likes.getContent());
     }
 }

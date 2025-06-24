@@ -29,4 +29,14 @@ public class LikeController {
         Set<LikeDTO> result = likeService.getLikes(userId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @GetMapping("/get/{userId}/page")
+    public ResponseEntity<Set<LikeDTO>> getLikes(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+            ) {
+        Set<LikeDTO> result = likeService.getLikes(userId, page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

@@ -71,6 +71,16 @@ public interface LikeMapper {
                 .collect(Collectors.toList());
     }
 
+    default Set<LikeDTO> toLikeDTOSet(List<Like> likes) {
+        if (likes == null) {
+            return null;
+        }
+
+        return likes.stream()
+                .map(like -> toLikeDTO(like, null))
+                .collect(Collectors.toSet());
+    }
+
     default Set<LikeDTO> toLikeDTOSet(Set<Like> likes) {
         if (likes == null) {
             return null;
