@@ -2,7 +2,6 @@ package com.example.weuniteauth.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,7 +55,6 @@ public class Post {
 
     public void removeLike(Like like) {
         this.likes.remove(like);
-        like.setPost(null);
     }
 
     public void addComment(Comment comment) {

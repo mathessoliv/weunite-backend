@@ -1,15 +1,15 @@
 package com.example.weuniteauth.mapper;
 
 import com.example.weuniteauth.domain.Like;
-import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.LikeDTO;
+import com.example.weuniteauth.dto.PostDTO;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-21T23:01:56-0300",
+    date = "2025-06-24T16:32:09-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -22,22 +22,19 @@ public class LikeMapperImpl implements LikeMapper {
         }
 
         String id = null;
-        String liker = null;
-        String post = null;
+        String user = null;
+        PostDTO post = null;
         if ( like != null ) {
             if ( like.getId() != null ) {
                 id = String.valueOf( like.getId() );
             }
-            liker = likeUserUsername( like );
-            Long id1 = likePostId( like );
-            if ( id1 != null ) {
-                post = String.valueOf( id1 );
-            }
+            user = likeUserUsername( like );
+            post = mapPost( like.getPost() );
         }
         String message1 = null;
         message1 = message;
 
-        LikeDTO likeDTO = new LikeDTO( message1, id, liker, post );
+        LikeDTO likeDTO = new LikeDTO( message1, id, user, post );
 
         return likeDTO;
     }
@@ -55,20 +52,5 @@ public class LikeMapperImpl implements LikeMapper {
             return null;
         }
         return username;
-    }
-
-    private Long likePostId(Like like) {
-        if ( like == null ) {
-            return null;
-        }
-        Post post = like.getPost();
-        if ( post == null ) {
-            return null;
-        }
-        Long id = post.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
     }
 }

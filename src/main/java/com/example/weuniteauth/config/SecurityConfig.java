@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/posts/get/{postId}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/posts/delete/{authorId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/likes/toggleLike/{userId}/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/likes/get/{userId}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -43,7 +44,6 @@ public class SecurityConfig {
                         )
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
         return http.build();
     }
 

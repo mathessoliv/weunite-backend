@@ -14,6 +14,8 @@ import com.example.weuniteauth.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 public class LikeService {
 
@@ -30,40 +32,37 @@ public class LikeService {
     }
 
     @Transactional
-    public LikeDTO like(User user, Post post) {
-
-        Like like = new Like(post, user);
-
-        likeRepository.save(like);
-
-        return likeMapper.toLikeDTO(like, "Curtida criada com sucesso!");
-
-    }
-
-    @Transactional
-    public LikeDTO unlike(Like like) {
-
-        likeRepository.delete(like);
-
-        return likeMapper.toLikeDTO(like, "Curtida deletada com sucesso!");
-
-    }
-
-    @Transactional
     public LikeDTO toggleLike(Long userId, Long postId) {
-        User liker = userRepository.findById(userId).
+
+        User user = userRepository.findById(userId).
                 orElseThrow(UserNotFoundException::new);
 
-        Post liked = postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        Like like = likeRepository.findByUserAndPost(liker, liked)
+        Like existingLike = likeRepository.findByUserAndPost(user, post)
                 .orElse(null);
 
-        if (like == null) {
-            return like(liker, liked);
+        if (existingLike == null) {
+            Like newLike = new Like(post, user);
+            post.addLike(newLike);
+            likeRepository.save(newLike);
+            return likeMapper.toLikeDTO(newLike, "Curtida criada com sucesso!");
         } else {
-            return unlike(like);
+            post.removeLike(existingLike);
+            likeRepository.delete(existingLike);
+            return likeMapper.toLikeDTO(existingLike, "Curtida deletada com sucesso!");
         }
+
+    }
+
+    @Transactional(readOnly = true)
+    public Set<LikeDTO> getLikes(Long userId) {
+        User user = userRepository.findById(userId).
+                orElseThrow(UserNotFoundException::new);
+
+        Set<Like> likes = likeRepository.findByUser(user);
+
+        return likeMapper.toLikeDTOSet(likes);
     }
 }

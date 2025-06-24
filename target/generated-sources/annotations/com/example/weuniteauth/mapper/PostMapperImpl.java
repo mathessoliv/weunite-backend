@@ -1,12 +1,9 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Post;
-import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.Generated;
@@ -14,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-21T23:01:56-0300",
+    date = "2025-06-24T16:32:09-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -29,8 +26,8 @@ public class PostMapperImpl implements PostMapper {
         String id = null;
         String text = null;
         String image = null;
-        Set<LikeDTO> likes = null;
-        List<Comment> comments = null;
+        Set<String> likes = null;
+        List<String> comments = null;
         Instant createdAt = null;
         Instant updatedAt = null;
         UserDTO user = null;
@@ -41,10 +38,7 @@ public class PostMapperImpl implements PostMapper {
             text = post.getText();
             image = post.getImage();
             likes = mapLikes( post.getLikes() );
-            List<Comment> list = post.getComments();
-            if ( list != null ) {
-                comments = new ArrayList<Comment>( list );
-            }
+            comments = mapComments( post.getComments() );
             createdAt = post.getCreatedAt();
             updatedAt = post.getUpdatedAt();
             user = mapUser( post );
