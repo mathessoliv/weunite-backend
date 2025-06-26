@@ -11,8 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 public class Post {
 
@@ -41,11 +39,9 @@ public class Post {
     private String image;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
     private Set<Like> likes = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     public void addLike(Like like) {

@@ -1,14 +1,12 @@
 package com.example.weuniteauth.mapper;
 
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.domain.User;
-import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.time.Instant;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -20,11 +18,18 @@ public interface UserMapper {
     @Mapping(target = "password", source = "password")
     User toEntity(CreateUserRequestDTO dto);
 
-    UserDTO toDeleteUserDTO(String message, String username);
+    @Mapping(target = "id", source = "user.id", resultType = String.class)
+    @Mapping(target = "name", source = "user.name")
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "bio", source = "user.bio")
+    @Mapping(target = "email", source = "user.email")
+    @Mapping(target = "profileImg", source = "user.profileImg")
+    @Mapping(target = "createdAt", source = "user.createdAt")
+    @Mapping(target = "updatedAt", source = "user.updatedAt")
+    UserDTO toUserDTO(User user);
 
-    UserDTO toGetUser(String message, String id, String name, String username, String email, Instant createdAt, Instant updatedAt);
-
-    default UserDTO toUpdateUserDTO(String message, User user) {
-        return new UserDTO(message, user.getId().toString(), user.getName(), user.getUsername(), user.getBio(), user.getEmail(), user.getProfileImg(), user.getCreatedAt(), user.getUpdatedAt());
+    default ResponseDTO<UserDTO> toResponseDTO(String message, User user) {
+        UserDTO userDTO = toUserDTO(user);
+        return new ResponseDTO<>(message, userDTO);
     }
 }

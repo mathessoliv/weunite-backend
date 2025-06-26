@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify-reset-token/{email}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/reset-password/{username}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/user/update/{username}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/user/{username}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/user/delete/{username}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/username/{username}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/id/{id}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/posts/create/{authorId}").permitAll()

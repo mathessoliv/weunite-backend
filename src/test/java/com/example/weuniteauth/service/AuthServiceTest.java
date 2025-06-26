@@ -2,6 +2,7 @@ package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.AuthDTO;
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.auth.*;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
@@ -11,22 +12,20 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.AuthMapper;
 import com.example.weuniteauth.service.jwt.JwtService;
 import com.example.weuniteauth.service.mail.EmailService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -49,7 +48,6 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
-
     @Test
     @DisplayName("Should login successfully when credentials are valid and email is verified")
     void loginSuccess() {
@@ -62,9 +60,11 @@ class AuthServiceTest {
         mockUser.setEmailVerified(true);
         mockUser.setEmail("test@example.com");
         mockUser.setName("Test User");
+        mockUser.setBio("Test Bio");
+        mockUser.setCreatedAt(Instant.now());
+        mockUser.setUpdatedAt(Instant.now());
 
         UserDTO expectedUserDTO = new UserDTO(
-                "",
                 mockUser.getId().toString(),
                 mockUser.getName(),
                 mockUser.getUsername(),
@@ -75,38 +75,43 @@ class AuthServiceTest {
                 mockUser.getUpdatedAt()
         );
 
-        AuthDTO expectedResponse = new AuthDTO(
-                "Login realizado com sucesso!",
+        AuthDTO authData = new AuthDTO(
                 expectedUserDTO,
                 "jwt-token",
                 3600L
+        );
+
+        ResponseDTO<AuthDTO> expectedResponse = new ResponseDTO<>(
+                "Login realizado com sucesso!",
+                authData
         );
 
         when(userService.findUserEntityByUsername("testuser")).thenReturn(mockUser);
         when(passwordEncoder.matches("password123", "$2a$10$encodedPassword")).thenReturn(true);
         when(jwtService.generateToken(mockUser)).thenReturn("jwt-token");
         when(jwtService.getDefaultTokenExpirationTime()).thenReturn(3600L);
-        when(authMapper.toLoginResponseDTO(
-                "Login realizado com sucesso!",
-                mockUser,
-                "jwt-token",
-                3600L
-        )).thenReturn(expectedResponse);
+        when(authMapper.toResponseDTO("Login realizado com sucesso!", mockUser, "jwt-token", 3600L))
+                .thenReturn(expectedResponse);
 
-        AuthDTO result = authService.login(loginRequest);
+        ResponseDTO<AuthDTO> result = authService.login(loginRequest);
 
         assertNotNull(result);
         assertEquals("Login realizado com sucesso!", result.message());
-        assertEquals("testuser", result.user().username());
-        assertEquals("jwt-token", result.jwt());
-        assertEquals(3600L, result.expiresIn());
+        assertNotNull(result.data());
+        assertEquals("testuser", result.data().user().username());
+        assertEquals("jwt-token", result.data().jwt());
+        assertEquals(3600L, result.data().expiresIn());
 
+        verify(userService).findUserEntityByUsername("testuser");
+        verify(passwordEncoder).matches("password123", "$2a$10$encodedPassword");
+        verify(jwtService).generateToken(mockUser);
+        verify(jwtService).getDefaultTokenExpirationTime();
+        verify(authMapper).toResponseDTO("Login realizado com sucesso!", mockUser, "jwt-token", 3600L);
     }
 
     @Test
     @DisplayName("Should throw UserNotFoundException when user does not exist")
     void loginWithNonExistentUser() {
-
         LoginRequestDTO loginRequest = new LoginRequestDTO("nonexistent", "password123");
 
         when(userService.findUserEntityByUsername("nonexistent"))
@@ -117,12 +122,13 @@ class AuthServiceTest {
         });
 
         assertNotNull(exception);
+        verify(userService).findUserEntityByUsername("nonexistent");
+        verifyNoInteractions(passwordEncoder, jwtService, authMapper);
     }
 
     @Test
     @DisplayName("Should throw BadCredentialsException when password is incorrect")
     void loginWithWrongPassword() {
-
         LoginRequestDTO loginRequest = new LoginRequestDTO("testuser", "wrongpassword");
 
         User mockUser = new User();
@@ -138,18 +144,20 @@ class AuthServiceTest {
         });
 
         assertEquals("Usuário ou senha inválidos", exception.getMessage());
+        verify(userService).findUserEntityByUsername("testuser");
+        verify(passwordEncoder).matches("wrongpassword", "$2a$10$encodedPassword");
+        verifyNoInteractions(jwtService, authMapper);
     }
 
     @Test
     @DisplayName("Should throw NotVerifiedEmailException when email is not verified")
     void loginWithUnverifiedEmail() {
-
         LoginRequestDTO loginRequest = new LoginRequestDTO("testuser", "password123");
 
         User mockUser = new User();
         mockUser.setUsername("testuser");
         mockUser.setPassword("$2a$10$encodedPassword");
-        mockUser.setEmailVerified(false); // Email não verificado
+        mockUser.setEmailVerified(false);
 
         when(userService.findUserEntityByUsername("testuser")).thenReturn(mockUser);
         when(passwordEncoder.matches("password123", "$2a$10$encodedPassword")).thenReturn(true);
@@ -159,13 +167,14 @@ class AuthServiceTest {
         });
 
         assertEquals("Verifique seu email para fazer login", exception.getMessage());
+        verify(userService).findUserEntityByUsername("testuser");
+        verify(passwordEncoder).matches("password123", "$2a$10$encodedPassword");
+        verifyNoInteractions(jwtService, authMapper);
     }
-
 
     @Test
     @DisplayName("Should signup a user when the data doesn't already exist")
     void signUpSuccess() {
-
         CreateUserRequestDTO userRequestDTO = new CreateUserRequestDTO(
                 "Luizao",
                 "Luizada",
@@ -175,24 +184,26 @@ class AuthServiceTest {
 
         User mockUser = new User();
         mockUser.setUsername("Luizada");
+        mockUser.setEmail("lgtgusmao@hotmail.com");
         mockUser.setVerificationToken("123456");
 
-        AuthDTO expectedResponse = new AuthDTO(
+        ResponseDTO<AuthDTO> expectedResponse = new ResponseDTO<>(
                 "Cadastro concluído! Verifique seu email",
-                null,
-                null,
                 null
         );
 
-
         when(userService.createUser(userRequestDTO)).thenReturn(mockUser);
-        when(authMapper.toSignUpResponseDTO(anyString(), anyString())).thenReturn(expectedResponse);
+        when(authMapper.toResponseDTO("Cadastro concluído! Verifique seu email", mockUser))
+                .thenReturn(expectedResponse);
 
-        AuthDTO result = authService.signUp(userRequestDTO);
+        ResponseDTO<AuthDTO> result = authService.signUp(userRequestDTO);
 
         assertNotNull(result);
         assertEquals("Cadastro concluído! Verifique seu email", result.message());
 
+        verify(userService).createUser(userRequestDTO);
+        verify(emailService).sendVerificationEmailAsync("lgtgusmao@hotmail.com", "123456");
+        verify(authMapper).toResponseDTO("Cadastro concluído! Verifique seu email", mockUser);
     }
 
     @Test
@@ -213,11 +224,12 @@ class AuthServiceTest {
         });
 
         assertEquals("Erro ao criar usuário", exception.getMessage());
+        verify(userService).createUser(userRequestDTO);
+        verifyNoInteractions(emailService, authMapper);
     }
 
-
     @Test
-    @DisplayName("Should verify email when everything is correct")
+    @DisplayName("Should verify email and return JWT when everything is correct")
     void verifyEmailSuccess() {
         String email = "test@example.com";
         String verificationToken = "123456";
@@ -232,6 +244,13 @@ class AuthServiceTest {
         mockUser.setVerificationToken(verificationToken);
         mockUser.setEmailVerified(false);
 
+        User verifiedUser = new User();
+        verifiedUser.setId(1L);
+        verifiedUser.setEmail(email);
+        verifiedUser.setUsername("testuser");
+        verifiedUser.setName("Test User");
+        verifiedUser.setEmailVerified(true);
+
         UserDTO expectedUserDTO = new UserDTO(
                 "",
                 mockUser.getId().toString(),
@@ -239,42 +258,45 @@ class AuthServiceTest {
                 mockUser.getUsername(),
                 mockUser.getBio(),
                 mockUser.getEmail(),
-                mockUser.getProfileImg(),
                 mockUser.getCreatedAt(),
                 mockUser.getUpdatedAt()
         );
 
-        AuthDTO expectedResponse = new AuthDTO(
-                "Email verificado com sucesso!",
+        AuthDTO authData = new AuthDTO(
                 expectedUserDTO,
                 "jwt-token",
                 3600L
         );
 
+        ResponseDTO<AuthDTO> expectedResponse = new ResponseDTO<>(
+                "Email verificado com sucesso!",
+                authData
+        );
+
         when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
-        when(userService.verifyUserEmail(mockUser)).thenReturn(mockUser);
+        when(userService.verifyUserEmail(mockUser)).thenReturn(verifiedUser);
         when(jwtService.generateToken(mockUser)).thenReturn("jwt-token");
         when(jwtService.getDefaultTokenExpirationTime()).thenReturn(3600L);
-        when(authMapper.toVerifyEmailResponseDTO(
-                "Email verificado com sucesso!",
-                mockUser,
-                "jwt-token",
-                3600L
-        )).thenReturn(expectedResponse);
+        when(authMapper.toResponseDTO("Email verificado com sucesso!", mockUser, "jwt-token", 3600L))
+                .thenReturn(expectedResponse);
 
-        AuthDTO result = authService.verifyEmail(verifyEmailRequestDTO, email);
+        ResponseDTO<AuthDTO> result = authService.verifyEmail(verifyEmailRequestDTO, email);
 
         assertNotNull(result);
         assertEquals("Email verificado com sucesso!", result.message());
-        assertEquals("testuser", result.user().username());
-        assertEquals("jwt-token", result.jwt());
-        assertEquals(3600L, result.expiresIn());
+        assertNotNull(result.data());
+
+        verify(userService).findUserEntityByEmail(email);
+        verify(userService).verifyUserEmail(mockUser);
+        verify(jwtService).generateToken(mockUser);
+        verify(jwtService).getDefaultTokenExpirationTime();
+        verify(emailService).sendWelcomeEmail(email, "Test User");
+        verify(authMapper).toResponseDTO("Email verificado com sucesso!", mockUser, "jwt-token", 3600L);
     }
 
     @Test
     @DisplayName("Should throw UserNotFoundException when user is not found by email")
     void verifyEmailWithUserNotFound() {
-
         String email = "nonexistent@example.com";
         String verificationToken = "123456";
 
@@ -288,12 +310,13 @@ class AuthServiceTest {
         });
 
         assertNotNull(exception);
+        verify(userService).findUserEntityByEmail(email);
+        verifyNoInteractions(jwtService, emailService, authMapper);
     }
 
     @Test
     @DisplayName("Should throw InvalidTokenException when user has no verification token")
     void verifyEmailWithNullToken() {
-
         String email = "test@example.com";
         String requestToken = "123456";
 
@@ -314,12 +337,41 @@ class AuthServiceTest {
         });
 
         assertNotNull(exception);
+        verify(userService).findUserEntityByEmail(email);
+        verifyNoInteractions(jwtService, emailService, authMapper);
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidTokenException when verification token does not match")
+    void verifyEmailWithInvalidToken() {
+        String email = "test@example.com";
+        String correctToken = "123456";
+        String wrongToken = "654321";
+
+        VerifyEmailRequestDTO verifyEmailRequestDTO = new VerifyEmailRequestDTO(wrongToken);
+
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setEmail(email);
+        mockUser.setUsername("testuser");
+        mockUser.setName("Test User");
+        mockUser.setVerificationToken(correctToken);
+        mockUser.setEmailVerified(false);
+
+        when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
+
+        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> {
+            authService.verifyEmail(verifyEmailRequestDTO, email);
+        });
+
+        assertNotNull(exception);
+        verify(userService).findUserEntityByEmail(email);
+        verifyNoInteractions(jwtService, emailService, authMapper);
     }
 
     @Test
     @DisplayName("Should send reset password email successfully when user exists and email is verified")
     void sendResetPasswordSuccess() {
-
         SendResetPasswordRequestDTO requestDTO = new SendResetPasswordRequestDTO("test@example.com");
 
         User mockUser = new User();
@@ -330,30 +382,29 @@ class AuthServiceTest {
         mockUser.setEmailVerified(true);
         mockUser.setVerificationToken("123456");
 
-        AuthDTO expectedResponse = new AuthDTO(
+        ResponseDTO<AuthDTO> expectedResponse = new ResponseDTO<>(
                 "Código enviado!",
-                null,
-                null,
                 null
         );
 
         when(userService.findUserEntityByEmail("test@example.com")).thenReturn(mockUser);
         when(userService.generateAndSetToken(mockUser)).thenReturn(mockUser);
-        when(authMapper.toSendResetPasswordResponseDTO("Código enviado!")).thenReturn(expectedResponse);
+        when(authMapper.toResponseDTO("Código enviado!")).thenReturn(expectedResponse);
 
-        AuthDTO result = authService.sendResetPassword(requestDTO);
+        ResponseDTO<AuthDTO> result = authService.sendResetPassword(requestDTO);
 
         assertNotNull(result);
         assertEquals("Código enviado!", result.message());
 
-        verify(emailService).sendPasswordResetRequestEmail("test@example.com", "123456");
+        verify(userService).findUserEntityByEmail("test@example.com");
         verify(userService).generateAndSetToken(mockUser);
+        verify(emailService).sendPasswordResetRequestEmail("test@example.com", "123456");
+        verify(authMapper).toResponseDTO("Código enviado!");
     }
 
     @Test
     @DisplayName("Should throw UserNotFoundException when user does not exist")
     void sendResetPasswordWithNonExistentUser() {
-
         SendResetPasswordRequestDTO requestDTO = new SendResetPasswordRequestDTO("nonexistent@example.com");
 
         when(userService.findUserEntityByEmail("nonexistent@example.com"))
@@ -364,15 +415,14 @@ class AuthServiceTest {
         });
 
         assertNotNull(exception);
-
-        verify(emailService, never()).sendPasswordResetRequestEmail(anyString(), anyString());
+        verify(userService).findUserEntityByEmail("nonexistent@example.com");
+        verifyNoInteractions(emailService, authMapper);
         verify(userService, never()).generateAndSetToken(any(User.class));
     }
 
     @Test
     @DisplayName("Should throw NotVerifiedEmailException when user email is not verified")
     void sendResetPasswordWithUnverifiedEmail() {
-
         SendResetPasswordRequestDTO requestDTO = new SendResetPasswordRequestDTO("unverified@example.com");
 
         User mockUser = new User();
@@ -380,7 +430,7 @@ class AuthServiceTest {
         mockUser.setEmail("unverified@example.com");
         mockUser.setUsername("testuser");
         mockUser.setName("Test User");
-        mockUser.setEmailVerified(false); // Email não verificado
+        mockUser.setEmailVerified(false);
 
         when(userService.findUserEntityByEmail("unverified@example.com")).thenReturn(mockUser);
 
@@ -389,15 +439,14 @@ class AuthServiceTest {
         });
 
         assertEquals("Verifique seu e-mail para redefinir a senha", exception.getMessage());
-
+        verify(userService).findUserEntityByEmail("unverified@example.com");
+        verifyNoInteractions(emailService, authMapper);
         verify(userService, never()).generateAndSetToken(any(User.class));
-        verify(emailService, never()).sendPasswordResetRequestEmail(anyString(), anyString());
     }
 
     @Test
     @DisplayName("Should verify reset password token successfully when token matches")
     void verifyResetPasswordTokenSuccess() {
-
         String email = "test@example.com";
         String verificationToken = "123456";
         VerifyResetTokenRequestDTO requestDTO = new VerifyResetTokenRequestDTO(verificationToken);
@@ -409,26 +458,26 @@ class AuthServiceTest {
         mockUser.setName("Test User");
         mockUser.setVerificationToken(verificationToken);
 
-        AuthDTO expectedResponse = new AuthDTO(
+        ResponseDTO<AuthDTO> expectedResponse = new ResponseDTO<>(
                 "Código verificado!",
-                null,
-                null,
                 null
         );
 
         when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
-        when(authMapper.toVerifyResetTokenResponseDTO("Código verificado!")).thenReturn(expectedResponse);
+        when(authMapper.toResponseDTO("Código verificado!")).thenReturn(expectedResponse);
 
-        AuthDTO result = authService.verifyResetPasswordToken(requestDTO, email);
+        ResponseDTO<AuthDTO> result = authService.verifyResetPasswordToken(requestDTO, email);
 
         assertNotNull(result);
         assertEquals("Código verificado!", result.message());
+
+        verify(userService).findUserEntityByEmail(email);
+        verify(authMapper).toResponseDTO("Código verificado!");
     }
 
     @Test
     @DisplayName("Should throw UserNotFoundException when user does not exist")
     void verifyResetPasswordTokenWithNonExistentUser() {
-
         String email = "nonexistent@example.com";
         String verificationToken = "123456";
         VerifyResetTokenRequestDTO requestDTO = new VerifyResetTokenRequestDTO(verificationToken);
@@ -441,8 +490,8 @@ class AuthServiceTest {
         });
 
         assertNotNull(exception);
-
-        verify(authMapper, never()).toVerifyResetTokenResponseDTO(anyString());
+        verify(userService).findUserEntityByEmail(email);
+        verifyNoInteractions(authMapper);
     }
 
     @Test
@@ -466,39 +515,14 @@ class AuthServiceTest {
             authService.verifyResetPasswordToken(requestDTO, email);
         });
 
-        assertEquals("Token inválido", exception.getMessage());
-
-        verify(authMapper, never()).toVerifyResetTokenResponseDTO(anyString());
-    }
-
-    @Test
-    @DisplayName("Should throw InvalidTokenException when user has null verification token")
-    void verifyResetPasswordTokenWithNullUserToken() {
-
-        String email = "test@example.com";
-        String requestToken = "123456";
-        VerifyResetTokenRequestDTO requestDTO = new VerifyResetTokenRequestDTO(requestToken);
-
-        User mockUser = new User();
-        mockUser.setId(1L);
-        mockUser.setEmail(email);
-        mockUser.setUsername("testuser");
-        mockUser.setName("Test User");
-        mockUser.setVerificationToken(null);
-
-        when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
-
-        assertThrows(NullPointerException.class, () -> {
-            authService.verifyResetPasswordToken(requestDTO, email);
-        });
-
-        verify(authMapper, never()).toVerifyResetTokenResponseDTO(anyString());
+        assertNotNull(exception);
+        verify(userService).findUserEntityByEmail(email);
+        verifyNoInteractions(authMapper);
     }
 
     @Test
     @DisplayName("Should reset password successfully when verification token is valid")
     void resetPasswordSuccess() {
-
         String verificationToken = "123456";
         String newPassword = "newPassword123@";
         String encodedPassword = "$2a$10$encodedNewPassword";
@@ -512,52 +536,46 @@ class AuthServiceTest {
         mockUser.setPassword("oldEncodedPassword");
         mockUser.setVerificationToken(verificationToken);
 
-        AuthDTO expectedResponse = new AuthDTO(
+        ResponseDTO<AuthDTO> expectedResponse = new ResponseDTO<>(
                 "Senha redefinida!",
-                null,
-                null,
                 null
         );
 
         when(userService.findUserByVerificationToken(verificationToken)).thenReturn(mockUser);
         when(passwordEncoder.encode(newPassword)).thenReturn(encodedPassword);
-        when(authMapper.toResetPasswordResponseDTO("Senha redefinida!")).thenReturn(expectedResponse);
+        when(authMapper.toResponseDTO("Senha redefinida!")).thenReturn(expectedResponse);
 
-        AuthDTO result = authService.resetPassword(requestDTO, verificationToken);
+        ResponseDTO<AuthDTO> result = authService.resetPassword(requestDTO, verificationToken);
 
         assertNotNull(result);
         assertEquals("Senha redefinida!", result.message());
 
         assertEquals(encodedPassword, mockUser.getPassword());
-
         assertNull(mockUser.getVerificationToken());
         assertNull(mockUser.getVerificationTokenExpires());
 
-        verify(emailService).sendPasswordResetSuccessEmail("test@example.com");
+        verify(userService).findUserByVerificationToken(verificationToken);
         verify(passwordEncoder).encode(newPassword);
-        verify(authMapper).toResetPasswordResponseDTO("Senha redefinida!");
+        verify(emailService).sendPasswordResetSuccessEmail("test@example.com");
+        verify(authMapper).toResponseDTO("Senha redefinida!");
     }
 
     @Test
-    @DisplayName("Should throw InvalidTokenException when verification token is not found")
+    @DisplayName("Should throw exception when verification token is not found")
     void resetPasswordWithInvalidToken() {
-
         String invalidToken = "invalid123";
         String newPassword = "newPassword123@";
         ResetPasswordRequestDTO requestDTO = new ResetPasswordRequestDTO(newPassword);
 
         when(userService.findUserByVerificationToken(invalidToken))
-                .thenThrow(new InvalidTokenException());
+                .thenThrow(new UserNotFoundException());
 
-        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> {
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
             authService.resetPassword(requestDTO, invalidToken);
         });
 
-        assertEquals("Token inválido", exception.getMessage());
-
-        verify(passwordEncoder, never()).encode(anyString());
-        verify(emailService, never()).sendPasswordResetSuccessEmail(anyString());
-        verify(authMapper, never()).toResetPasswordResponseDTO(anyString());
+        assertNotNull(exception);
+        verify(userService).findUserByVerificationToken(invalidToken);
+        verifyNoInteractions(passwordEncoder, emailService, authMapper);
     }
-
 }

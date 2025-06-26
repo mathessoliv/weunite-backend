@@ -2,6 +2,7 @@ package com.example.weuniteauth.controller;
 
 
 import com.example.weuniteauth.dto.PostDTO;
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.service.PostService;
 import jakarta.validation.Valid;
@@ -22,26 +23,26 @@ public class PostController {
     }
 
     @PostMapping("/create/{authorId}")
-    public ResponseEntity<PostDTO> createPost(@PathVariable Long authorId, @RequestBody @Valid PostRequestDTO post) {
-        PostDTO createdPost = postService.createPost(authorId, post);
+    public ResponseEntity<ResponseDTO<PostDTO>> createPost(@PathVariable Long authorId, @RequestBody @Valid PostRequestDTO post) {
+        ResponseDTO<PostDTO> createdPost = postService.createPost(authorId, post);
         return ResponseEntity.status(HttpStatus.OK).body(createdPost);
     }
 
     @PutMapping("/update/{authorId}/{postId}")
-    public ResponseEntity<PostDTO> updatePost(@PathVariable Long authorId, @PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
-        PostDTO updatedPost = postService.updatePost(authorId, postId, post);
+    public ResponseEntity<ResponseDTO<PostDTO>> updatePost(@PathVariable Long authorId, @PathVariable Long postId, @RequestBody @Valid PostRequestDTO post) {
+        ResponseDTO<PostDTO> updatedPost = postService.updatePost(authorId, postId, post);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
     @GetMapping("/get/{postId}")
-    public ResponseEntity<PostDTO> getPost(@PathVariable Long postId) {
-        PostDTO post = postService.getPost(postId);
+    public ResponseEntity<ResponseDTO<PostDTO>> getPost(@PathVariable Long postId) {
+        ResponseDTO<PostDTO> post = postService.getPost(postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @DeleteMapping("/delete/{authorId}/{postId}")
-    public ResponseEntity<PostDTO> deletePost(@PathVariable Long authorId, @PathVariable Long postId) {
-        PostDTO post = postService.deletePost(authorId, postId);
+    public ResponseEntity<ResponseDTO<PostDTO>> deletePost(@PathVariable Long authorId, @PathVariable Long postId) {
+        ResponseDTO<PostDTO> post = postService.deletePost(authorId, postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 }

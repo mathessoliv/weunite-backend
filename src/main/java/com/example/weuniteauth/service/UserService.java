@@ -1,5 +1,6 @@
 package com.example.weuniteauth.service;
 
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
@@ -68,29 +69,45 @@ public class UserService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public UserDTO deleteUser(String username) {
+    public ResponseDTO<UserDTO> deleteUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException());
 
         userRepository.delete(user);
 
-        return userMapper.toDeleteUserDTO("Usuário deletado com sucesso", username);
+        return userMapper.toResponseDTO("Usuário deletado com sucesso", user);
     }
 
     @Transactional(readOnly = true)
-    public UserDTO getUser(Long id) {
+    public ResponseDTO<UserDTO> getUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException());
 
-        return userMapper.toGetUser("Usuário encontrado com sucesso", user.getId().toString(), user.getName(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+        return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
     }
 
     @Transactional(readOnly = true)
-    public UserDTO getUser(String username) {
+    public ResponseDTO<UserDTO> getUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException());
 
-        return userMapper.toGetUser("Usuário encontrado com sucesso", user.getId().toString(), user.getName(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+        return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
+    }
+
+    public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username) {
+        User user = findUserEntityByUsername(username);
+
+        if (userRepository.existsByUsername(requestDTO.username())) {
+            throw new UserAlreadyExistsException();
+        }
+
+        user.setUsername(requestDTO.username());
+        user.setName(requestDTO.name());
+        user.setBio(requestDTO.bio());
+
+        userRepository.save(user);
+
+        return userMapper.toResponseDTO("Usuário atualizado com sucesso!", user);
     }
 
     @Transactional(readOnly = true)
@@ -137,21 +154,5 @@ public class UserService {
         user.setVerificationTokenExpires(expirationDate);
 
         return user;
-    }
-
-    public UserDTO updateUser(UpdateUserRequestDTO requestDTO, String username) {
-        User user = findUserEntityByUsername(username);
-
-        if (userRepository.existsByUsername(requestDTO.username())) {
-            throw new UserAlreadyExistsException();
-        }
-
-        user.setUsername(requestDTO.username());
-        user.setName(requestDTO.name());
-        user.setBio(requestDTO.bio());
-
-        userRepository.save(user);
-
-        return userMapper.toUpdateUserDTO("Usuário atualizado com sucesso!", user);
     }
 }

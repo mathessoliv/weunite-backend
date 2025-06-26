@@ -3,6 +3,7 @@ package com.example.weuniteauth.service;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.PostDTO;
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.exceptions.UnauthorizedException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
@@ -27,7 +28,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostDTO createPost(Long authorId, PostRequestDTO post) {
+    public ResponseDTO<PostDTO> createPost(Long authorId, PostRequestDTO post) {
         User user = userRepository.findById(authorId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -39,11 +40,11 @@ public class PostService {
 
         postRepository.save(createdPost);
 
-        return postMapper.toPostDTO(createdPost, "Publicação criada com sucesso!");
+        return postMapper.toResponseDTO("Publicação criada com sucesso!", createdPost);
     }
 
     @Transactional
-    public PostDTO updatePost(Long authorId, Long postId, PostRequestDTO updatedPost) {
+    public ResponseDTO<PostDTO> updatePost(Long authorId, Long postId, PostRequestDTO updatedPost) {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -56,19 +57,19 @@ public class PostService {
 
         postRepository.save(existingPost);
 
-        return postMapper.toPostDTO(existingPost, "Publicação atualizada com sucesso!");
+        return postMapper.toResponseDTO("Publicação atualizada com sucesso!", existingPost);
     }
 
     @Transactional(readOnly = true)
-    public PostDTO getPost(Long postId) {
+    public ResponseDTO<PostDTO> getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        return postMapper.toPostDTO(post, "Publicação consultada com sucesso!");
+        return postMapper.toResponseDTO("Publicação consultada com sucesso!", post);
     }
 
     @Transactional
-    public PostDTO deletePost(Long authorId, Long postId) {
+    public ResponseDTO<PostDTO> deletePost(Long authorId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -77,6 +78,7 @@ public class PostService {
         }
 
         postRepository.delete(post);
-        return postMapper.toPostDTO(post, "Publicação excluída com sucesso");
+
+        return postMapper.toResponseDTO("Publicação excluída com sucesso", post);
     }
 }

@@ -1,89 +1,37 @@
 package com.example.weuniteauth.mapper;
 
+import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.AuthDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-24T17:17:29-0300",
+    date = "2025-06-26T18:56:33-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
 public class AuthMapperImpl implements AuthMapper {
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
-    public AuthDTO toSignUpResponseDTO(String message, String username) {
-        if ( message == null && username == null ) {
+    public AuthDTO toAuthDTO(User user, String jwt, Long expiresIn) {
+        if ( user == null && jwt == null && expiresIn == null ) {
             return null;
         }
 
-        String message1 = null;
-        message1 = message;
+        UserDTO user1 = null;
+        user1 = userMapper.toUserDTO( user );
+        String jwt1 = null;
+        jwt1 = jwt;
+        Long expiresIn1 = null;
+        expiresIn1 = expiresIn;
 
-        UserDTO user = null;
-        String jwt = null;
-        Long expiresIn = null;
-
-        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
-
-        return authDTO;
-    }
-
-    @Override
-    public AuthDTO toSendResetPasswordResponseDTO(String message) {
-        if ( message == null ) {
-            return null;
-        }
-
-        String message1 = null;
-
-        message1 = message;
-
-        UserDTO user = null;
-        String jwt = null;
-        Long expiresIn = null;
-
-        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
-
-        return authDTO;
-    }
-
-    @Override
-    public AuthDTO toVerifyResetTokenResponseDTO(String message) {
-        if ( message == null ) {
-            return null;
-        }
-
-        String message1 = null;
-
-        message1 = message;
-
-        UserDTO user = null;
-        String jwt = null;
-        Long expiresIn = null;
-
-        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
-
-        return authDTO;
-    }
-
-    @Override
-    public AuthDTO toResetPasswordResponseDTO(String message) {
-        if ( message == null ) {
-            return null;
-        }
-
-        String message1 = null;
-
-        message1 = message;
-
-        UserDTO user = null;
-        String jwt = null;
-        Long expiresIn = null;
-
-        AuthDTO authDTO = new AuthDTO( message1, user, jwt, expiresIn );
+        AuthDTO authDTO = new AuthDTO( user1, jwt1, expiresIn1 );
 
         return authDTO;
     }

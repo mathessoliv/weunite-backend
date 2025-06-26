@@ -4,7 +4,7 @@ import com.example.weuniteauth.domain.Like;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.LikeDTO;
-import com.example.weuniteauth.dto.PostDTO;
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.LikeMapper;
@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -35,7 +35,7 @@ public class LikeService {
     }
 
     @Transactional
-    public LikeDTO toggleLike(Long userId, Long postId) {
+    public ResponseDTO<LikeDTO> toggleLike(Long userId, Long postId) {
 
         User user = userRepository.findById(userId).
                 orElseThrow(UserNotFoundException::new);
@@ -50,27 +50,27 @@ public class LikeService {
             Like newLike = new Like(post, user);
             post.addLike(newLike);
             likeRepository.save(newLike);
-            return likeMapper.toLikeDTO(newLike, "Curtida criada com sucesso!");
+            return likeMapper.toResponseDTO( "Curtida criada com sucesso!", newLike);
         } else {
             post.removeLike(existingLike);
             likeRepository.delete(existingLike);
-            return likeMapper.toLikeDTO(existingLike, "Curtida deletada com sucesso!");
+            return likeMapper.toResponseDTO("Curtida deletada com sucesso!", existingLike);
         }
 
     }
 
     @Transactional(readOnly = true)
-    public Set<LikeDTO> getLikes(Long userId) {
+    public ResponseDTO<List<LikeDTO>> getLikes(Long userId) {
         User user = userRepository.findById(userId).
                 orElseThrow(UserNotFoundException::new);
 
         Set<Like> likes = likeRepository.findByUser(user);
 
-        return likeMapper.toLikeDTOSet(likes);
+        return likeMapper.toResponseDTO("Likes consultados com sucesso!", likes);
     }
 
     @Transactional(readOnly = true)
-    public Set<LikeDTO> getLikes(Long userId, int pagina, int items) {
+    public ResponseDTO<List<LikeDTO>> getLikes(Long userId, int pagina, int items) {
         User user = userRepository.findById(userId).
                 orElseThrow(UserNotFoundException::new);
 
@@ -78,6 +78,6 @@ public class LikeService {
 
         Page<Like> likes = likeRepository.findByUser(user, pageable);
 
-        return likeMapper.toLikeDTOSet(likes.getContent());
+        return likeMapper.toResponseDTO("Likes consultados com sucesso!", likes.getContent());
     }
 }

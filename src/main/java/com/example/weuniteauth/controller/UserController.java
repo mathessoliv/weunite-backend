@@ -1,5 +1,6 @@
 package com.example.weuniteauth.controller;
 
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
 import com.example.weuniteauth.service.UserService;
@@ -19,28 +20,26 @@ public class UserController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable String username) {
-        UserDTO userDTO = userService.getUser(username);
+    public ResponseEntity<ResponseDTO<UserDTO>> getUser(@PathVariable String username) {
+        ResponseDTO<UserDTO> userDTO = userService.getUser(username);
         return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        UserDTO userDTO = userService.getUser(id);
+    public ResponseEntity<ResponseDTO<UserDTO>> getUserById(@PathVariable Long id) {
+        ResponseDTO<UserDTO> userDTO = userService.getUser(id);
         return ResponseEntity.ok(userDTO);
     }
 
     @DeleteMapping("/delete/{username}")
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable String username) {
-        UserDTO userDTO = userService.deleteUser(username);
+    public ResponseEntity<ResponseDTO<UserDTO>> deleteUser(@PathVariable String username) {
+        ResponseDTO<UserDTO> userDTO = userService.deleteUser(username);
         return ResponseEntity.ok(userDTO);
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable String username, @RequestBody UpdateUserRequestDTO requestDTO) {
-        UserDTO userDTO = userService.updateUser(requestDTO, username);
+    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username, @RequestBody UpdateUserRequestDTO requestDTO) {
+        ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username);
         return ResponseEntity.ok(userDTO);
     }
-
-
 }

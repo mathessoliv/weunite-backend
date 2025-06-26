@@ -1,11 +1,11 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Like;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.PostDTO;
+import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,80 +14,59 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface LikeMapper {
 
     @Mapping(target = "id", source = "like.id", resultType = String.class)
-    @Mapping(target = "user", source = "like.user.username")
-    @Mapping(target = "post", source = "like.post", qualifiedByName = "mapPost")
-    @Mapping(target = "message", source = "message")
-    LikeDTO toLikeDTO(Like like, String message);
+    @Mapping(target = "user", source = "like.user")
+    @Mapping(target = "post", source = "like.post", qualifiedByName = "mapPostWithoutLikes")
+    LikeDTO toLikeDTO(Like like);
 
-    @Named("mapPost")
-    default PostDTO mapPost(Post post) {
-        User author = post.getAuthor();
-        return new PostDTO(
-                null,
-                post.getId().toString(),
-                post.getText(),
-                post.getImage(),
-                mapLikes(post.getLikes()),
-                mapComments(post.getComments()),
-                post.getCreatedAt(),
-                post.getUpdatedAt(),
-                new UserDTO(
-                        null,
-                        author.getId().toString(),
-                        author.getName(),
-                        author.getUsername(),
-                        null,
-                        null,
-                        author.getProfileImg(),
-                        null,
-                        null
-                )
-        );
+    @Named("mapPostWithoutLikes")
+    @Mapping(target = "id", source = "post.id", resultType = String.class)
+    @Mapping(target = "text", source = "post.text")
+    @Mapping(target = "image", source = "post.image")
+    @Mapping(target = "likes", ignore = true) // Break circular dependency
+    @Mapping(target = "comments", source = "post.comments")
+    @Mapping(target = "createdAt", source = "post.createdAt")
+    @Mapping(target = "updatedAt", source = "post.updatedAt")
+    @Mapping(target = "user", source = "post.author")
+    PostDTO mapPostWithoutLikes(Post post);
+
+    default ResponseDTO<LikeDTO> toResponseDTO(String message, Like like) {
+        LikeDTO likeDTO = toLikeDTO(like);
+        return new ResponseDTO<>(message, likeDTO);
+    }
+
+    default ResponseDTO<List<LikeDTO>> toResponseDTO(String message, Set<Like> likes) {
+        List<LikeDTO> likeDTOs = mapLikes(likes);
+        return new ResponseDTO<>(message, likeDTOs);
+    }
+
+    default ResponseDTO<List<LikeDTO>> toResponseDTO(String message, List<Like> likes) {
+        List<LikeDTO> likeDTOs = mapLikes(likes);
+        return new ResponseDTO<>(message, likeDTOs);
     }
 
     @Named("mapLikes")
-    default Set<String> mapLikes(Set<Like> likes) {
-        if (likes == null) {
-            return null;
+    default List<LikeDTO> mapLikes(Set<Like> likes) {
+        if (likes == null || likes.isEmpty()) {
+            return List.of();
         }
 
         return likes.stream()
-                .map(like -> like.getId().toString())
-                .collect(Collectors.toSet());
-    }
-
-    @Named("mapComments")
-    default List<String> mapComments(List<Comment> comments) {
-        if (comments == null) {
-            return null;
-        }
-
-        return comments.stream()
-                .map(comment -> comment.getId().toString())
+                .map(this::toLikeDTO)
                 .collect(Collectors.toList());
     }
 
-    default Set<LikeDTO> toLikeDTOSet(List<Like> likes) {
-        if (likes == null) {
-            return null;
+    @Named("mapLikesToList")
+    default List<LikeDTO> mapLikes(List<Like> likes) {
+        if (likes == null || likes.isEmpty()) {
+            return List.of();
         }
 
         return likes.stream()
-                .map(like -> toLikeDTO(like, null))
-                .collect(Collectors.toSet());
-    }
-
-    default Set<LikeDTO> toLikeDTOSet(Set<Like> likes) {
-        if (likes == null) {
-            return null;
-        }
-
-        return likes.stream()
-                .map(like -> toLikeDTO(like, null))
-                .collect(Collectors.toSet());
+                .map(this::toLikeDTO)
+                .collect(Collectors.toList());
     }
 }
