@@ -1,7 +1,9 @@
 package com.example.weuniteauth.mapper;
 
+import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Like;
 import com.example.weuniteauth.domain.Post;
+import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -19,11 +21,16 @@ public interface PostMapper {
     @Mapping(target = "text", source = "post.text")
     @Mapping(target = "image", source = "post.image")
     @Mapping(target = "likes", source = "post.likes", qualifiedByName = "mapLikesWithoutPost")
-    @Mapping(target = "comments", source = "post.comments")
+    @Mapping(target = "comments", source = "post.comments", qualifiedByName = "mapCommentsWithoutPost")
     @Mapping(target = "createdAt", source = "post.createdAt")
     @Mapping(target = "updatedAt", source = "post.updatedAt")
-    @Mapping(target = "user", source = "post.author")
+    @Mapping(target = "user", source = "post.user")
     PostDTO toPostDTO(Post post);
+
+    default ResponseDTO<PostDTO> toResponseDTO(String message, Post post) {
+        PostDTO postDTO = toPostDTO(post);
+        return new ResponseDTO<>(message, postDTO);
+    }
 
     @Named("mapLikeWithoutPost")
     @Mapping(target = "id", source = "like.id", resultType = String.class)
@@ -42,9 +49,28 @@ public interface PostMapper {
                 .collect(Collectors.toList());
     }
 
-    default ResponseDTO<PostDTO> toResponseDTO(String message, Post post) {
-        PostDTO postDTO = toPostDTO(post);
-        return new ResponseDTO<>(message, postDTO);
+    @Named("mapCommentWithoutPost")
+    @Mapping(target = "id", source = "comment.id", resultType = String.class)
+    @Mapping(target = "user", source = "comment.user")
+    @Mapping(target = "post", ignore = true)
+    @Mapping(target = "text", source = "comment.text")
+    @Mapping(target = "image", source = "comment.image")
+    @Mapping(target = "parentComment", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "createdAt", source = "comment.createdAt")
+    @Mapping(target = "updatedAt", source = "comment.updatedAt")
+    CommentDTO mapCommentWithoutPost(Comment comment);
+
+    @Named("mapCommentsWithoutPost")
+    default List<CommentDTO> mapCommentsWithoutPost(List<Comment> comments) {
+        if (comments == null || comments.isEmpty()) {
+            return List.of();
+        }
+
+        return comments.stream()
+                .map(this::mapCommentWithoutPost)
+                .collect(Collectors.toList());
     }
+
 
 }

@@ -14,8 +14,8 @@ import java.util.Set;
 @Entity
 public class Post {
 
-    public Post (User author, String text, String image) {
-        this.author = author;
+    public Post (User user, String text, String image) {
+        this.user = user;
         this.text = text;
         this.image = image;
     }
@@ -30,12 +30,13 @@ public class Post {
     private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(length = 500)
     private String text;
 
+    @Column(length = 500)
     private String image;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

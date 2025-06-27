@@ -26,11 +26,11 @@ public interface LikeMapper {
     @Mapping(target = "id", source = "post.id", resultType = String.class)
     @Mapping(target = "text", source = "post.text")
     @Mapping(target = "image", source = "post.image")
-    @Mapping(target = "likes", ignore = true) // Break circular dependency
-    @Mapping(target = "comments", source = "post.comments")
+    @Mapping(target = "likes", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     @Mapping(target = "createdAt", source = "post.createdAt")
     @Mapping(target = "updatedAt", source = "post.updatedAt")
-    @Mapping(target = "user", source = "post.author")
+    @Mapping(target = "user", source = "post.user")
     PostDTO mapPostWithoutLikes(Post post);
 
     default ResponseDTO<LikeDTO> toResponseDTO(String message, Like like) {

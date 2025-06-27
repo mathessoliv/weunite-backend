@@ -44,6 +44,7 @@ C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\e
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\exceptions\user\UserNotFoundException.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\handler\GlobalExceptionHandler.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\mapper\AuthMapper.java
+C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\mapper\CommentMapper.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\mapper\LikeMapper.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\mapper\PostMapper.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\mapper\UserMapper.java
@@ -60,6 +61,8 @@ C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\s
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\service\mail\EmailService.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\service\PostService.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\service\UserService.java
+C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\validations\ValidComment.java
+C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\validations\ValidCommentValidator.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\validations\ValidPassword.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\validations\ValidPasswordValidator.java
 C:\Users\lgtgu\IdeaProjects\weunite-auth\src\main\java\com\example\weuniteauth\validations\ValidPost.java

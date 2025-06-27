@@ -1,6 +1,6 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Like;
+import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.LikeDTO;
@@ -14,34 +14,46 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-27T18:27:14-0300",
+    date = "2025-06-27T18:33:03-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
-public class LikeMapperImpl implements LikeMapper {
+public class CommentMapperImpl implements CommentMapper {
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
-    public LikeDTO toLikeDTO(Like like) {
-        if ( like == null ) {
+    public CommentDTO toCommentDTO(Comment comment) {
+        if ( comment == null ) {
             return null;
         }
 
         String id = null;
         UserDTO user = null;
         PostDTO post = null;
+        String text = null;
+        String image = null;
+        CommentDTO parentComment = null;
+        List<CommentDTO> comments = null;
+        Instant createdAt = null;
+        Instant updatedAt = null;
 
-        if ( like.getId() != null ) {
-            id = String.valueOf( like.getId() );
+        if ( comment.getId() != null ) {
+            id = String.valueOf( comment.getId() );
         }
-        user = userMapper.toUserDTO( like.getUser() );
-        post = mapPostWithoutLikes( like.getPost() );
+        user = userMapper.toUserDTO( comment.getUser() );
+        post = mapPostWithoutLikes( comment.getPost() );
+        text = comment.getText();
+        image = comment.getImage();
+        parentComment = toCommentDTO( comment.getParentComment() );
+        comments = mapCommentsToList( comment.getComments() );
+        createdAt = comment.getCreatedAt();
+        updatedAt = comment.getUpdatedAt();
 
-        LikeDTO likeDTO = new LikeDTO( id, user, post );
+        CommentDTO commentDTO = new CommentDTO( id, user, post, text, image, parentComment, comments, createdAt, updatedAt );
 
-        return likeDTO;
+        return commentDTO;
     }
 
     @Override

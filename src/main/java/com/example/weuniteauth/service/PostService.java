@@ -28,8 +28,8 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDTO<PostDTO> createPost(Long authorId, PostRequestDTO post) {
-        User user = userRepository.findById(authorId)
+    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         Post createdPost = new Post(
@@ -44,11 +44,11 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDTO<PostDTO> updatePost(Long authorId, Long postId, PostRequestDTO updatedPost) {
+    public ResponseDTO<PostDTO> updatePost(Long userId, Long postId, PostRequestDTO updatedPost) {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        if (!authorId.equals(existingPost.getAuthor().getId())) {
+        if (!userId.equals(existingPost.getUser().getId())) {
             throw new UnauthorizedException("Você precisa estar logado para atualizar esta publicação");
         }
 
@@ -69,11 +69,11 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDTO<PostDTO> deletePost(Long authorId, Long postId) {
+    public ResponseDTO<PostDTO> deletePost(Long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        if (!authorId.equals(post.getAuthor().getId())) {
+        if (!userId.equals(post.getUser().getId())) {
             throw new UnauthorizedException("Você precisa estar logado para deletar essa publicação!");
         }
 

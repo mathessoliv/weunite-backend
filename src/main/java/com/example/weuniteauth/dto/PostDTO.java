@@ -11,7 +11,7 @@ public record PostDTO(
         String text,
         String image,
         List<LikeDTO> likes,
-        List<Comment> comments,
+        List<CommentDTO> comments,
         Instant createdAt,
         Instant updatedAt,
         UserDTO user

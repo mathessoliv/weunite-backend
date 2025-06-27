@@ -5,21 +5,19 @@ import java.util.List;
 
 public record CommentDTO(
 
-        String message,
-
         String id,
 
-        UserDTO author,
+        UserDTO user,
 
         PostDTO post,
-
-        CommentDTO parentComment,
-
-        List<CommentDTO> comments,
 
         String text,
 
         String image,
+
+        CommentDTO parentComment,
+
+        List<CommentDTO> comments,
 
         Instant createdAt,
 

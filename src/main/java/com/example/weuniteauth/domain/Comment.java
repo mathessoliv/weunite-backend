@@ -11,8 +11,8 @@ import java.util.List;
 @Entity
 public class Comment extends Post {
 
-    public Comment(User author, Post post, String text, String image) {
-        setAuthor(author);
+    public Comment(User user, Post post, String text, String image) {
+        setUser(user);
         setPost(post);
         setText(text);
         setImage(image);
