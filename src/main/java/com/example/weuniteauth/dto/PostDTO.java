@@ -9,7 +9,7 @@ import java.util.Set;
 public record PostDTO(
         String id,
         String text,
-        String image,
+        String imageUrl,
         List<LikeDTO> likes,
         List<CommentDTO> comments,
         Instant createdAt,

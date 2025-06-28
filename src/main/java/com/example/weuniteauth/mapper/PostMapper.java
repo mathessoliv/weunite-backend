@@ -19,7 +19,7 @@ public interface PostMapper {
 
     @Mapping(target = "id", source = "post.id", resultType = String.class)
     @Mapping(target = "text", source = "post.text")
-    @Mapping(target = "image", source = "post.image")
+    @Mapping(target = "imageUrl", source = "post.imageUrl")
     @Mapping(target = "likes", source = "post.likes", qualifiedByName = "mapLikesWithoutPost")
     @Mapping(target = "comments", source = "post.comments", qualifiedByName = "mapCommentsWithoutPost")
     @Mapping(target = "createdAt", source = "post.createdAt")
@@ -54,7 +54,7 @@ public interface PostMapper {
     @Mapping(target = "user", source = "comment.user")
     @Mapping(target = "post", ignore = true)
     @Mapping(target = "text", source = "comment.text")
-    @Mapping(target = "image", source = "comment.image")
+    @Mapping(target = "imageUrl", source = "comment.imageUrl")
     @Mapping(target = "parentComment", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "createdAt", source = "comment.createdAt")

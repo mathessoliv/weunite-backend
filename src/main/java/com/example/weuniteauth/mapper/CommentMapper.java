@@ -1,10 +1,8 @@
 package com.example.weuniteauth.mapper;
 
 import com.example.weuniteauth.domain.Comment;
-import com.example.weuniteauth.domain.Like;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.dto.CommentDTO;
-import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import org.mapstruct.Mapper;
@@ -20,7 +18,7 @@ public interface CommentMapper {
     @Mapping(target = "user", source = "comment.user")
     @Mapping(target = "post", source = "comment.post", qualifiedByName = "mapPostWithoutLikes")
     @Mapping(target = "text", source = "comment.text")
-    @Mapping(target = "image", source = "comment.image")
+    @Mapping(target = "imageUrl", source = "comment.imageUrl")
     @Mapping(target = "parentComment", source = "comment.parentComment")
     @Mapping(target = "comments", source = "comment.comments", qualifiedByName = "mapCommentsToList")
     @Mapping(target = "createdAt", source = "comment.createdAt")
@@ -30,7 +28,7 @@ public interface CommentMapper {
     @Named("mapPostWithoutLikes")
     @Mapping(target = "id", source = "post.id", resultType = String.class)
     @Mapping(target = "text", source = "post.text")
-    @Mapping(target = "image", source = "post.image")
+    @Mapping(target = "imageUrl", source = "post.imageUrl")
     @Mapping(target = "likes", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "createdAt", source = "post.createdAt")

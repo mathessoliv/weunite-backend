@@ -11,11 +11,11 @@ import java.util.List;
 @Entity
 public class Comment extends Post {
 
-    public Comment(User user, Post post, String text, String image) {
+    public Comment(User user, Post post, String text, String imageUrl) {
         setUser(user);
         setPost(post);
         setText(text);
-        setImage(image);
+        setImageUrl(imageUrl);
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

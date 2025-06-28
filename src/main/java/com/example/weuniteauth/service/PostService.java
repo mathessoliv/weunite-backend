@@ -11,8 +11,10 @@ import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class PostService {
@@ -20,22 +22,26 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final PostMapper postMapper;
+    private final CloudinaryService cloudinaryService;
 
-    public PostService(UserRepository userRepository, PostRepository postRepository, PostMapper postMapper) {
+    public PostService(UserRepository userRepository, PostRepository postRepository, PostMapper postMapper, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.postMapper = postMapper;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Transactional
-    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post) {
+    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post, MultipartFile image) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
+
+        String imageUrl = cloudinaryService.uploadPost(image, userId);
 
         Post createdPost = new Post(
                 user,
                 post.text(),
-                post.image()
+                imageUrl
         );
 
         postRepository.save(createdPost);
@@ -44,7 +50,7 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDTO<PostDTO> updatePost(Long userId, Long postId, PostRequestDTO updatedPost) {
+    public ResponseDTO<PostDTO> updatePost(Long userId, Long postId, PostRequestDTO updatedPost, MultipartFile image) {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -52,8 +58,10 @@ public class PostService {
             throw new UnauthorizedException("Você precisa estar logado para atualizar esta publicação");
         }
 
+        String imageUrl = cloudinaryService.uploadPost(image, userId);
+
         existingPost.setText(updatedPost.text());
-        existingPost.setImage(updatedPost.image());
+        existingPost.setImageUrl(imageUrl);
 
         postRepository.save(existingPost);
 
@@ -82,3 +90,4 @@ public class PostService {
         return postMapper.toResponseDTO("Publicação excluída com sucesso", post);
     }
 }
+

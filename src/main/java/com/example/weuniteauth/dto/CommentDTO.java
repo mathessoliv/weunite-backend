@@ -13,7 +13,7 @@ public record CommentDTO(
 
         String text,
 
-        String image,
+        String imageUrl,
 
         CommentDTO parentComment,
 

@@ -14,10 +14,10 @@ import java.util.Set;
 @Entity
 public class Post {
 
-    public Post (User user, String text, String image) {
+    public Post (User user, String text, String imageUrl) {
         this.user = user;
         this.text = text;
-        this.image = image;
+        this.imageUrl = imageUrl;
     }
 
     @Id
@@ -37,7 +37,7 @@ public class Post {
     private String text;
 
     @Column(length = 500)
-    private String image;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Like> likes = new HashSet<>();

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-27T18:27:14-0300",
+    date = "2025-06-28T14:06:45-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -32,7 +32,7 @@ public class PostMapperImpl implements PostMapper {
 
         String id = null;
         String text = null;
-        String image = null;
+        String imageUrl = null;
         List<LikeDTO> likes = null;
         List<CommentDTO> comments = null;
         Instant createdAt = null;
@@ -43,14 +43,14 @@ public class PostMapperImpl implements PostMapper {
             id = String.valueOf( post.getId() );
         }
         text = post.getText();
-        image = post.getImage();
+        imageUrl = post.getImageUrl();
         likes = mapLikesWithoutPost( post.getLikes() );
         comments = mapCommentsWithoutPost( post.getComments() );
         createdAt = post.getCreatedAt();
         updatedAt = post.getUpdatedAt();
         user = userMapper.toUserDTO( post.getUser() );
 
-        PostDTO postDTO = new PostDTO( id, text, image, likes, comments, createdAt, updatedAt, user );
+        PostDTO postDTO = new PostDTO( id, text, imageUrl, likes, comments, createdAt, updatedAt, user );
 
         return postDTO;
     }
@@ -85,7 +85,7 @@ public class PostMapperImpl implements PostMapper {
         String id = null;
         UserDTO user = null;
         String text = null;
-        String image = null;
+        String imageUrl = null;
         Instant createdAt = null;
         Instant updatedAt = null;
 
@@ -94,7 +94,7 @@ public class PostMapperImpl implements PostMapper {
         }
         user = userMapper.toUserDTO( comment.getUser() );
         text = comment.getText();
-        image = comment.getImage();
+        imageUrl = comment.getImageUrl();
         createdAt = comment.getCreatedAt();
         updatedAt = comment.getUpdatedAt();
 
@@ -102,7 +102,7 @@ public class PostMapperImpl implements PostMapper {
         CommentDTO parentComment = null;
         List<CommentDTO> comments = null;
 
-        CommentDTO commentDTO = new CommentDTO( id, user, post, text, image, parentComment, comments, createdAt, updatedAt );
+        CommentDTO commentDTO = new CommentDTO( id, user, post, text, imageUrl, parentComment, comments, createdAt, updatedAt );
 
         return commentDTO;
     }

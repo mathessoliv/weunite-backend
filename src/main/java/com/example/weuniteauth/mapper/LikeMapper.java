@@ -25,7 +25,7 @@ public interface LikeMapper {
     @Named("mapPostWithoutLikes")
     @Mapping(target = "id", source = "post.id", resultType = String.class)
     @Mapping(target = "text", source = "post.text")
-    @Mapping(target = "image", source = "post.image")
+    @Mapping(target = "imageUrl", source = "post.imageUrl")
     @Mapping(target = "likes", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "createdAt", source = "post.createdAt")

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-27T18:27:14-0300",
+    date = "2025-06-28T14:06:45-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -52,7 +52,7 @@ public class LikeMapperImpl implements LikeMapper {
 
         String id = null;
         String text = null;
-        String image = null;
+        String imageUrl = null;
         Instant createdAt = null;
         Instant updatedAt = null;
         UserDTO user = null;
@@ -61,7 +61,7 @@ public class LikeMapperImpl implements LikeMapper {
             id = String.valueOf( post.getId() );
         }
         text = post.getText();
-        image = post.getImage();
+        imageUrl = post.getImageUrl();
         createdAt = post.getCreatedAt();
         updatedAt = post.getUpdatedAt();
         user = userMapper.toUserDTO( post.getUser() );
@@ -69,7 +69,7 @@ public class LikeMapperImpl implements LikeMapper {
         List<LikeDTO> likes = null;
         List<CommentDTO> comments = null;
 
-        PostDTO postDTO = new PostDTO( id, text, image, likes, comments, createdAt, updatedAt, user );
+        PostDTO postDTO = new PostDTO( id, text, imageUrl, likes, comments, createdAt, updatedAt, user );
 
         return postDTO;
     }
