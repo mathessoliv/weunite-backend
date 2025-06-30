@@ -60,11 +60,14 @@ public class PostService {
             throw new UnauthorizedException("Você precisa estar logado para atualizar esta publicação");
         }
 
-        String imageUrl = cloudinaryService.uploadPost(image, userId);
+        String imageUrl = existingPost.getImageUrl();
+
+        if (image != null && !image.isEmpty()) {
+            imageUrl = cloudinaryService.uploadPost(image, userId);
+        }
 
         existingPost.setText(updatedPost.text());
         existingPost.setImageUrl(imageUrl);
-
         postRepository.save(existingPost);
 
         return postMapper.toResponseDTO("Publicação atualizada com sucesso!", existingPost);
