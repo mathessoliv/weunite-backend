@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 public class PostService {
 
@@ -36,13 +38,13 @@ public class PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        String imageUrl = cloudinaryService.uploadPost(image, userId);
+        String imageUrl = null;
 
-        Post createdPost = new Post(
-                user,
-                post.text(),
-                imageUrl
-        );
+        if (image != null && !image.isEmpty()) {
+            imageUrl = cloudinaryService.uploadPost(image, userId);
+        }
+
+        Post createdPost = new Post(user, post.text(), imageUrl);
 
         postRepository.save(createdPost);
 
@@ -74,6 +76,15 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
 
         return postMapper.toResponseDTO("Publicação consultada com sucesso!", post);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostDTO> getPosts() {
+
+        List<Post> posts = postRepository.findAll();
+
+        return postMapper.toPostDTOList(posts);
+
     }
 
     @Transactional

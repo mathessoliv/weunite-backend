@@ -20,6 +20,11 @@ public class Post {
         this.imageUrl = imageUrl;
     }
 
+    public Post (User user, String text) {
+        this.user = user;
+        this.text = text;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

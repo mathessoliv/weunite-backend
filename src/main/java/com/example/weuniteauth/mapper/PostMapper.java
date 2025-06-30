@@ -10,6 +10,7 @@ import com.example.weuniteauth.dto.ResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +31,16 @@ public interface PostMapper {
     default ResponseDTO<PostDTO> toResponseDTO(String message, Post post) {
         PostDTO postDTO = toPostDTO(post);
         return new ResponseDTO<>(message, postDTO);
+    }
+
+    default List<PostDTO> toPostDTOList(List<Post> posts) {
+        if (posts == null || posts.isEmpty()) {
+            return List.of();
+        }
+
+        return posts.stream()
+                .map(this::toPostDTO)
+                .collect(Collectors.toList());
     }
 
     @Named("mapLikeWithoutPost")

@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/posts/create/{userId}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/posts/update/{userId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/get/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/posts/get").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/posts/delete/{userId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/likes/toggleLike/{userId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/likes/get/{userId}").permitAll()

@@ -12,6 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/posts")
 @Validated
@@ -25,8 +27,8 @@ public class PostController {
 
     @PostMapping(value = "/create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO<PostDTO>> createPost(@PathVariable Long userId,
-                                                           @RequestPart("post") PostRequestDTO post,
-                                                           @RequestPart("image") MultipartFile image) {
+                                                           @RequestPart("post") @Valid PostRequestDTO post,
+                                                           @RequestPart(value = "image", required = false) MultipartFile image) {
         ResponseDTO<PostDTO> createdPost = postService.createPost(userId, post, image);
         return ResponseEntity.status(HttpStatus.OK).body(createdPost);
     }
@@ -44,6 +46,12 @@ public class PostController {
     public ResponseEntity<ResponseDTO<PostDTO>> getPost(@PathVariable Long postId) {
         ResponseDTO<PostDTO> post = postService.getPost(postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<List<PostDTO>> getPosts() {
+        List<PostDTO> posts = postService.getPosts();
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     @DeleteMapping("/delete/{userId}/{postId}")
