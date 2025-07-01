@@ -37,7 +37,7 @@ public class PostController {
     public ResponseEntity<ResponseDTO<PostDTO>> updatePost(@PathVariable Long userId,
                                                            @PathVariable Long postId,
                                                            @RequestPart("post") @Valid PostRequestDTO post,
-                                                           @RequestPart("image") MultipartFile image) {
+                                                           @RequestPart(value = "image", required = false) MultipartFile image) {
         ResponseDTO<PostDTO> updatedPost = postService.updatePost(userId, postId, post, image);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
