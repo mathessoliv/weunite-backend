@@ -7,6 +7,7 @@ import com.example.weuniteauth.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/user")
@@ -38,8 +39,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username, @RequestBody UpdateUserRequestDTO requestDTO) {
-        ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username);
+    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username, @RequestPart(value = "user") UpdateUserRequestDTO requestDTO, @RequestPart(value = "image", required = false) MultipartFile image) {
+        ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username, image);
         return ResponseEntity.ok(userDTO);
     }
 }

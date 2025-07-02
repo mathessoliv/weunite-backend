@@ -84,7 +84,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostDTO> getPosts() {
 
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllOrderedByCreationDate();
 
         return postMapper.toPostDTOList(posts);
 

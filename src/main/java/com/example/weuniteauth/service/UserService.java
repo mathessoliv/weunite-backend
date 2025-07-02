@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import com.example.weuniteauth.service.cloudinary.CloudinaryService;
+
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Set;
@@ -30,17 +33,20 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final CloudinaryService cloudinaryService;
 
     public UserService(
             UserRepository userRepository,
             UserMapper userMapper,
             PasswordEncoder passwordEncoder,
-            RoleRepository roleRepository
+            RoleRepository roleRepository,
+            CloudinaryService cloudinaryService
     ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Transactional
@@ -94,7 +100,7 @@ public class UserService {
         return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
     }
 
-    public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username) {
+    public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username, MultipartFile image) {
         User user = findUserEntityByUsername(username);
 
         if (userRepository.existsByUsername(requestDTO.username())) {
@@ -104,6 +110,13 @@ public class UserService {
         user.setUsername(requestDTO.username());
         user.setName(requestDTO.name());
         user.setBio(requestDTO.bio());
+
+        String imageUrl = null;
+
+        if (image != null && !image.isEmpty()) {
+            imageUrl = cloudinaryService.uploadProfileImg(image, username);
+            user.setProfileImg(imageUrl);
+        }
 
         userRepository.save(user);
 
