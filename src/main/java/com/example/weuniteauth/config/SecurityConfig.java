@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/likes/get/{userId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/likes/get/{userId}/page").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/comment/create").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/comment/get").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2

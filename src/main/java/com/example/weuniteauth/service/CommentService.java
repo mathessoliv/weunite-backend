@@ -15,6 +15,8 @@ import com.example.weuniteauth.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CommentService {
 
@@ -48,5 +50,15 @@ public class CommentService {
         commentRepository.save(newComment);
 
         return commentMapper.toResponseDTO("Comentário criado com sucesso!", newComment);
+    }
+
+    @Transactional
+    public List<CommentDTO> getCommentsByPost(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new PostNotFoundException();
+        }
+
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        return commentMapper.mapCommentsToList(comments);
     }
 }

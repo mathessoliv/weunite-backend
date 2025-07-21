@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/comment")
 @Validated
@@ -29,4 +31,11 @@ public class CommentController {
         ResponseDTO<CommentDTO> commentDTO = commentService.createComment(userId, postId, commentRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(commentDTO);
     }
+
+    @GetMapping("/get/{postId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByPost(@PathVariable Long postId) {
+        List<CommentDTO> comments = commentService.getCommentsByPost(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    }
+
 }
