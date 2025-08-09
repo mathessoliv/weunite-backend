@@ -104,11 +104,10 @@ public class UserService {
         User user = findUserEntityByUsername(username);
 
         if (userRepository.existsByUsername(requestDTO.username())) {
-            throw new UserAlreadyExistsException();
-        }
 
-        if (userRepository.existsByEmail(requestDTO.email())) {
-            throw new UserAlreadyExistsException();
+            if (!user.getUsername().equals(requestDTO.username())) {
+                throw new UserAlreadyExistsException();
+            }
         }
 
         user.setUsername(requestDTO.username());
