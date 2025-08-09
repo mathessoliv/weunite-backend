@@ -107,9 +107,14 @@ public class UserService {
             throw new UserAlreadyExistsException();
         }
 
+        if (userRepository.existsByEmail(requestDTO.email())) {
+            throw new UserAlreadyExistsException();
+        }
+
         user.setUsername(requestDTO.username());
         user.setName(requestDTO.name());
         user.setBio(requestDTO.bio());
+        user.setEmail(requestDTO.email());
 
         String imageUrl = null;
 
