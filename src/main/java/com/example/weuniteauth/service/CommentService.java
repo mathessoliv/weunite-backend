@@ -61,4 +61,14 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByPostId(postId);
         return commentMapper.mapCommentsToList(comments);
     }
+
+   @Transactional
+    public List<CommentDTO> getCommentsByUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException();
+
+        }
+        List<Comment> comments = commentRepository.findByUserId(userId);
+        return commentMapper.mapCommentsToList(comments);
+    }
 }
