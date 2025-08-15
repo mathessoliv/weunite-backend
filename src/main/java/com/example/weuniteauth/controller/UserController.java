@@ -9,6 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @Validated
@@ -45,4 +47,12 @@ public class UserController {
         ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username, image);
         return ResponseEntity.ok(userDTO);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ResponseDTO<UserDTO>>> searchUser(@RequestParam String username,
+                                                                 @RequestParam(defaultValue = "10") Integer limit) {
+        List<ResponseDTO<UserDTO>> userDTOs = userService.searchUsersByName(username, limit);
+        return ResponseEntity.ok(userDTOs);
+    }
+
 }

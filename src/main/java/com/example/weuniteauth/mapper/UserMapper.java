@@ -1,5 +1,7 @@
 package com.example.weuniteauth.mapper;
 
+import com.example.weuniteauth.domain.Post;
+import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
@@ -7,6 +9,9 @@ import com.example.weuniteauth.domain.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -31,5 +36,15 @@ public interface UserMapper {
     default ResponseDTO<UserDTO> toResponseDTO(String message, User user) {
         UserDTO userDTO = toUserDTO(user);
         return new ResponseDTO<>(message, userDTO);
+    }
+
+    default List<ResponseDTO<UserDTO>> toUserDTOList(List<User> users) {
+        if (users == null || users.isEmpty()) {
+            return List.of();
+        }
+
+        return users.stream()
+                .map(user -> toResponseDTO("", user))
+                .collect(Collectors.toList());
     }
 }
