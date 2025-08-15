@@ -38,4 +38,9 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
+    @GetMapping("/get/user/{userId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByUser(@PathVariable Long userId) {
+        List<CommentDTO> comments = commentService.getCommentsByUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    }
 }
