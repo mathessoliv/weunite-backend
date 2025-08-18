@@ -9,6 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @Validated
@@ -42,5 +44,11 @@ public class UserController {
     public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username, @RequestPart(value = "user") UpdateUserRequestDTO requestDTO, @RequestPart(value = "image", required = false) MultipartFile image) {
         ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username, image);
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDTO<List<UserDTO>>> searchUsers(@RequestParam String query) {
+        ResponseDTO<List<UserDTO>> response = userService.searchUsers(query);
+        return ResponseEntity.ok(response);
     }
 }
