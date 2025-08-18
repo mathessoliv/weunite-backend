@@ -13,22 +13,18 @@ import com.example.weuniteauth.domain.Role;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.repository.RoleRepository;
 import com.example.weuniteauth.repository.UserRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -83,7 +79,7 @@ public class UserService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public ResponseDTO<UserDTO> deleteUser(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         userRepository.delete(user);
 
@@ -93,7 +89,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseDTO<UserDTO> getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
     }
@@ -101,25 +97,22 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseDTO<UserDTO> getUser(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
     }
 
+    @Transactional
     public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username, MultipartFile image) {
         User user = findUserEntityByUsername(username);
 
         if (userRepository.existsByUsername(requestDTO.username())) {
-
-            if (!user.getUsername().equals(requestDTO.username())) {
-                throw new UserAlreadyExistsException();
-            }
+            throw new UserAlreadyExistsException();
         }
 
         user.setUsername(requestDTO.username());
         user.setName(requestDTO.name());
         user.setBio(requestDTO.bio());
-        user.setEmail(requestDTO.email());
 
         String imageUrl = null;
 
@@ -136,19 +129,19 @@ public class UserService {
     @Transactional(readOnly = true)
     protected User findUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     protected User findUserEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     protected User findUserByVerificationToken(String verificationToken) {
         return userRepository.findByVerificationToken(verificationToken)
-                .orElseThrow(() -> new InvalidTokenException());
+                .orElseThrow(InvalidTokenException::new);
     }
 
     @Transactional
@@ -179,17 +172,17 @@ public class UserService {
         return user;
     }
 
-    public List<ResponseDTO<UserDTO>> searchUsersByName(String query, Integer limit) {
-        if (query == null || query.trim().isEmpty()) {
-            return List.of();
-        }
+    @Transactional(readOnly = true)
+    public ResponseDTO<List<UserDTO>> searchUsers(String query) {
+        Pageable pageable = PageRequest.of(0, 10);
 
-        Pageable pageable = PageRequest.of(0, limit);
-        Page<User> users = userRepository.findUserByUsernameContainingIgnoreCase(query, pageable);
+        List<User> users = userRepository.findByNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseAndEmailVerifiedTrue(
+                query.trim(),
+                query.trim(),
+                true,
+                pageable
+        );
 
-        return users.getContent().stream()
-                .map(user -> userMapper.toResponseDTO("User found successfully", user))
-                .collect(Collectors.toList());
-
+        return userMapper.toSearchResponseDTO("Usuários encontrados com sucesso", users);
     }
 }

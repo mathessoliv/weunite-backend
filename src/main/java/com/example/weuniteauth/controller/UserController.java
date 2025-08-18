@@ -41,18 +41,14 @@ public class UserController {
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username,
-                                                           @RequestPart(value = "user") UpdateUserRequestDTO requestDTO,
-                                                           @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username, @RequestPart(value = "user") UpdateUserRequestDTO requestDTO, @RequestPart(value = "image", required = false) MultipartFile image) {
         ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username, image);
         return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ResponseDTO<UserDTO>>> searchUser(@RequestParam String username,
-                                                                 @RequestParam(defaultValue = "10") Integer limit) {
-        List<ResponseDTO<UserDTO>> userDTOs = userService.searchUsersByName(username, limit);
-        return ResponseEntity.ok(userDTOs);
+    public ResponseEntity<ResponseDTO<List<UserDTO>>> searchUsers(@RequestParam String query) {
+        ResponseDTO<List<UserDTO>> response = userService.searchUsers(query);
+        return ResponseEntity.ok(response);
     }
-
 }
