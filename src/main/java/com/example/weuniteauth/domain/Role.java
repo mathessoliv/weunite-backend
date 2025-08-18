@@ -20,20 +20,18 @@ public class Role {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Getter
     public enum Values {
         BASIC(1L),
         ADMIN(2L),
         COMPANY(3L),
         ATHLETE(4L);
 
-        long roleId;
+        final long roleId;
 
         Values(long roleId) {
             this.roleId = roleId;
         }
 
-        public long getRoleId() {
-            return roleId;
-        }
     }
 }

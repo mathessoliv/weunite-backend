@@ -2,6 +2,8 @@ package com.example.weuniteauth.repository;
 
 import com.example.weuniteauth.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    List<User> findByNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseAndEmailVerifiedTrue(
-            String name, String username, boolean emailVerified, Pageable pageable);
+    @Query("SELECT u FROM User u WHERE LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) AND u.emailVerified = true")
+    List<User> findByNameContainingIgnoreCaseAndEmailVerifiedTrue(
+            @Param("name") String name, Pageable pageable);
 }
