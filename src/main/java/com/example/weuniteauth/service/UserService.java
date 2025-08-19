@@ -176,10 +176,7 @@ public class UserService {
     public ResponseDTO<List<UserDTO>> searchUsers(String query) {
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<User> users = userRepository.findByNameContainingIgnoreCaseAndEmailVerifiedTrue(
-                query,
-                pageable
-        );
+        List<User> users = userRepository.searchUsers(query);
 
         return userMapper.toSearchResponseDTO("Usuários encontrados com sucesso", users);
     }
