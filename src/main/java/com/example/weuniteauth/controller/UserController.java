@@ -51,4 +51,8 @@ public class UserController {
         ResponseDTO<List<UserDTO>> response = userService.searchUsers(query);
         return ResponseEntity.ok(response);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6c082badf9e90fdadbe08eb3b6abe9c6a024a0d7

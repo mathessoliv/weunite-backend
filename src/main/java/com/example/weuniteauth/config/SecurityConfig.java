@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/user/delete/{username}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/username/{username}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/id/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/search").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/posts/create/{userId}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/posts/update/{userId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/get/{postId}").permitAll()
@@ -40,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/likes/get/{userId}/page").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/comment/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/comment/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/search").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
