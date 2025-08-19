@@ -90,7 +90,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseDTO<UserDTO> getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
     }
@@ -98,11 +98,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseDTO<UserDTO> getUser(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         return userMapper.toResponseDTO("Usuário encontrado com sucesso", user);
     }
 
+    @Transactional
     public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username, MultipartFile image) {
         User user = findUserEntityByUsername(username);
 
@@ -186,36 +187,12 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public ResponseDTO<List<UserDTO>> searchUsers(String query) {
-        Pageable pageable = PageRequest.of(0, 10);
 
-        List<User> users = userRepository.findByNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseAndEmailVerifiedTrue(
-                query.trim(),
-                pageable
+        List<User> users = userRepository.searchUsers(
+                query.trim()
         );
 
         return userMapper.toSearchResponseDTO("Usuários encontrados com sucesso", users);
-    }
-
-    @Transactional
-    public ResponseDTO<UserDTO> setVisibility(Long userId, boolean visibility) {
-        User user = findUserEntityById(userId);
-
-        user.setVisibility(visibility);
-
-        userRepository.save(user);
-
-        return userMapper.toResponseDTO("Visibilidade atualizada com sucesso!", user);
-    }
-
-    @Transactional
-    public ResponseDTO<UserDTO> updateUserVisibility(String username, boolean isPrivate) {
-        User user = findUserEntityByUsername(username);
-
-        user.setPrivate(isPrivate);
-
-        userRepository.save(user);
-
-        return userMapper.toResponseDTO("Visibilidade atualizada com sucesso!", user);
     }
 
 }
