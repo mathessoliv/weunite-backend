@@ -84,6 +84,7 @@ public class FollowService {
                 .orElseThrow(UserNotFoundException::new);
 
         List<Follow> follows = followRepository.findAllByFollowedAndStatus(user, Follow.FollowStatus.ACCEPTED);
+        System.out.println("Follows: " + follows.size());
 
         return followMapper.toResponseDTO("Seguidores consultados com sucesso!", follows);
     }
