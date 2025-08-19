@@ -71,6 +71,7 @@ class AuthServiceTest {
                 mockUser.getBio(),
                 mockUser.getEmail(),
                 mockUser.getProfileImg(),
+                mockUser.isPrivate(),
                 mockUser.getCreatedAt(),
                 mockUser.getUpdatedAt()
         );
@@ -252,12 +253,13 @@ class AuthServiceTest {
         verifiedUser.setEmailVerified(true);
 
         UserDTO expectedUserDTO = new UserDTO(
-                "",
                 mockUser.getId().toString(),
                 mockUser.getName(),
                 mockUser.getUsername(),
                 mockUser.getBio(),
                 mockUser.getEmail(),
+                mockUser.getProfileImg(),
+                mockUser.isPrivate(),
                 mockUser.getCreatedAt(),
                 mockUser.getUpdatedAt()
         );

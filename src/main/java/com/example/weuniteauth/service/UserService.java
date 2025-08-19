@@ -13,6 +13,8 @@ import com.example.weuniteauth.domain.Role;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.repository.RoleRepository;
 import com.example.weuniteauth.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,6 +24,7 @@ import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -115,10 +118,12 @@ public class UserService {
         user.setBio(requestDTO.bio());
         user.setEmail(requestDTO.email());
 
-        String imageUrl = null;
+        if (requestDTO.isPrivate() != null) {
+            user.setPrivate(requestDTO.isPrivate());
+        }
 
         if (image != null && !image.isEmpty()) {
-            imageUrl = cloudinaryService.uploadProfileImg(image, username);
+            String imageUrl = cloudinaryService.uploadProfileImg(image, username);
             user.setProfileImg(imageUrl);
         }
 
@@ -130,19 +135,25 @@ public class UserService {
     @Transactional(readOnly = true)
     protected User findUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    protected User findUserEntityById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     protected User findUserEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     protected User findUserByVerificationToken(String verificationToken) {
         return userRepository.findByVerificationToken(verificationToken)
-                .orElseThrow(() -> new InvalidTokenException());
+                .orElseThrow(InvalidTokenException::new);
     }
 
     @Transactional
@@ -172,4 +183,39 @@ public class UserService {
 
         return user;
     }
+
+    @Transactional(readOnly = true)
+    public ResponseDTO<List<UserDTO>> searchUsers(String query) {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<User> users = userRepository.findByNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseAndEmailVerifiedTrue(
+                query.trim(),
+                pageable
+        );
+
+        return userMapper.toSearchResponseDTO("Usuários encontrados com sucesso", users);
+    }
+
+    @Transactional
+    public ResponseDTO<UserDTO> setVisibility(Long userId, boolean visibility) {
+        User user = findUserEntityById(userId);
+
+        user.setVisibility(visibility);
+
+        userRepository.save(user);
+
+        return userMapper.toResponseDTO("Visibilidade atualizada com sucesso!", user);
+    }
+
+    @Transactional
+    public ResponseDTO<UserDTO> updateUserVisibility(String username, boolean isPrivate) {
+        User user = findUserEntityByUsername(username);
+
+        user.setPrivate(isPrivate);
+
+        userRepository.save(user);
+
+        return userMapper.toResponseDTO("Visibilidade atualizada com sucesso!", user);
+    }
+
 }

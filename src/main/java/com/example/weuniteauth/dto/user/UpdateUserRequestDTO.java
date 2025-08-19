@@ -15,6 +15,8 @@ public record UpdateUserRequestDTO(
         String email,
 
         @Size(max = 500, message = "A bio deve conter no máximo 500 caracteres")
-        String bio
+        String bio,
+
+        Boolean isPrivate
         ) {
 }

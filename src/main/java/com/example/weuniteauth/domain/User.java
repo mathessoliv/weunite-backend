@@ -87,4 +87,8 @@ public class User{
         this.updatedAt = Instant.now();
     }
 
+    public void setVisibility(boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
 }

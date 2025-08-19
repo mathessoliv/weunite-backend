@@ -4,12 +4,14 @@ import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-07-18T15:16:45-0300",
+    date = "2025-08-19T20:09:13-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23-valhalla (Oracle Corporation)"
 )
 @Component
@@ -43,6 +45,7 @@ public class UserMapperImpl implements UserMapper {
         String bio = null;
         String email = null;
         String profileImg = null;
+        boolean isPrivate = false;
         Instant createdAt = null;
         Instant updatedAt = null;
 
@@ -54,11 +57,26 @@ public class UserMapperImpl implements UserMapper {
         bio = user.getBio();
         email = user.getEmail();
         profileImg = user.getProfileImg();
+        isPrivate = user.isPrivate();
         createdAt = user.getCreatedAt();
         updatedAt = user.getUpdatedAt();
 
-        UserDTO userDTO = new UserDTO( id, name, username, bio, email, profileImg, createdAt, updatedAt );
+        UserDTO userDTO = new UserDTO( id, name, username, bio, email, profileImg, isPrivate, createdAt, updatedAt );
 
         return userDTO;
+    }
+
+    @Override
+    public List<UserDTO> toUserDTOList(List<User> users) {
+        if ( users == null ) {
+            return null;
+        }
+
+        List<UserDTO> list = new ArrayList<UserDTO>( users.size() );
+        for ( User user : users ) {
+            list.add( toUserDTO( user ) );
+        }
+
+        return list;
     }
 }

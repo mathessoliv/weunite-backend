@@ -8,6 +8,8 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
@@ -24,12 +26,20 @@ public interface UserMapper {
     @Mapping(target = "bio", source = "user.bio")
     @Mapping(target = "email", source = "user.email")
     @Mapping(target = "profileImg", source = "user.profileImg")
+    @Mapping(target = "isPrivate", source = "user.private")
     @Mapping(target = "createdAt", source = "user.createdAt")
     @Mapping(target = "updatedAt", source = "user.updatedAt")
     UserDTO toUserDTO(User user);
 
+    List<UserDTO> toUserDTOList(List<User> users);
+
     default ResponseDTO<UserDTO> toResponseDTO(String message, User user) {
         UserDTO userDTO = toUserDTO(user);
         return new ResponseDTO<>(message, userDTO);
+    }
+
+    default ResponseDTO<List<UserDTO>> toSearchResponseDTO(String message, List<User> users) {
+        List<UserDTO> userDTOs = toUserDTOList(users);
+        return new ResponseDTO<>(message, userDTOs);
     }
 }

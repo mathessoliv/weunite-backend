@@ -50,7 +50,7 @@ public class Follow {
         this.status = FollowStatus.ACCEPTED;
     }
 
-    public void reject() {
+    public void decline() {
         this.status = FollowStatus.REJECTED;
     }
 
