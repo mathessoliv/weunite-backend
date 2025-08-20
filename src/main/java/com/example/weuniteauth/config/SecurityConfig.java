@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/likes/get/{userId}/page").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/comment/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/comment/get").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/comment/update/{userId}/{commentId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comment/delete/{userId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/follow/followers/{userId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/follow/following/{userId}").permitAll()
