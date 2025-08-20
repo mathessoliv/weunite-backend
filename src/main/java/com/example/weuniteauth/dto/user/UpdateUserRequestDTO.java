@@ -11,9 +11,6 @@ public record UpdateUserRequestDTO(
         @Size(min = 5, max = 30, message = "O nome de usuário deve conter entre 5 e 30 caracteres")
         String username,
 
-        @Email(message = "Este campo deve ter o formato: exemplo@provedor.com")
-        String email,
-
         @Size(max = 500, message = "A bio deve conter no máximo 500 caracteres")
         String bio,
 

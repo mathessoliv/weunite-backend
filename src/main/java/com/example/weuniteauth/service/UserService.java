@@ -117,7 +117,6 @@ public class UserService {
         user.setUsername(requestDTO.username());
         user.setName(requestDTO.name());
         user.setBio(requestDTO.bio());
-        user.setEmail(requestDTO.email());
 
         if (requestDTO.isPrivate() != null) {
             user.setPrivate(requestDTO.isPrivate());
