@@ -4,8 +4,8 @@
   "description": "Backend for WeUnite",
   "scripts": {
     "prepare": "husky install",
-    "lint": "echo 'Linting Java files...' && mvn checkstyle:check",
-    "format": "echo 'Formatting Java files...' && mvn spotless:apply"
+    "lint": "echo 'Linting Java files...' && mvnw checkstyle:check",
+    "format": "echo 'Formatting Java files...' && mvnw spotless:apply"
   },
   "repository": {
     "type": "git",
@@ -26,8 +26,7 @@
   },
   "lint-staged": {
     "*.java": [
-      "mvn spotless:apply",
-      "git add"
+      "mvnw checkstyle:check"
     ],
     "*.md": [
       "echo 'Markdown file updated'"
