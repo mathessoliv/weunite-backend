@@ -60,6 +60,9 @@ public class User{
     @Column
     private String profileImg;
 
+    @Column
+    private String bannerImg;
+
     @Column(length = 500)
     private String bio;
 

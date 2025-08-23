@@ -41,8 +41,11 @@ public class UserController {
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username, @RequestPart(value = "user") UpdateUserRequestDTO requestDTO, @RequestPart(value = "image", required = false) MultipartFile image) {
-        ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username, image);
+    public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username,
+                                                           @RequestPart(value = "user") UpdateUserRequestDTO requestDTO,
+                                                           @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+                                                           @RequestPart(value = "bannerImage", required = false) MultipartFile bannerImage) {
+        ResponseDTO<UserDTO> userDTO = userService.updateUser(requestDTO, username, profileImage, bannerImage);
         return ResponseEntity.ok(userDTO);
     }
 

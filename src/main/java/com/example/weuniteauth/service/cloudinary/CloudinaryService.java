@@ -60,6 +60,28 @@ public class CloudinaryService {
 
         }
     }
+
+    public String uploadBannerImg(MultipartFile file, String username) {
+
+        Map<String, Object> options = Map.of(
+                "folder", "banner/" + username,
+                "tags", "profile, img, banner",
+                "quality", "auto",
+                "resource_type", "auto"
+        );
+
+        try {
+
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
+
+            return (String) uploadResult.get("secure_url");
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(e);
+
+        }
+    }
 }
 
 

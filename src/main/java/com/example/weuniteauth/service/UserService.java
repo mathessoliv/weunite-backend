@@ -104,7 +104,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username, MultipartFile image) {
+    public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username, MultipartFile profileImage, MultipartFile bannerImage) {
         User user = findUserEntityByUsername(username);
 
         if (userRepository.existsByUsername(requestDTO.username())) {
@@ -122,9 +122,14 @@ public class UserService {
             user.setPrivate(requestDTO.isPrivate());
         }
 
-        if (image != null && !image.isEmpty()) {
-            String imageUrl = cloudinaryService.uploadProfileImg(image, username);
+        if (profileImage != null && !profileImage.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadProfileImg(profileImage, username);
             user.setProfileImg(imageUrl);
+        }
+
+        if (bannerImage != null && !bannerImage.isEmpty()) {
+            String bannerUrl = cloudinaryService.uploadBannerImg(bannerImage, username);
+            user.setBannerImg(bannerUrl);
         }
 
         userRepository.save(user);

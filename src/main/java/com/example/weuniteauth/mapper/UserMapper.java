@@ -26,6 +26,7 @@ public interface UserMapper {
     @Mapping(target = "bio", source = "user.bio")
     @Mapping(target = "email", source = "user.email")
     @Mapping(target = "profileImg", source = "user.profileImg")
+    @Mapping(target = "bannerImg", source = "user.bannerImg")
     @Mapping(target = "isPrivate", source = "user.private")
     @Mapping(target = "createdAt", source = "user.createdAt")
     @Mapping(target = "updatedAt", source = "user.updatedAt")

@@ -9,6 +9,7 @@ public record UserDTO(
         String bio,
         String email,
         String profileImg,
+        String bannerImg,
         boolean isPrivate,
         Instant createdAt,
         Instant updatedAt
