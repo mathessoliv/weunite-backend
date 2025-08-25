@@ -71,6 +71,7 @@ class AuthServiceTest {
                 mockUser.getBio(),
                 mockUser.getEmail(),
                 mockUser.getProfileImg(),
+                mockUser.getBannerImg(),
                 mockUser.isPrivate(),
                 mockUser.getCreatedAt(),
                 mockUser.getUpdatedAt()
@@ -259,6 +260,7 @@ class AuthServiceTest {
                 mockUser.getBio(),
                 mockUser.getEmail(),
                 mockUser.getProfileImg(),
+                mockUser.getBannerImg(),
                 mockUser.isPrivate(),
                 mockUser.getCreatedAt(),
                 mockUser.getUpdatedAt()
