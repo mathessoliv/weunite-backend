@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -48,8 +50,20 @@ public class Comment {
     @JoinColumn(name = "parent_id")
     private Comment parentComment;
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Like> likes = new HashSet<>();
+
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    public void addLike(Like like) {
+        this.likes.add(like);
+        like.setComment(this);
+    }
+
+    public void removeLike(Like like) {
+        this.likes.remove(like);
+    }
 
     @PrePersist
     protected void onCreate() {

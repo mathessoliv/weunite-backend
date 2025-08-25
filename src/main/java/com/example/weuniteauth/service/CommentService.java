@@ -9,6 +9,7 @@ import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.comment.CommentRequestDTO;
 import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.exceptions.UnauthorizedException;
+import com.example.weuniteauth.exceptions.comment.CommentNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.CommentMapper;
@@ -64,7 +65,7 @@ public class CommentService {
     @Transactional
     public List<CommentDTO> getCommentsByPost(Long postId) {
         if (!postRepository.existsById(postId)) {
-            throw new PostNotFoundException();
+            throw new CommentNotFoundException();
         }
 
         List<Comment> comments = commentRepository.findByPostId(postId);
@@ -87,7 +88,7 @@ public class CommentService {
                 .orElseThrow(UserNotFoundException::new);
 
         Comment existingComment = commentRepository.findById(commentId)
-                .orElseThrow(PostNotFoundException::new);
+                .orElseThrow(CommentNotFoundException::new);
 
         if (!userId.equals(existingComment.getUser().getId())) {
             throw new UnauthorizedException("Você precisa estar logado para atualizar este comentário");
@@ -103,7 +104,7 @@ public class CommentService {
     @Transactional
     public ResponseDTO<CommentDTO> deleteComment(Long userId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(PostNotFoundException::new);
+                .orElseThrow(CommentNotFoundException::new);
 
         if (!userId.equals(comment.getUser().getId())) {
             throw new UnauthorizedException("Você precisa estar logado para deletar esse comentário!");

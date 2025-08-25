@@ -1,13 +1,16 @@
 package com.example.weuniteauth.service;
 
+import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Like;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
+import com.example.weuniteauth.exceptions.comment.CommentNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.LikeMapper;
+import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.LikeRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.UserRepository;
@@ -24,12 +27,14 @@ public class LikeService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final LikeMapper likeMapper;
 
-    public LikeService(UserRepository userRepository, PostRepository postRepository, LikeRepository likeRepository, LikeMapper likeMapper) {
+    public LikeService(UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, LikeRepository likeRepository, LikeMapper likeMapper) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
         this.likeRepository = likeRepository;
         this.likeMapper = likeMapper;
     }
@@ -53,6 +58,31 @@ public class LikeService {
             return likeMapper.toResponseDTO( "Curtida criada com sucesso!", newLike);
         } else {
             post.removeLike(existingLike);
+            likeRepository.delete(existingLike);
+            return likeMapper.toResponseDTO("Curtida deletada com sucesso!", existingLike);
+        }
+
+    }
+
+    @Transactional
+    public ResponseDTO<LikeDTO> toggleLikeComment(Long userId, Long commentId) {
+
+        User user = userRepository.findById(userId).
+                orElseThrow(UserNotFoundException::new);
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        Like existingLike = likeRepository.findByUserAndComment(user, comment)
+                .orElse(null);
+
+        if (existingLike == null) {
+            Like newLike = new Like(comment, user);
+            comment.addLike(newLike);
+            likeRepository.save(newLike);
+            return likeMapper.toResponseDTO( "Curtida criada com sucesso!", newLike);
+        } else {
+            comment.removeLike(existingLike);
             likeRepository.delete(existingLike);
             return likeMapper.toResponseDTO("Curtida deletada com sucesso!", existingLike);
         }

@@ -10,11 +10,16 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "tb_post_like", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
+@Table(name = "tb_post_like", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id", "comment_id"}))
 public class Like {
 
     public Like(Post post, User user) {
         this.post = post;
+        this.user = user;
+    }
+
+    public Like(Comment comment, User user) {
+        this.comment = comment;
         this.user = user;
     }
 
@@ -28,8 +33,12 @@ public class Like {
     private Instant updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
