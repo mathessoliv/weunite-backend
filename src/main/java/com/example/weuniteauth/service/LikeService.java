@@ -110,4 +110,14 @@ public class LikeService {
 
         return likeMapper.toResponseDTO("Likes consultados com sucesso!", likes.getContent());
     }
+
+    @Transactional(readOnly = true)
+    public ResponseDTO<List<LikeDTO>> getCommentLikes(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        Set<Like> likes = likeRepository.findByComment(comment);
+
+        return likeMapper.toResponseDTO("Curtidas do comentário consultadas com sucesso!", likes);
+    }
 }

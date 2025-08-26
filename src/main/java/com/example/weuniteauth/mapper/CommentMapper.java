@@ -16,16 +16,16 @@ public interface CommentMapper {
 
     @Mapping(target = "id", source = "comment.id", resultType = String.class)
     @Mapping(target = "user", source = "comment.user")
-    @Mapping(target = "post", source = "comment.post", qualifiedByName = "mapPostWithoutLikes")
+    @Mapping(target = "post", source = "comment.post", qualifiedByName = "mapPostWithoutLikesFromComment")
     @Mapping(target = "text", source = "comment.text")
     @Mapping(target = "imageUrl", source = "comment.imageUrl")
-    @Mapping(target = "parentComment", source = "comment.parentComment")
+    @Mapping(target = "parentComment", source = "comment.parentComment", qualifiedByName = "mapParentComment")
     @Mapping(target = "comments", source = "comment.comments", qualifiedByName = "mapCommentsToList")
     @Mapping(target = "createdAt", source = "comment.createdAt")
     @Mapping(target = "updatedAt", source = "comment.updatedAt")
     CommentDTO toCommentDTO(Comment comment);
 
-    @Named("mapPostWithoutLikes")
+    @Named("mapPostWithoutLikesFromComment")
     @Mapping(target = "id", source = "post.id", resultType = String.class)
     @Mapping(target = "text", source = "post.text")
     @Mapping(target = "imageUrl", source = "post.imageUrl")
@@ -34,7 +34,19 @@ public interface CommentMapper {
     @Mapping(target = "createdAt", source = "post.createdAt")
     @Mapping(target = "updatedAt", source = "post.updatedAt")
     @Mapping(target = "user", source = "post.user")
-    PostDTO mapPostWithoutLikes(Post post);
+    PostDTO mapPostWithoutLikesFromComment(Post post);
+
+    @Named("mapParentComment")
+    @Mapping(target = "id", source = "comment.id", resultType = String.class)
+    @Mapping(target = "user", source = "comment.user")
+    @Mapping(target = "post", source = "comment.post", qualifiedByName = "mapPostWithoutLikesFromComment")
+    @Mapping(target = "text", source = "comment.text")
+    @Mapping(target = "imageUrl", source = "comment.imageUrl")
+    @Mapping(target = "parentComment", ignore = true) // Avoid circular reference
+    @Mapping(target = "comments", ignore = true) // Avoid circular reference
+    @Mapping(target = "createdAt", source = "comment.createdAt")
+    @Mapping(target = "updatedAt", source = "comment.updatedAt")
+    CommentDTO mapParentComment(Comment comment);
 
     @Named("mapCommentsToList")
     default List<CommentDTO> mapCommentsToList(List<Comment> comments) {
