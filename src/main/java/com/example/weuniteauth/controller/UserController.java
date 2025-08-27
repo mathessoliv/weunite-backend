@@ -40,6 +40,12 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @DeleteMapping("/banner/delete/{username}")
+    public ResponseEntity<ResponseDTO<UserDTO>> deleteBanner(@PathVariable String username) {
+        ResponseDTO<UserDTO> userDTO = userService.deleteBanner(username);
+        return ResponseEntity.ok(userDTO);
+    }
+
     @PutMapping("/update/{username}")
     public ResponseEntity<ResponseDTO<UserDTO>> updateUser(@PathVariable String username,
                                                            @RequestPart(value = "user") UpdateUserRequestDTO requestDTO,

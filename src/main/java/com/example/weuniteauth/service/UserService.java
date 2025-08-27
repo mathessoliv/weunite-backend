@@ -87,6 +87,18 @@ public class UserService {
         return userMapper.toResponseDTO("Usuário deletado com sucesso", user);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ResponseDTO<UserDTO> deleteBanner(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        user.setBannerImg(null);
+
+        userRepository.save(user);
+
+        return userMapper.toResponseDTO("Banner deletado com sucesso", user);
+    }
+
     @Transactional(readOnly = true)
     public ResponseDTO<UserDTO> getUser(Long id) {
         User user = userRepository.findById(id)
