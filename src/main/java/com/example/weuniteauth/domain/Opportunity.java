@@ -16,21 +16,23 @@ import java.util.Set;
 @Entity
 public class Opportunity {
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end) {
+    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<User> subscribers) {
         this.user = user;
         this.title = title;
         this.description = description;
         this.location = location;
-        this.date_end = date_end;
+        this.dateEnd = date_end;
+        this.subscribers = subscribers;
     }
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills) {
+    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<User> subscribers) {
         this.user = user;
         this.title = title;
         this.description = description;
         this.location = location;
-        this.date_end = null;
+        this.dateEnd = null;
         this.skills = skills;
+        this.subscribers = subscribers;
     }
 
     @Id
@@ -47,10 +49,7 @@ public class Opportunity {
     private String location;
 
     @Column(nullable = false)
-    private LocalDate date_end;
-
-    @Column
-    private Long aplicationsCount = 0L;
+    private LocalDate dateEnd;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -89,4 +88,13 @@ public class Opportunity {
             inverseJoinColumns = @JoinColumn(name = "skills_id")
     )
     private Set<Skills> skills = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "opportunity_subscribers",
+            joinColumns = @JoinColumn(name = "opportunity_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
+    )
+    private Set<User> subscribers = new HashSet<>();
+
 }

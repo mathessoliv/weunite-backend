@@ -8,27 +8,20 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-@Setter
-@Getter
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
-public class Skills {
-
-    public Skills(String name) {
-        this.name = name;
-    }
+public class Subscribers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(unique = true, nullable = false)
-    private String name;
-
-    @ManyToMany(mappedBy = "skills")
+    @ManyToMany(mappedBy = "subscribers")
     private Set<Opportunity> opportunities = new HashSet<>();
 
-    @ManyToMany(mappedBy = "skills")
-    private Set<User> users = new HashSet<>();
-
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
