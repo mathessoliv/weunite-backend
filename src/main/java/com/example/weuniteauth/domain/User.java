@@ -80,6 +80,10 @@ public class User{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Post> posts = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Opportunity> opportunities = new HashSet<>();
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Instant.now();
