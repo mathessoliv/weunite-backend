@@ -16,7 +16,7 @@ import java.util.Set;
 @Entity
 public class Opportunity {
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<User> subscribers) {
+    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Subscribers> subscribers) {
         this.user = user;
         this.title = title;
         this.description = description;
@@ -25,7 +25,7 @@ public class Opportunity {
         this.subscribers = subscribers;
     }
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<User> subscribers) {
+    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<Subscribers> subscribers) {
         this.user = user;
         this.title = title;
         this.description = description;
@@ -95,6 +95,6 @@ public class Opportunity {
             joinColumns = @JoinColumn(name = "opportunity_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id")
     )
-    private Set<User> subscribers = new HashSet<>();
+    private Set<Subscribers> subscribers = new HashSet<>();
 
 }

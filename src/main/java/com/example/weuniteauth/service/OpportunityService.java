@@ -11,9 +11,11 @@ import com.example.weuniteauth.mapper.OpportunityMapper;
 import com.example.weuniteauth.repository.OpportunityRepository;
 import com.example.weuniteauth.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class OpportunityService {
 
     private final UserRepository userRepository;
@@ -90,6 +92,15 @@ public class OpportunityService {
 
         List<Opportunity> opportunities = opportunityRepository.findAllOrderedByCreationDate();
 
+        return opportunityMapper.toOpportunityDTOList(opportunities);
+    }
+
+    @Transactional
+    public List<OpportunityDTO> getOpportunitiesByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        List<Opportunity> opportunities = opportunityRepository.findByUserId(userId);
         return opportunityMapper.toOpportunityDTOList(opportunities);
     }
 

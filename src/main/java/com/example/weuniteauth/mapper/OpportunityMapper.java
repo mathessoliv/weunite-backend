@@ -4,24 +4,26 @@ import com.example.weuniteauth.domain.Opportunity;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Mapper(componentModel = "spring")
 public interface OpportunityMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "title", source = "title")
-    @Mapping(target = "decription", source = "decription")
+    @Mapping(target = "description", source = "description")
     @Mapping(target = "location", source = "location")
     @Mapping(target = "dateEnd", source = "dateEnd")
     @Mapping(target = "skills", source = "skills")
     Opportunity toEntity(OpportunityDTO dto);
 
     @Mapping(target = "id", source = "opportunity.id", resultType = String.class)
-    @Mapping(target = "title", source = "opportunity.text")
-    @Mapping(target = "description", source = "opportunity.decription")
+    @Mapping(target = "title", source = "opportunity.title")
+    @Mapping(target = "description", source = "opportunity.description")
     @Mapping(target = "location", source = "opportunity.location")
     @Mapping(target = "dateEnd", source = "opportunity.dateEnd")
     @Mapping(target = "createdAt", source = "opportunity.createdAt")

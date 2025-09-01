@@ -2,14 +2,18 @@ package com.example.weuniteauth.dto;
 
 import com.example.weuniteauth.domain.User;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Set;
 
 public record OpportunityDTO(
+        Long id,
         String title,
         String description,
         String location,
         LocalDate dateEnd,
-        Set<User> skills
+        Set<User> skills,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

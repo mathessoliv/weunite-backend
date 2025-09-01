@@ -49,6 +49,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/follow/get/{followerid}/{followedId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/follow/followAndUnfollow/{followerid}/{followedId}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/opportunities/create/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "api/opportunities/update/{userId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "api/opportunities/delete/{userId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/opportunities/get/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/opportunities/get/user/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/opportunities/get").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
