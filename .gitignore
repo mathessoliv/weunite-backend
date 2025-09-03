@@ -84,3 +84,4 @@ application-*.yml
 
 node_modules
 *.xml
+.idea
