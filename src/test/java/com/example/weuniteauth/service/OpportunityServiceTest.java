@@ -3,6 +3,7 @@ package com.example.weuniteauth.service;
 import com.example.weuniteauth.domain.Opportunity;
 import com.example.weuniteauth.domain.Skills;
 import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.exceptions.UnauthorizedException;
@@ -52,15 +53,12 @@ public class OpportunityServiceTest {
         Set<Skills> skills = new HashSet<>();
         skills.add(new Skills("Java"));
 
-        OpportunityDTO opportunityDTO = new OpportunityDTO(
-                null,
+        OpportunityRequestDTO opportunityDTO = new OpportunityRequestDTO(
                 "Software Developer",
                 "Desenvolvedor Java Sênior",
                 "São Paulo, SP",
                 LocalDate.of(2025, 12, 31),
-                skills,
-                null,
-                null
+                skills
         );
 
         User mockUser = new User();
@@ -115,15 +113,15 @@ public class OpportunityServiceTest {
     @DisplayName("Should throw UserNotFoundException when user does not exist during creation")
     void createOpportunityWithNonExistentUser() {
         Long userId = 999L;
-        OpportunityDTO opportunityDTO = new OpportunityDTO(
-                null,
+        Set<Skills> skills = new HashSet<>();
+        skills.add(new Skills("Java"));
+
+        OpportunityRequestDTO opportunityDTO = new OpportunityRequestDTO(
                 "Software Developer",
                 "Desenvolvedor Java Sênior",
                 "São Paulo, SP",
                 LocalDate.of(2025, 12, 31),
-                new HashSet<>(),
-                null,
-                null
+                skills
         );
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
