@@ -2,6 +2,7 @@ package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.Opportunity;
 import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.exceptions.UnauthorizedException;
@@ -29,7 +30,7 @@ public class OpportunityService {
     }
 
     @Transactional
-    public ResponseDTO<OpportunityDTO> createOpportunity(Long userId, OpportunityDTO opportunityDTO) {
+    public ResponseDTO<OpportunityDTO> createOpportunity(Long userId, OpportunityRequestDTO opportunityDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 

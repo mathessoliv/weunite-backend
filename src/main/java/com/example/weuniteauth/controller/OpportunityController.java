@@ -1,6 +1,7 @@
 package com.example.weuniteauth.controller;
 
 
+import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.service.OpportunityService;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/opportunities")
+@RequestMapping("/api/opportunities")
 @Validated
 public class OpportunityController {
 
@@ -25,7 +26,7 @@ public class OpportunityController {
 
     @PostMapping(value = "/create/{userId}")
     public ResponseEntity<ResponseDTO<OpportunityDTO>> createOpportunity(@PathVariable Long userId,
-                                                                         @RequestPart("opportunity")@Valid OpportunityDTO opportunity
+                                                                         @RequestBody @Valid OpportunityRequestDTO opportunity
                                                                          ){
         ResponseDTO<OpportunityDTO> createdOpportunity = opportunityService.createOpportunity(userId, opportunity);
         return ResponseEntity.status(HttpStatus.OK).body(createdOpportunity);
@@ -34,7 +35,7 @@ public class OpportunityController {
     @PutMapping("/update/{userId}/{opportunityId}")
     public ResponseEntity<ResponseDTO<OpportunityDTO>> updateOpportunity(@PathVariable Long userId,
                                                                          @PathVariable Long opportunityId,
-                                                                         @RequestPart("opportunity")@Valid OpportunityDTO opportunity
+                                                                         @RequestBody @Valid OpportunityDTO opportunity
     ){
         ResponseDTO<OpportunityDTO> updatedOpportunity = opportunityService.updateOpportunity(userId, opportunityId, opportunity);
         return ResponseEntity.status(HttpStatus.OK).body(updatedOpportunity);

@@ -16,13 +16,13 @@ import java.util.Set;
 @Entity
 public class Opportunity {
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Subscribers> subscribers) {
+    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills) {
         this.user = user;
         this.title = title;
         this.description = description;
         this.location = location;
         this.dateEnd = date_end;
-        this.subscribers = subscribers;
+        this.skills = skills;
     }
 
     public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<Subscribers> subscribers) {
