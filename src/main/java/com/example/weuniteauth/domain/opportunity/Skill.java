@@ -13,9 +13,9 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Skills {
+public class Skill {
 
-    public Skills(String name) {
+    public Skill(String name) {
         this.name = name;
     }
 
@@ -30,6 +30,6 @@ public class Skills {
     private Set<Opportunity> opportunities = new HashSet<>();
 
     @ManyToMany(mappedBy = "skills")
-    private Set<Athlete> athletes = new HashSet<>();
+    private Set<Athlete> athlete = new HashSet<>();
 
 }

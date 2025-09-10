@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 public class Opportunity {
 
-    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skills> skills) {
+    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skill> skills) {
         this.company = company;
         this.title = title;
         this.description = description;
@@ -26,7 +26,7 @@ public class Opportunity {
         this.skills = skills;
     }
 
-    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<Subscribers> subscribers) {
+    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skill> skills, Set<Subscribers> subscribers) {
         this.company = company;
         this.title = title;
         this.description = description;
@@ -68,12 +68,12 @@ public class Opportunity {
     }
 
 
-    public void addSkill(Skills skill) {
+    public void addSkill(Skill skill) {
         skills.add(skill);
         skill.getOpportunities().add(this);
     }
 
-    public void removeSkill(Skills skill) {
+    public void removeSkill(Skill skill) {
         skills.remove(skill);
         skill.getOpportunities().remove(this);
     }
@@ -84,7 +84,7 @@ public class Opportunity {
             joinColumns = @JoinColumn(name = "opportunity_id"),
             inverseJoinColumns = @JoinColumn(name = "skills_id")
     )
-    private Set<Skills> skills = new HashSet<>();
+    private Set<Skill> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "opportunity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Subscribers> subscribers = new HashSet<>();

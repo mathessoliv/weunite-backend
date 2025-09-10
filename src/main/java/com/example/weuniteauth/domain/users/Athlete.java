@@ -1,6 +1,6 @@
 package com.example.weuniteauth.domain.users;
 
-import com.example.weuniteauth.domain.opportunity.Skills;
+import com.example.weuniteauth.domain.opportunity.Skill;
 import com.example.weuniteauth.domain.opportunity.Subscribers;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class Athlete extends User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    private Set<Skills> skills = new HashSet<>();
+    private Set<Skill> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Subscribers> subscriptions = new HashSet<>();

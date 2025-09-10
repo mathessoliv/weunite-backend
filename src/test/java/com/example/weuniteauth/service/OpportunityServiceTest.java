@@ -1,7 +1,7 @@
 package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.opportunity.Opportunity;
-import com.example.weuniteauth.domain.opportunity.Skills;
+import com.example.weuniteauth.domain.opportunity.Skill;
 import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
@@ -50,8 +50,8 @@ public class OpportunityServiceTest {
     @DisplayName("Should create opportunity successfully when user exists and data is valid")
     void createOpportunitySuccess() {
         Long userId = 1L;
-        Set<Skills> skills = new HashSet<>();
-        skills.add(new Skills("Java"));
+        Set<Skill> skills = new HashSet<>();
+        skills.add(new Skill("Java"));
 
         OpportunityRequestDTO opportunityDTO = new OpportunityRequestDTO(
                 "Software Developer",
@@ -113,8 +113,8 @@ public class OpportunityServiceTest {
     @DisplayName("Should throw UserNotFoundException when user does not exist during creation")
     void createOpportunityWithNonExistentUser() {
         Long userId = 999L;
-        Set<Skills> skills = new HashSet<>();
-        skills.add(new Skills("Java"));
+        Set<Skill> skills = new HashSet<>();
+        skills.add(new Skill("Java"));
 
         OpportunityRequestDTO opportunityDTO = new OpportunityRequestDTO(
                 "Software Developer",
@@ -142,8 +142,8 @@ public class OpportunityServiceTest {
     void updateOpportunitySuccess() {
         Long userId = 1L;
         Long opportunityId = 1L;
-        Set<Skills> updatedSkills = new HashSet<>();
-        updatedSkills.add(new Skills("Python"));
+        Set<Skill> updatedSkills = new HashSet<>();
+        updatedSkills.add(new Skill("Python"));
 
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
                 opportunityId,

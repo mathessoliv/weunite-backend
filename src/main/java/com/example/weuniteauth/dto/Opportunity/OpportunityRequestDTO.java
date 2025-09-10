@@ -1,6 +1,6 @@
 package com.example.weuniteauth.dto.Opportunity;
 
-import com.example.weuniteauth.domain.opportunity.Skills;
+import com.example.weuniteauth.domain.opportunity.Skill;
 import com.example.weuniteauth.validations.ValidOpportunity;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ public record OpportunityRequestDTO(
         String description,
         String location,
         LocalDate dateEnd,
-        Set<Skills> skills
+        Set<Skill> skills
 
 ) {
 
