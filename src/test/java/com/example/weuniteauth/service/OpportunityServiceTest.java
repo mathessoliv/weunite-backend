@@ -2,7 +2,8 @@ package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.opportunity.Opportunity;
 import com.example.weuniteauth.domain.opportunity.Skill;
-import com.example.weuniteauth.domain.users.User;
+import com.example.weuniteauth.domain.users.Company;
+import com.example.weuniteauth.domain.users.Company;
 import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -61,13 +62,13 @@ public class OpportunityServiceTest {
                 skills
         );
 
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setUsername("testuser");
-        mockUser.setEmail("test@example.com");
+        Company mockCompany = new Company();
+        mockCompany.setId(userId);
+        mockCompany.setUsername("testuser");
+        mockCompany.setEmail("test@example.com");
 
         Opportunity createdOpportunity = new Opportunity(
-                mockUser,
+                mockCompany,
                 opportunityDTO.title(),
                 opportunityDTO.description(),
                 opportunityDTO.location(),
@@ -91,7 +92,7 @@ public class OpportunityServiceTest {
                 )
         );
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(mockCompany));
         when(opportunityRepository.save(any(Opportunity.class))).thenReturn(createdOpportunity);
         when(opportunityMapper.toResponseDTO(eq("Oportunidade criada com sucesso!"), any(Opportunity.class)))
                 .thenReturn(expectedResponse);
@@ -156,13 +157,13 @@ public class OpportunityServiceTest {
                 null
         );
 
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setUsername("testuser");
+        Company mockCompany = new Company();
+        mockCompany.setId(userId);
+        mockCompany.setUsername("testuser");
 
         Opportunity existingOpportunity = new Opportunity();
         existingOpportunity.setId(opportunityId);
-        existingOpportunity.setUser(mockUser);
+        existingOpportunity.setCompany(mockCompany);
         existingOpportunity.setTitle("Software Developer");
 
         Opportunity updatedOpportunity = new Opportunity();
@@ -238,13 +239,13 @@ public class OpportunityServiceTest {
                 null
         );
 
-        User opportunityOwner = new User();
+        Company opportunityOwner = new Company();
         opportunityOwner.setId(ownerId);
         opportunityOwner.setUsername("owner");
 
         Opportunity existingOpportunity = new Opportunity();
         existingOpportunity.setId(opportunityId);
-        existingOpportunity.setUser(opportunityOwner);
+        existingOpportunity.setCompany(opportunityOwner);
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(existingOpportunity));
 
@@ -265,13 +266,13 @@ public class OpportunityServiceTest {
         Long userId = 1L;
         Long opportunityId = 1L;
 
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setUsername("testuser");
+        Company mockCompany = new Company();
+        mockCompany.setId(userId);
+        mockCompany.setUsername("testuser");
 
         Opportunity existingOpportunity = new Opportunity();
         existingOpportunity.setId(opportunityId);
-        existingOpportunity.setUser(mockUser);
+        existingOpportunity.setCompany(mockCompany);
         existingOpportunity.setTitle("Software Developer");
 
         ResponseDTO<OpportunityDTO> expectedResponse = new ResponseDTO<>(
@@ -328,13 +329,13 @@ public class OpportunityServiceTest {
         Long ownerId = 2L;
         Long opportunityId = 1L;
 
-        User opportunityOwner = new User();
+        Company opportunityOwner = new Company();
         opportunityOwner.setId(ownerId);
         opportunityOwner.setUsername("owner");
 
         Opportunity existingOpportunity = new Opportunity();
         existingOpportunity.setId(opportunityId);
-        existingOpportunity.setUser(opportunityOwner);
+        existingOpportunity.setCompany(opportunityOwner);
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(existingOpportunity));
 
