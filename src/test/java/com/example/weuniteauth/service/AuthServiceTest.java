@@ -22,6 +22,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
+import java.util.Set;
+import java.util.HashSet;
+import com.example.weuniteauth.domain.users.Role;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -55,6 +58,12 @@ class AuthServiceTest {
         User mockUser = new User();
         mockUser.setId(1L);
         mockUser.setUsername("testuser");
+        // Set role as Set<Role> with BASIC
+        Role basicRole = new Role();
+        basicRole.setName("BASIC");
+        Set<Role> roles = new HashSet<>();
+        roles.add(basicRole);
+        mockUser.setRole(roles);
         mockUser.setPassword("$2a$10$encodedPassword");
         mockUser.setEmailVerified(true);
         mockUser.setEmail("test@example.com");
@@ -63,10 +72,13 @@ class AuthServiceTest {
         mockUser.setCreatedAt(Instant.now());
         mockUser.setUpdatedAt(Instant.now());
 
+        // Extract role name for UserDTO
+        String roleName = mockUser.getRole().iterator().next().getName();
         UserDTO expectedUserDTO = new UserDTO(
                 mockUser.getId().toString(),
                 mockUser.getName(),
                 mockUser.getUsername(),
+                roleName,
                 mockUser.getBio(),
                 mockUser.getEmail(),
                 mockUser.getProfileImg(),
@@ -118,9 +130,7 @@ class AuthServiceTest {
         when(userService.findUserEntityByUsername("nonexistent"))
                 .thenThrow(new UserNotFoundException());
 
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-            authService.login(loginRequest);
-        });
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> authService.login(loginRequest));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByUsername("nonexistent");
@@ -140,9 +150,7 @@ class AuthServiceTest {
         when(userService.findUserEntityByUsername("testuser")).thenReturn(mockUser);
         when(passwordEncoder.matches("wrongpassword", "$2a$10$encodedPassword")).thenReturn(false);
 
-        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> {
-            authService.login(loginRequest);
-        });
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> authService.login(loginRequest));
 
         assertEquals("Usuário ou senha inválidos", exception.getMessage());
         verify(userService).findUserEntityByUsername("testuser");
@@ -163,9 +171,7 @@ class AuthServiceTest {
         when(userService.findUserEntityByUsername("testuser")).thenReturn(mockUser);
         when(passwordEncoder.matches("password123", "$2a$10$encodedPassword")).thenReturn(true);
 
-        NotVerifiedEmailException exception = assertThrows(NotVerifiedEmailException.class, () -> {
-            authService.login(loginRequest);
-        });
+        NotVerifiedEmailException exception = assertThrows(NotVerifiedEmailException.class, () -> authService.login(loginRequest));
 
         assertEquals("Verifique seu email para fazer login", exception.getMessage());
         verify(userService).findUserEntityByUsername("testuser");
@@ -180,7 +186,8 @@ class AuthServiceTest {
                 "Luizao",
                 "Luizada",
                 "lgtgusmao@hotmail.com",
-                "123456Cl@"
+                "123456Cl@",
+                "BASIC"
         );
 
         User mockUser = new User();
@@ -214,15 +221,14 @@ class AuthServiceTest {
                 "Luizao",
                 "Luizada",
                 "lgtgusmao@hotmail.com",
-                "123456Cl@"
+                "123456Cl@",
+                "BASIC"
         );
 
         when(userService.createUser(userRequestDTO))
                 .thenThrow(new RuntimeException("Erro ao criar usuário"));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            authService.signUp(userRequestDTO);
-        });
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.signUp(userRequestDTO));
 
         assertEquals("Erro ao criar usuário", exception.getMessage());
         verify(userService).createUser(userRequestDTO);
@@ -252,10 +258,13 @@ class AuthServiceTest {
         verifiedUser.setName("Test User");
         verifiedUser.setEmailVerified(true);
 
+        // Prepare role for UserDTO
+        String roleName = mockUser.getRole() != null && !mockUser.getRole().isEmpty() ? mockUser.getRole().iterator().next().getName() : "BASIC";
         UserDTO expectedUserDTO = new UserDTO(
                 mockUser.getId().toString(),
                 mockUser.getName(),
                 mockUser.getUsername(),
+                roleName,
                 mockUser.getBio(),
                 mockUser.getEmail(),
                 mockUser.getProfileImg(),
@@ -308,9 +317,7 @@ class AuthServiceTest {
         when(userService.findUserEntityByEmail(email))
                 .thenThrow(new UserNotFoundException());
 
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-            authService.verifyEmail(verifyEmailRequestDTO, email);
-        });
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> authService.verifyEmail(verifyEmailRequestDTO, email));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByEmail(email);
@@ -335,9 +342,7 @@ class AuthServiceTest {
 
         when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
 
-        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> {
-            authService.verifyEmail(verifyEmailRequestDTO, email);
-        });
+        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> authService.verifyEmail(verifyEmailRequestDTO, email));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByEmail(email);
@@ -363,9 +368,7 @@ class AuthServiceTest {
 
         when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
 
-        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> {
-            authService.verifyEmail(verifyEmailRequestDTO, email);
-        });
+        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> authService.verifyEmail(verifyEmailRequestDTO, email));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByEmail(email);
@@ -413,9 +416,7 @@ class AuthServiceTest {
         when(userService.findUserEntityByEmail("nonexistent@example.com"))
                 .thenThrow(new UserNotFoundException());
 
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-            authService.sendResetPassword(requestDTO);
-        });
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> authService.sendResetPassword(requestDTO));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByEmail("nonexistent@example.com");
@@ -437,9 +438,7 @@ class AuthServiceTest {
 
         when(userService.findUserEntityByEmail("unverified@example.com")).thenReturn(mockUser);
 
-        NotVerifiedEmailException exception = assertThrows(NotVerifiedEmailException.class, () -> {
-            authService.sendResetPassword(requestDTO);
-        });
+        NotVerifiedEmailException exception = assertThrows(NotVerifiedEmailException.class, () -> authService.sendResetPassword(requestDTO));
 
         assertEquals("Verifique seu e-mail para redefinir a senha", exception.getMessage());
         verify(userService).findUserEntityByEmail("unverified@example.com");
@@ -488,9 +487,7 @@ class AuthServiceTest {
         when(userService.findUserEntityByEmail(email))
                 .thenThrow(new UserNotFoundException());
 
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-            authService.verifyResetPasswordToken(requestDTO, email);
-        });
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> authService.verifyResetPasswordToken(requestDTO, email));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByEmail(email);
@@ -514,9 +511,7 @@ class AuthServiceTest {
 
         when(userService.findUserEntityByEmail(email)).thenReturn(mockUser);
 
-        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> {
-            authService.verifyResetPasswordToken(requestDTO, email);
-        });
+        InvalidTokenException exception = assertThrows(InvalidTokenException.class, () -> authService.verifyResetPasswordToken(requestDTO, email));
 
         assertNotNull(exception);
         verify(userService).findUserEntityByEmail(email);
@@ -573,12 +568,11 @@ class AuthServiceTest {
         when(userService.findUserByVerificationToken(invalidToken))
                 .thenThrow(new UserNotFoundException());
 
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-            authService.resetPassword(requestDTO, invalidToken);
-        });
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> authService.resetPassword(requestDTO, invalidToken));
 
         assertNotNull(exception);
         verify(userService).findUserByVerificationToken(invalidToken);
         verifyNoInteractions(passwordEncoder, emailService, authMapper);
     }
 }
+
