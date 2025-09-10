@@ -1,7 +1,6 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Opportunity;
-import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
+import com.example.weuniteauth.domain.opportunity.Opportunity;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import org.mapstruct.BeanMapping;

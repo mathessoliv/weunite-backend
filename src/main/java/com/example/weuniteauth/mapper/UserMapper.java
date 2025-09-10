@@ -3,7 +3,7 @@ package com.example.weuniteauth.mapper;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

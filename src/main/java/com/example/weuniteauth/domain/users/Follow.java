@@ -1,4 +1,4 @@
-package com.example.weuniteauth.domain.user;
+package com.example.weuniteauth.domain.users;
 
 import jakarta.persistence.*;
 import lombok.Getter;

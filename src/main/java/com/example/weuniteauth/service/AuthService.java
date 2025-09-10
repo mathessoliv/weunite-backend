@@ -8,7 +8,7 @@ import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.auth.NotVerifiedEmailException;
 import com.example.weuniteauth.service.mail.EmailService;
 import com.example.weuniteauth.mapper.AuthMapper;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.service.jwt.JwtService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;

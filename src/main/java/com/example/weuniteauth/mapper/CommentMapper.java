@@ -1,7 +1,7 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Comment;
-import com.example.weuniteauth.domain.Post;
+import com.example.weuniteauth.domain.post.Comment;
+import com.example.weuniteauth.domain.post.Post;
 import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;

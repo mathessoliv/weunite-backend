@@ -1,8 +1,8 @@
 package com.example.weuniteauth.service;
 
-import com.example.weuniteauth.domain.Opportunity;
-import com.example.weuniteauth.domain.Skills;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.opportunity.Opportunity;
+import com.example.weuniteauth.domain.opportunity.Skills;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.ResponseDTO;

@@ -1,6 +1,6 @@
 package com.example.weuniteauth.repository;
 
-import com.example.weuniteauth.domain.Role;
+import com.example.weuniteauth.domain.users.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface  RoleRepository extends JpaRepository<Role, Long> {

@@ -1,6 +1,6 @@
 package com.example.weuniteauth.service;
 
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.AuthDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.UserDTO;
@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

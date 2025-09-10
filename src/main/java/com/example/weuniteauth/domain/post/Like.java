@@ -1,5 +1,6 @@
-package com.example.weuniteauth.domain;
+package com.example.weuniteauth.domain.post;
 
+import com.example.weuniteauth.domain.users.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

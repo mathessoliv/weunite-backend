@@ -1,7 +1,7 @@
 
 package com.example.weuniteauth.repository;
 
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

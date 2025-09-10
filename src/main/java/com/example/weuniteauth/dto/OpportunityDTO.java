@@ -1,7 +1,6 @@
 package com.example.weuniteauth.dto;
 
-import com.example.weuniteauth.domain.Skills;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.opportunity.Skills;
 
 import java.time.Instant;
 import java.time.LocalDate;

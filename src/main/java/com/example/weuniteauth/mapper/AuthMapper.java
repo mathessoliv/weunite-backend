@@ -1,16 +1,10 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.AuthDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
-import com.example.weuniteauth.dto.UserDTO;
-import com.example.weuniteauth.dto.auth.*;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
-import java.time.Instant;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface AuthMapper {

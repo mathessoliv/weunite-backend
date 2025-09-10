@@ -1,5 +1,6 @@
-package com.example.weuniteauth.domain;
+package com.example.weuniteauth.domain.post;
 
+import com.example.weuniteauth.domain.users.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;

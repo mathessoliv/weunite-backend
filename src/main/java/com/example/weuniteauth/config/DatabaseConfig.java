@@ -1,6 +1,6 @@
 package com.example.weuniteauth.config;
 
-import com.example.weuniteauth.domain.Role;
+import com.example.weuniteauth.domain.users.Role;
 import com.example.weuniteauth.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
