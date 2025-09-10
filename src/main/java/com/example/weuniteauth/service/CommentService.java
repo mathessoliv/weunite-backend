@@ -4,10 +4,8 @@ import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Post;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.dto.CommentDTO;
-import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.comment.CommentRequestDTO;
-import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.exceptions.UnauthorizedException;
 import com.example.weuniteauth.exceptions.comment.CommentNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
@@ -16,7 +14,6 @@ import com.example.weuniteauth.mapper.CommentMapper;
 import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.UserRepository;
-import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,15 +27,12 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
-    private final CloudinaryService cloudinaryService;
 
-
-    public CommentService(UserRepository userRepository, CommentRepository commentRepository, PostRepository postRepository, CommentMapper commentMapper, CloudinaryService cloudinaryService) {
+    public CommentService(UserRepository userRepository, CommentRepository commentRepository, PostRepository postRepository, CommentMapper commentMapper) {
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.commentMapper = commentMapper;
-        this.cloudinaryService = cloudinaryService;
     }
 
     @Transactional

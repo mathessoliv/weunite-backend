@@ -13,8 +13,6 @@ import com.example.weuniteauth.domain.Role;
 import com.example.weuniteauth.domain.User;
 import com.example.weuniteauth.repository.RoleRepository;
 import com.example.weuniteauth.repository.UserRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;

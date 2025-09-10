@@ -1,14 +1,10 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Comment;
 import com.example.weuniteauth.domain.Like;
 import com.example.weuniteauth.domain.Post;
-import com.example.weuniteauth.domain.User;
-import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
-import com.example.weuniteauth.dto.UserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

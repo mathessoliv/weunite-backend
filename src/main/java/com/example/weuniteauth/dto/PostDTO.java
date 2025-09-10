@@ -1,10 +1,7 @@
 package com.example.weuniteauth.dto;
 
-import com.example.weuniteauth.domain.Comment;
-
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 public record PostDTO(
         String id,
