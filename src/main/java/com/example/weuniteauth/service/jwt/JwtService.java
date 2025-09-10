@@ -30,7 +30,7 @@ public class JwtService {
                 .issuer("weunite")
                 .subject(user.getUsername())
                 .claims(userClaims -> {
-                    userClaims.put("roles", user.getRoles());
+                    userClaims.put("role", user.getRole());
                     userClaims.put("id", user.getId().toString());
                 })
                 .issuedAt(now)

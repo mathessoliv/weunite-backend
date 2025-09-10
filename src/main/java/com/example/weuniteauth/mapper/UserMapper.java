@@ -23,6 +23,7 @@ public interface UserMapper {
     @Mapping(target = "id", source = "user.id", resultType = String.class)
     @Mapping(target = "name", source = "user.name")
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "role", expression = "java(user.getRole().iterator().next().getName())")
     @Mapping(target = "bio", source = "user.bio")
     @Mapping(target = "email", source = "user.email")
     @Mapping(target = "profileImg", source = "user.profileImg")

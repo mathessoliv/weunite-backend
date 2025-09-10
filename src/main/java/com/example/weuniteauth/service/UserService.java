@@ -4,6 +4,8 @@ import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
+import com.example.weuniteauth.exceptions.BaseException;
+import com.example.weuniteauth.exceptions.NotFoundResourceException;
 import com.example.weuniteauth.exceptions.auth.ExpiredTokenException;
 import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.user.UserAlreadyExistsException;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 
+import javax.management.relation.RoleNotFoundException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.List;
@@ -64,12 +67,13 @@ public class UserService {
 
         newUser.setPassword(encodedPassword);
 
-        Role roleUser = roleRepository.findByName(Role.Values.BASIC.name());
+        Role roleUser = roleRepository.findByName(userDTO.role().toUpperCase());
+        if (roleUser == null) {
+            throw new NotFoundResourceException("Role not found: " + userDTO.role());
+        }
 
-        newUser.setRoles(Set.of(roleUser));
-
+        newUser.setRole(Set.of(roleUser));
         newUser = generateAndSetToken(newUser);
-
         userRepository.save(newUser);
 
         return newUser;
@@ -79,6 +83,8 @@ public class UserService {
     public ResponseDTO<UserDTO> deleteUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException());
+
+        user.getRole().clear();
 
         userRepository.delete(user);
 

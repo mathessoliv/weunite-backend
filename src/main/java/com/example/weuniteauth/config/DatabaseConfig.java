@@ -30,6 +30,12 @@ public class DatabaseConfig {
                 companyRole.setName("COMPANY");
                 roleRepository.save(companyRole);
             }
+
+            if (roleRepository.findByName(Role.Values.ATHLETE.name()) == null) {
+                Role athleteRole = new Role();
+                athleteRole.setName("ATHLETE");
+                roleRepository.save(athleteRole);
+            }
         };
     }
 }
