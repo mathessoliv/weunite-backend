@@ -1,5 +1,6 @@
-package com.example.weuniteauth.domain;
+package com.example.weuniteauth.domain.opportunity;
 
+import com.example.weuniteauth.domain.users.Company;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,8 @@ import java.util.Set;
 @Entity
 public class Opportunity {
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills) {
-        this.user = user;
+    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skills> skills) {
+        this.company = company;
         this.title = title;
         this.description = description;
         this.location = location;
@@ -25,8 +26,8 @@ public class Opportunity {
         this.skills = skills;
     }
 
-    public Opportunity(User user, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<Subscribers> subscribers) {
-        this.user = user;
+    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skills> skills, Set<Subscribers> subscribers) {
+        this.company = company;
         this.title = title;
         this.description = description;
         this.location = location;
@@ -77,10 +78,6 @@ public class Opportunity {
         skill.getOpportunities().remove(this);
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "opportunity_skills",
@@ -89,12 +86,11 @@ public class Opportunity {
     )
     private Set<Skills> skills = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "opportunity_subscribers",
-            joinColumns = @JoinColumn(name = "opportunity_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
-    )
+    @OneToMany(mappedBy = "opportunity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Subscribers> subscribers = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
 }

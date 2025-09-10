@@ -1,5 +1,6 @@
-package com.example.weuniteauth.domain;
+package com.example.weuniteauth.domain.opportunity;
 
+import com.example.weuniteauth.domain.users.Athlete;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,6 @@ public class Skills {
     private Set<Opportunity> opportunities = new HashSet<>();
 
     @ManyToMany(mappedBy = "skills")
-    private Set<User> users = new HashSet<>();
+    private Set<Athlete> athletes = new HashSet<>();
 
 }
