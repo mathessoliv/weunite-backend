@@ -41,16 +41,25 @@ public class SkillService {
     }
 
     public List<SkillDTO> getSkillsAthlete(String username) {
-
         List<Skill> skills = skillRepository.findByAthleteUsername(username);
 
         return skillMapper.toSkillDTOList(skills);
     }
 
     public List<SkillDTO> getSkillsOpportunity(String title) {
-
         List<Skill> skills = skillRepository.findByOpportunitiesTitle(title);
 
         return skillMapper.toSkillDTOList(skills);
+    }
+
+    public ResponseDTO<SkillDTO> deleteSkill(String skillName) {
+        Skill skill = skillRepository.findByName(skillName);
+        if (skill == null) {
+            throw new SkillAlreadyExistsException();
+        }
+
+        skillRepository.delete(skill);
+
+        return skillMapper.toResponseDTO("Skill deletada com sucesso", skill);
     }
 }
