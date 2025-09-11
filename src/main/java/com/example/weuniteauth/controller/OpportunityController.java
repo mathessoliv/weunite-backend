@@ -24,20 +24,20 @@ public class OpportunityController {
         this.opportunityService = opportunityService;
     }
 
-    @PostMapping(value = "/create/{userId}")
-    public ResponseEntity<ResponseDTO<OpportunityDTO>> createOpportunity(@PathVariable Long userId,
-                                                                         @RequestBody @Valid OpportunityRequestDTO opportunity
-                                                                         ){
-        ResponseDTO<OpportunityDTO> createdOpportunity = opportunityService.createOpportunity(userId, opportunity);
+    @PostMapping(value = "/create/{companyId}")
+    public ResponseEntity<ResponseDTO<OpportunityDTO>> createOpportunity(@PathVariable Long companyId,
+                                                                         @RequestPart("opportunity") @Valid OpportunityRequestDTO opportunity
+    ){
+        ResponseDTO<OpportunityDTO> createdOpportunity = opportunityService.createOpportunity(companyId, opportunity);
         return ResponseEntity.status(HttpStatus.OK).body(createdOpportunity);
     }
 
-    @PutMapping("/update/{userId}/{opportunityId}")
-    public ResponseEntity<ResponseDTO<OpportunityDTO>> updateOpportunity(@PathVariable Long userId,
+    @PutMapping("/update/{companyId}/{opportunityId}")
+    public ResponseEntity<ResponseDTO<OpportunityDTO>> updateOpportunity(@PathVariable Long companyId,
                                                                          @PathVariable Long opportunityId,
                                                                          @RequestBody @Valid OpportunityDTO opportunity
     ){
-        ResponseDTO<OpportunityDTO> updatedOpportunity = opportunityService.updateOpportunity(userId, opportunityId, opportunity);
+        ResponseDTO<OpportunityDTO> updatedOpportunity = opportunityService.updateOpportunity(companyId, opportunityId, opportunity);
         return ResponseEntity.status(HttpStatus.OK).body(updatedOpportunity);
     }
 
@@ -53,15 +53,15 @@ public class OpportunityController {
         return ResponseEntity.status(HttpStatus.OK).body(opportunities);
     }
 
-    @GetMapping("/get/user/{userId}")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByUserId(@PathVariable Long userId){
-        List<OpportunityDTO> opportunities = opportunityService.getOpportunitiesByUserId(userId);
+    @GetMapping("/get/user/{companyId}")
+    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByUserId(@PathVariable Long companyId){
+        List<OpportunityDTO> opportunities = opportunityService.getOpportunitiesByUserId(companyId);
         return ResponseEntity.status(HttpStatus.OK).body(opportunities);
     }
 
-    @DeleteMapping("/delete/{userId}/{opportunityId}")
-    public ResponseEntity<ResponseDTO<OpportunityDTO>> deleteOpportunity(@PathVariable Long userId, @PathVariable Long opportunityId){
-        ResponseDTO<OpportunityDTO> opportunity = opportunityService.deleteOpportunity(userId, opportunityId);
+    @DeleteMapping("/delete/{companyId}/{opportunityId}")
+    public ResponseEntity<ResponseDTO<OpportunityDTO>> deleteOpportunity(@PathVariable Long companyId, @PathVariable Long opportunityId){
+        ResponseDTO<OpportunityDTO> opportunity = opportunityService.deleteOpportunity(companyId, opportunityId);
         return ResponseEntity.status(HttpStatus.OK).body(opportunity);
     }
 

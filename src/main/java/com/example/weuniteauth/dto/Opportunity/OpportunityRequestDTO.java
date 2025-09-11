@@ -9,11 +9,13 @@ import java.util.Set;
 
 @ValidOpportunity
 public record OpportunityRequestDTO(
+        Long id,
         String title,
         String description,
         String location,
         LocalDate dateEnd,
         Set<Skill> skills
+
 
 ) {
 
