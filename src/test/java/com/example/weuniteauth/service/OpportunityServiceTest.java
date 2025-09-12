@@ -3,7 +3,6 @@ package com.example.weuniteauth.service;
 import com.example.weuniteauth.domain.opportunity.Opportunity;
 import com.example.weuniteauth.domain.opportunity.Skill;
 import com.example.weuniteauth.domain.users.Company;
-import com.example.weuniteauth.domain.users.Company;
 import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -12,7 +11,7 @@ import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundExcepti
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.OpportunityMapper;
 import com.example.weuniteauth.repository.OpportunityRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
