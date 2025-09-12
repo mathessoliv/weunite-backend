@@ -1,7 +1,7 @@
 package com.example.weuniteauth.domain.users;
 
 import com.example.weuniteauth.domain.opportunity.Skill;
-import com.example.weuniteauth.domain.opportunity.Subscribers;
+import com.example.weuniteauth.domain.opportunity.Subscriber;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,5 +48,5 @@ public class Athlete extends User {
     private Set<Skill> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "athlete", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Subscribers> subscriptions = new HashSet<>();
+    private Set<Subscriber> subscriptions = new HashSet<>();
 }

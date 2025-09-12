@@ -10,8 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Subscribers {
-
+public class Subscriber {
+    public Subscriber(Athlete athlete, Opportunity opportunity) {
+        this.athlete = athlete;
+        this.opportunity = opportunity;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
