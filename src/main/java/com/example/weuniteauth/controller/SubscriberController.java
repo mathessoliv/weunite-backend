@@ -1,9 +1,7 @@
 package com.example.weuniteauth.controller;
 
-import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.Opportunity.SubscriberDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
-import com.example.weuniteauth.mapper.SubscribersMapper;
 import com.example.weuniteauth.service.SubscribersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
