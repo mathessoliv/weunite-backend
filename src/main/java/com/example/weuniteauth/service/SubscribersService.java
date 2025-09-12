@@ -12,6 +12,7 @@ import com.example.weuniteauth.repository.OpportunityRepository;
 import com.example.weuniteauth.repository.SubscribersRepository;
 import com.example.weuniteauth.repository.user.AthleteRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class SubscribersService {
         this.subscribersMapper = subscribersMapper;
     }
 
+    @Transactional
     public ResponseDTO<SubscriberDTO> toggleSubscriber(Long athleteId, Long opportunityId) {
 
         Athlete athlete = athleteRepository.findById(athleteId).
@@ -53,6 +55,7 @@ public class SubscribersService {
         }
     }
 
+    @Transactional
     public List<SubscriberDTO> getSubscribersByOpportunity(Long opportunityId) {
         Opportunity opportunity = opportunityRepository.findById(opportunityId).
                 orElseThrow(OpportunityNotFoundException::new);
