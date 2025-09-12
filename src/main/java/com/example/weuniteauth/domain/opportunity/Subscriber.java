@@ -26,4 +26,6 @@ public class Subscriber {
     @ManyToOne
     @JoinColumn(name = "athlete_id", nullable = false)
     private Athlete athlete;
+
+
 }
