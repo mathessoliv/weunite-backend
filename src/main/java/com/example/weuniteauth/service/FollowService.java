@@ -8,7 +8,7 @@ import com.example.weuniteauth.exceptions.follow.FollowNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.FollowMapper;
 import com.example.weuniteauth.repository.FollowRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

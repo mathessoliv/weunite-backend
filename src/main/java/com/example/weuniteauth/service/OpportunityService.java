@@ -98,7 +98,7 @@ public class OpportunityService {
     }
 
     @Transactional
-    public List<OpportunityDTO> getOpportunitiesByUserId(Long userId) {
+    public List<OpportunityDTO> getOpportunitiesByCompanyId(Long userId) {
         User user = companyRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 

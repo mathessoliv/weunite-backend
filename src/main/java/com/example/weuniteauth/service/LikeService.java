@@ -13,7 +13,7 @@ import com.example.weuniteauth.mapper.LikeMapper;
 import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.LikeRepository;
 import com.example.weuniteauth.repository.PostRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

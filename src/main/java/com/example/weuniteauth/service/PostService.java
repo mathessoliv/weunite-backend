@@ -10,7 +10,7 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.repository.PostRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;

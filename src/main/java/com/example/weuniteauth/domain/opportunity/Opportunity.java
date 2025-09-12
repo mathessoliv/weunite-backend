@@ -26,7 +26,7 @@ public class Opportunity {
         this.skills = skills;
     }
 
-    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skill> skills, Set<Subscribers> subscribers) {
+    public Opportunity(Company company, String title, String description, String location, LocalDate date_end, Set<Skill> skills, Set<Subscriber> subscribers) {
         this.company = company;
         this.title = title;
         this.description = description;
@@ -87,7 +87,7 @@ public class Opportunity {
     private Set<Skill> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "opportunity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Subscribers> subscribers = new HashSet<>();
+    private Set<Subscriber> subscribers = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

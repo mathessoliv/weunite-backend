@@ -13,7 +13,7 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.CommentMapper;
 import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.PostRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
