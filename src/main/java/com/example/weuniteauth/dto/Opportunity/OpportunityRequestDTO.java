@@ -9,7 +9,6 @@ import java.util.Set;
 
 @ValidOpportunity
 public record OpportunityRequestDTO(
-        Long id,
         String title,
         String description,
         String location,

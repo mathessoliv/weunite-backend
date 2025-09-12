@@ -78,6 +78,16 @@ public class Opportunity {
         skill.getOpportunities().remove(this);
     }
 
+    public void addSubscriber(Subscriber subscriber) {
+        subscribers.add(subscriber);
+        subscriber.setOpportunity(this);
+    }
+
+    public void removeSubscriber(Subscriber subscriber) {
+        subscribers.remove(subscriber);
+        subscriber.setOpportunity(null);
+    }
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "opportunity_skills",
@@ -92,5 +102,6 @@ public class Opportunity {
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+
 
 }
