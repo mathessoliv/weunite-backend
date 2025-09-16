@@ -53,8 +53,8 @@ public class OpportunityController {
         return ResponseEntity.status(HttpStatus.OK).body(opportunities);
     }
 
-    @GetMapping("/get/user/{companyId}")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByUserId(@PathVariable Long companyId){
+    @GetMapping("/get/company/{companyId}")
+    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByCompanyId(@PathVariable Long companyId){
         List<OpportunityDTO> opportunities = opportunityService.getOpportunitiesByCompanyId(companyId);
         return ResponseEntity.status(HttpStatus.OK).body(opportunities);
     }
