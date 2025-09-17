@@ -1,5 +1,7 @@
 package com.example.weuniteauth.mapper;
 
+import com.example.weuniteauth.domain.users.Athlete;
+import com.example.weuniteauth.domain.users.Company;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
@@ -13,12 +15,21 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "email", source = "email")
-    @Mapping(target = "password", source = "password")
-    User toEntity(CreateUserRequestDTO dto);
+    default User toEntity(CreateUserRequestDTO dto) {
+        String role = dto.role().toUpperCase();
+
+        User user = switch (role) {
+            case "ATHLETE" -> new Athlete();
+            case "COMPANY" -> new Company();
+            default -> throw new IllegalArgumentException("Tipo de usuário inválido: " + role);
+        };
+
+        user.setUsername(dto.username());
+        user.setEmail(dto.email());
+        user.setName(dto.name());
+
+        return user;
+    }
 
     @Mapping(target = "id", source = "user.id", resultType = String.class)
     @Mapping(target = "name", source = "user.name")

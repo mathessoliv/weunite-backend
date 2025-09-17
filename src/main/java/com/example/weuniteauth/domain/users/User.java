@@ -14,6 +14,9 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Table(name = "tb_user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("USER")
 public class User{
 
     public User(String name, String username, String email, String password) {

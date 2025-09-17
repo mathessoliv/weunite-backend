@@ -15,6 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
+@DiscriminatorValue("ATHLETE")
 public class Athlete extends User {
 
     public Athlete (String name, String username, String email, String password) {

@@ -28,6 +28,12 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(signUpResponseDTO);
     }
 
+    @PostMapping("/signup/company")
+    public ResponseEntity<ResponseDTO<AuthDTO>> signupCompany(@RequestBody @Valid CreateUserRequestDTO createUserRequestDTO) {
+        ResponseDTO<AuthDTO> signUpResponseDTO = authService.signUp(createUserRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(signUpResponseDTO);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO<AuthDTO>> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
         ResponseDTO<AuthDTO> loginRequest = authService.login(loginRequestDTO);

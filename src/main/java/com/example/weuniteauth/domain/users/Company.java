@@ -13,6 +13,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Entity
+@DiscriminatorValue("COMPANY")
 public class Company  extends User {
     public Company(String name, String username, String email, String password) {
         super(name, username, email, password);
