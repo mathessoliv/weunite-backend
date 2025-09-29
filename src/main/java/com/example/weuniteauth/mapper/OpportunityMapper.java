@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {SkillMapper.class})
 public interface OpportunityMapper {
 
     @BeanMapping(ignoreByDefault = true)

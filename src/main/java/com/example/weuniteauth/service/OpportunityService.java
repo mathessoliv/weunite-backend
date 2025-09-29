@@ -1,6 +1,7 @@
 package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.opportunity.Opportunity;
+import com.example.weuniteauth.domain.opportunity.Skill;
 import com.example.weuniteauth.domain.users.Company;
 import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
@@ -12,10 +13,12 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.OpportunityMapper;
 import com.example.weuniteauth.repository.CompanyRepository;
 import com.example.weuniteauth.repository.OpportunityRepository;
+import com.example.weuniteauth.repository.SkillRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OpportunityService {
@@ -23,11 +26,13 @@ public class OpportunityService {
     private final CompanyRepository companyRepository;
     private final OpportunityRepository opportunityRepository;
     private final OpportunityMapper opportunityMapper;
+    private final SkillRepository skillRepository;
 
-    public OpportunityService(CompanyRepository companyRepository, OpportunityRepository opportunityRepository, OpportunityMapper opportunityMapper) {
+    public OpportunityService(CompanyRepository companyRepository, OpportunityRepository opportunityRepository, OpportunityMapper opportunityMapper, SkillRepository skillRepository) {
         this.companyRepository = companyRepository;
         this.opportunityRepository = opportunityRepository;
         this.opportunityMapper = opportunityMapper;
+        this.skillRepository = skillRepository;
     }
 
     @Transactional
@@ -41,7 +46,18 @@ public class OpportunityService {
                 opportunityDTO.description(),
                 opportunityDTO.location(),
                 opportunityDTO.dateEnd(),
-                opportunityDTO.skills()
+                opportunityDTO.skills().stream()
+                        .map(skill -> {
+                            Skill existingSkill = skillRepository.findByName(skill.getName());
+                            if (existingSkill != null) {
+                                return existingSkill;
+                            } else {
+                                Skill newSkill = new Skill(skill.getName());
+                                skillRepository.save(newSkill);
+                                return newSkill;
+                            }
+                        })
+                        .collect(Collectors.toSet())
         );
 
         opportunityRepository.save(createdOpportunity);

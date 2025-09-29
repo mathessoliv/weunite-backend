@@ -14,8 +14,6 @@ public record OpportunityRequestDTO(
         String location,
         LocalDate dateEnd,
         Set<Skill> skills
-
-
 ) {
 
 }
