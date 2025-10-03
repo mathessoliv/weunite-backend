@@ -1,6 +1,7 @@
 package com.example.weuniteauth.dto.Opportunity;
 
 import com.example.weuniteauth.domain.opportunity.Skill;
+import com.example.weuniteauth.domain.users.Company;
 import com.example.weuniteauth.validations.ValidOpportunity;
 
 import java.time.LocalDate;

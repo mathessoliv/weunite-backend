@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {SkillMapper.class})
+@Mapper(componentModel = "spring", uses = {SkillMapper.class, UserMapper.class})
 public interface OpportunityMapper {
 
     @BeanMapping(ignoreByDefault = true)
@@ -29,6 +29,7 @@ public interface OpportunityMapper {
     @Mapping(target = "createdAt", source = "opportunity.createdAt")
     @Mapping(target = "updatedAt", source = "opportunity.updatedAt")
     @Mapping(target = "skills", source = "opportunity.skills")
+    @Mapping(target = "company", source = "opportunity.company")
     OpportunityDTO toOpportunityDTO(Opportunity opportunity);
 
     default ResponseDTO<OpportunityDTO> toResponseDTO(String message, Opportunity opportunity) {
