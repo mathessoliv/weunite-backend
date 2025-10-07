@@ -1,6 +1,6 @@
 package com.example.weuniteauth.config;
 
-import com.example.weuniteauth.domain.Role;
+import com.example.weuniteauth.domain.users.Role;
 import com.example.weuniteauth.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +29,12 @@ public class DatabaseConfig {
                 Role companyRole = new Role();
                 companyRole.setName("COMPANY");
                 roleRepository.save(companyRole);
+            }
+
+            if (roleRepository.findByName(Role.Values.ATHLETE.name()) == null) {
+                Role athleteRole = new Role();
+                athleteRole.setName("ATHLETE");
+                roleRepository.save(athleteRole);
             }
         };
     }

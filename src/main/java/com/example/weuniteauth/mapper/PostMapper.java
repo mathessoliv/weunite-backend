@@ -1,8 +1,8 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Comment;
-import com.example.weuniteauth.domain.Like;
-import com.example.weuniteauth.domain.Post;
+import com.example.weuniteauth.domain.post.Comment;
+import com.example.weuniteauth.domain.post.Like;
+import com.example.weuniteauth.domain.post.Post;
 import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.PostDTO;

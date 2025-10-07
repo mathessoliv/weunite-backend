@@ -6,6 +6,7 @@ public record UserDTO(
         String id,
         String name,
         String username,
+        String role,
         String bio,
         String email,
         String profileImg,

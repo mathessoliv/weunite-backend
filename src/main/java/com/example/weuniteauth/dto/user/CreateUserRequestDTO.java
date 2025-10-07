@@ -1,9 +1,12 @@
 package com.example.weuniteauth.dto.user;
 
+import com.example.weuniteauth.domain.users.Role;
 import com.example.weuniteauth.validations.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.Set;
 
 public record CreateUserRequestDTO(
         @NotBlank(message = "O nome não pode estar vazio")
@@ -20,6 +23,9 @@ public record CreateUserRequestDTO(
 
         @NotBlank(message = "A senha não pode estar vazia")
         @ValidPassword
-        String password
+        String password,
+
+        @NotBlank
+        String role
 ) {
 }

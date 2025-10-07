@@ -1,5 +1,6 @@
-package com.example.weuniteauth.domain;
+package com.example.weuniteauth.domain.users;
 
+import com.example.weuniteauth.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,9 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Table(name = "tb_user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("USER")
 public class User{
 
     public User(String name, String username, String email, String password) {
@@ -67,9 +71,9 @@ public class User{
     private String bio;
 
     @Column(nullable = false)
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER )
     @JoinTable(name = "tb_user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> role = new HashSet<>();
 
     @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Follow> followers = new HashSet<>();
