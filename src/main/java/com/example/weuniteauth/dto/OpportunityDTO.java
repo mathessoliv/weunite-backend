@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Set;
 
-public record OpportunityDTO(
+public record   OpportunityDTO(
         Long id,
         String title,
         String description,

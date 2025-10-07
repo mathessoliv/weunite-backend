@@ -74,11 +74,25 @@ public class OpportunityService {
             throw new UnauthorizedException("Você não possui autorização para atualizar esta oportunidade.");
         }
 
-        Opportunity updatedOpportunity = opportunityMapper.toEntity(updatedOpportunityDTO);
+        existingOpportunity.setTitle(updatedOpportunityDTO.title());
+        existingOpportunity.setDescription(updatedOpportunityDTO.description());
+        existingOpportunity.setLocation(updatedOpportunityDTO.location());
+        existingOpportunity.setDateEnd(updatedOpportunityDTO.dateEnd());
 
-        opportunityRepository.save(updatedOpportunity);
+        existingOpportunity.getSkills().clear();
 
-        return opportunityMapper.toResponseDTO("Oportunidade atualizada com sucesso!", updatedOpportunity);
+        updatedOpportunityDTO.skills().forEach(skillDTO -> {
+            Skill skill = skillRepository.findByName(skillDTO.getName());
+            if (skill == null) {
+                skill = new Skill(skillDTO.getName());
+                skillRepository.save(skill);
+            }
+            existingOpportunity.addSkill(skill);
+        });
+
+        opportunityRepository.save(existingOpportunity);
+
+        return opportunityMapper.toResponseDTO("Oportunidade atualizada com sucesso!", existingOpportunity);
     }
 
     @Transactional
