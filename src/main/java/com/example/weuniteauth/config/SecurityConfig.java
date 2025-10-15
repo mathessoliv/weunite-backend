@@ -20,9 +20,12 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        // ✅ WEBSOCKET - DEVE SER A PRIMEIRA REGRA!
+
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/ws").permitAll()
+
+                        
+                        .requestMatchers("/uploads/**").permitAll()
 
                         // Auth endpoints
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
