@@ -87,6 +87,7 @@ public class OpportunityServiceTest {
                         LocalDate.of(2025, 12, 31),
                         skills,
                         Instant.now(),
+                        null,
                         null
                 )
         );
@@ -153,6 +154,7 @@ public class OpportunityServiceTest {
                 LocalDate.of(2025, 11, 30),
                 updatedSkills,
                 null,
+                null,
                 null
         );
 
@@ -206,6 +208,7 @@ public class OpportunityServiceTest {
                 LocalDate.of(2025, 11, 30),
                 new HashSet<>(),
                 null,
+                null,
                 null
         );
 
@@ -234,6 +237,7 @@ public class OpportunityServiceTest {
                 "Rio de Janeiro, RJ",
                 LocalDate.of(2025, 11, 30),
                 new HashSet<>(),
+                null,
                 null,
                 null
         );
@@ -284,6 +288,7 @@ public class OpportunityServiceTest {
                         LocalDate.of(2025, 12, 31),
                         new HashSet<>(),
                         Instant.now(),
+                        null,
                         null
                 )
         );
