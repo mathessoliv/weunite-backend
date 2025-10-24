@@ -59,6 +59,10 @@ local.properties
 .loadpath
 .recommenders
 
+# Arquivos de upload de usuários
+uploads/*
+!uploads/.gitkeep
+
 # VS Code
 .vscode/
 
