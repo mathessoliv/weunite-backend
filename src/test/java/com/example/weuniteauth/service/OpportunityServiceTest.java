@@ -6,6 +6,7 @@ import com.example.weuniteauth.domain.users.Company;
 import com.example.weuniteauth.dto.Opportunity.OpportunityRequestDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.exceptions.UnauthorizedException;
 import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
@@ -87,7 +88,9 @@ public class OpportunityServiceTest {
                         LocalDate.of(2025, 12, 31),
                         skills,
                         Instant.now(),
-                        null
+                        null,
+                        null,
+                        0
                 )
         );
 
@@ -145,6 +148,23 @@ public class OpportunityServiceTest {
         Set<Skill> updatedSkills = new HashSet<>();
         updatedSkills.add(new Skill("Python"));
 
+        // Criar UserDTO para o company
+        UserDTO companyDTO = new UserDTO(
+                userId,
+                "testuser",
+                "test@example.com",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
                 opportunityId,
                 "Senior Software Developer",
@@ -153,7 +173,9 @@ public class OpportunityServiceTest {
                 LocalDate.of(2025, 11, 30),
                 updatedSkills,
                 null,
-                null
+                null,
+                companyDTO,
+                0
         );
 
         Company mockCompany = new Company();
@@ -198,6 +220,23 @@ public class OpportunityServiceTest {
     void updateOpportunityWithNonExistentOpportunity() {
         Long userId = 1L;
         Long opportunityId = 999L;
+
+        UserDTO companyDTO = new UserDTO(
+                userId,
+                "testuser",
+                "test@example.com",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
                 opportunityId,
                 "Senior Software Developer",
@@ -206,7 +245,9 @@ public class OpportunityServiceTest {
                 LocalDate.of(2025, 11, 30),
                 new HashSet<>(),
                 null,
-                null
+                null,
+                companyDTO,
+                0
         );
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.empty());
@@ -227,6 +268,22 @@ public class OpportunityServiceTest {
         Long ownerId = 2L;
         Long opportunityId = 1L;
 
+        UserDTO companyDTO = new UserDTO(
+                userId,
+                "testuser",
+                "test@example.com",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
                 opportunityId,
                 "Senior Software Developer",
@@ -235,7 +292,9 @@ public class OpportunityServiceTest {
                 LocalDate.of(2025, 11, 30),
                 new HashSet<>(),
                 null,
-                null
+                null,
+                companyDTO,
+                0
         );
 
         Company opportunityOwner = new Company();
@@ -274,6 +333,20 @@ public class OpportunityServiceTest {
         existingOpportunity.setCompany(mockCompany);
         existingOpportunity.setTitle("Software Developer");
 
+        UserDTO companyDTO = new UserDTO(
+                String.valueOf(userId),
+                "Test Company",
+                "testuser",
+                "COMPANY",
+                null,
+                "test@example.com",
+                null,
+                null,
+                false,
+                Instant.now(),
+                null
+        );
+
         ResponseDTO<OpportunityDTO> expectedResponse = new ResponseDTO<>(
                 "Oportunidade deletada com sucesso!",
                 new OpportunityDTO(
@@ -284,7 +357,9 @@ public class OpportunityServiceTest {
                         LocalDate.of(2025, 12, 31),
                         new HashSet<>(),
                         Instant.now(),
-                        null
+                        null,
+                        companyDTO,
+                        0
                 )
         );
 

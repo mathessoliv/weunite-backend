@@ -48,15 +48,17 @@ public class OpportunityController {
     }
 
     @GetMapping ("/get")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunities(){
+    public ResponseEntity<ResponseDTO<List<OpportunityDTO>>> getOpportunities(){
         List<OpportunityDTO> opportunities = opportunityService.getOpportunities();
-        return ResponseEntity.status(HttpStatus.OK).body(opportunities);
+        ResponseDTO<List<OpportunityDTO>> response = new ResponseDTO<>("Oportunidades carregadas com sucesso!", opportunities);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/get/company/{companyId}")
-    public ResponseEntity<List<OpportunityDTO>> getOpportunitiesByCompanyId(@PathVariable Long companyId){
+    public ResponseEntity<ResponseDTO<List<OpportunityDTO>>> getOpportunitiesByCompanyId(@PathVariable Long companyId){
         List<OpportunityDTO> opportunities = opportunityService.getOpportunitiesByCompanyId(companyId);
-        return ResponseEntity.status(HttpStatus.OK).body(opportunities);
+        ResponseDTO<List<OpportunityDTO>> response = new ResponseDTO<>("Oportunidades da empresa carregadas com sucesso!", opportunities);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/delete/{companyId}/{opportunityId}")

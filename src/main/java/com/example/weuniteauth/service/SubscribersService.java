@@ -47,10 +47,12 @@ public class SubscribersService {
             Subscriber newSubscriber = new Subscriber(athlete, opportunity);
             opportunity.addSubscriber(newSubscriber);
             subscribersRepository.save(newSubscriber);
+            opportunityRepository.save(opportunity);
             return subscribersMapper.toResponseDTO("Inscrição criada com sucesso!", newSubscriber);
         } else {
             opportunity.removeSubscriber(existingSubscriber);
-            subscribersRepository.save(existingSubscriber);
+            subscribersRepository.delete(existingSubscriber);
+            opportunityRepository.save(opportunity);
             return subscribersMapper.toResponseDTO("Inscrição removida com sucesso!", existingSubscriber);
         }
     }
@@ -62,5 +64,16 @@ public class SubscribersService {
 
         List<Subscriber> subscribers = subscribersRepository.findByOpportunityId(opportunityId);
         return subscribersMapper.mapSubscribersToList(subscribers);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean isSubscribed(Long athleteId, Long opportunityId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Opportunity opportunity = opportunityRepository.findById(opportunityId)
+                .orElseThrow(OpportunityNotFoundException::new);
+
+        return subscribersRepository.findByAthleteAndOpportunity(athlete, opportunity).isPresent();
     }
 }
