@@ -1,6 +1,6 @@
 package com.example.weuniteauth.mapper;
 
-import com.example.weuniteauth.domain.Follow;
+import com.example.weuniteauth.domain.users.Follow;
 import com.example.weuniteauth.dto.FollowDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import org.mapstruct.Mapper;

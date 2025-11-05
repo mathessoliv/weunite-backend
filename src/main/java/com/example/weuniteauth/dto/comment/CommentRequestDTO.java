@@ -4,7 +4,6 @@ import com.example.weuniteauth.validations.ValidComment;
 
 @ValidComment
 public record CommentRequestDTO(
-
         String text,
         String image
 ) {

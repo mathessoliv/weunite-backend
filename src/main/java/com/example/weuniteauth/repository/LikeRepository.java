@@ -1,9 +1,9 @@
 package com.example.weuniteauth.repository;
 
-import com.example.weuniteauth.domain.Comment;
-import com.example.weuniteauth.domain.Like;
-import com.example.weuniteauth.domain.Post;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.post.Comment;
+import com.example.weuniteauth.domain.post.Like;
+import com.example.weuniteauth.domain.post.Post;
+import com.example.weuniteauth.domain.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

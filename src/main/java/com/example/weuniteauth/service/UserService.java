@@ -4,15 +4,16 @@ import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
+import com.example.weuniteauth.exceptions.NotFoundResourceException;
 import com.example.weuniteauth.exceptions.auth.ExpiredTokenException;
 import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.user.UserAlreadyExistsException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.UserMapper;
-import com.example.weuniteauth.domain.Role;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.Role;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.repository.RoleRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -64,12 +65,13 @@ public class UserService {
 
         newUser.setPassword(encodedPassword);
 
-        Role roleUser = roleRepository.findByName(Role.Values.BASIC.name());
+        Role roleUser = roleRepository.findByName(userDTO.role().toUpperCase());
+        if (roleUser == null) {
+            throw new NotFoundResourceException("Role not found: " + userDTO.role());
+        }
 
-        newUser.setRoles(Set.of(roleUser));
-
+        newUser.setRole(Set.of(roleUser));
         newUser = generateAndSetToken(newUser);
-
         userRepository.save(newUser);
 
         return newUser;
@@ -79,6 +81,8 @@ public class UserService {
     public ResponseDTO<UserDTO> deleteUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException());
+
+        user.getRole().clear();
 
         userRepository.delete(user);
 

@@ -31,8 +31,8 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+.mvnw/timing.properties
+.mvnw/wrapper/maven-wrapper.jar
 
 # IntelliJ IDEA
 .idea/
@@ -84,3 +84,4 @@ application-*.yml
 
 node_modules
 *.xml
+.idea

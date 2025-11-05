@@ -1,9 +1,9 @@
 package com.example.weuniteauth.service;
 
-import com.example.weuniteauth.domain.Comment;
-import com.example.weuniteauth.domain.Like;
-import com.example.weuniteauth.domain.Post;
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.post.Comment;
+import com.example.weuniteauth.domain.post.Like;
+import com.example.weuniteauth.domain.post.Post;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.LikeDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.exceptions.comment.CommentNotFoundException;
@@ -13,7 +13,7 @@ import com.example.weuniteauth.mapper.LikeMapper;
 import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.LikeRepository;
 import com.example.weuniteauth.repository.PostRepository;
-import com.example.weuniteauth.repository.UserRepository;
+import com.example.weuniteauth.repository.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

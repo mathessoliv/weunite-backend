@@ -1,6 +1,6 @@
 package com.example.weuniteauth.service.jwt;
 
-import com.example.weuniteauth.domain.User;
+import com.example.weuniteauth.domain.users.User;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class JwtService {
                 .issuer("weunite")
                 .subject(user.getUsername())
                 .claims(userClaims -> {
-                    userClaims.put("roles", user.getRoles());
+                    userClaims.put("role", user.getRole());
                     userClaims.put("id", user.getId().toString());
                 })
                 .issuedAt(now)
