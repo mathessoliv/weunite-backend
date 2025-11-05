@@ -63,6 +63,14 @@ public class SubscribersService {
                 orElseThrow(OpportunityNotFoundException::new);
 
         List<Subscriber> subscribers = subscribersRepository.findByOpportunityId(opportunityId);
+
+        // Forçar carregamento dos relacionamentos LAZY
+        subscribers.forEach(subscriber -> {
+            subscriber.getAthlete().getUsername(); // Força carregamento do athlete
+            subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
+            subscriber.getOpportunity().getSubscribers().size(); // Força carregamento dos subscribers da opportunity
+        });
+
         return subscribersMapper.mapSubscribersToList(subscribers);
     }
 

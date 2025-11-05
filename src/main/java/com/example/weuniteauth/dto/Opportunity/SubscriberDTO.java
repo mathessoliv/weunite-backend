@@ -1,12 +1,12 @@
 package com.example.weuniteauth.dto.Opportunity;
 
-import com.example.weuniteauth.domain.opportunity.Opportunity;
-import com.example.weuniteauth.domain.users.Athlete;
+import com.example.weuniteauth.dto.OpportunityDTO;
+import com.example.weuniteauth.dto.UserDTO;
 
 public record SubscriberDTO(
         Long id,
-        Athlete athlete,
-        Opportunity opportunity
+        UserDTO athlete,
+        OpportunityDTO opportunity
 ) {
 }
 

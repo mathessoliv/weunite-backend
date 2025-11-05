@@ -10,10 +10,10 @@ import org.mapstruct.Named;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class, OpportunityMapper.class})
 public interface SubscribersMapper {
 
-    @Mapping(target = "id", source = "subscriber.id", resultType = String.class)
+    @Mapping(target = "id", source = "subscriber.id")
     @Mapping(target = "opportunity", source = "subscriber.opportunity")
     @Mapping(target = "athlete", source = "subscriber.athlete")
     SubscriberDTO toSubscriberDTO(Subscriber subscriber);
