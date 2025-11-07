@@ -36,6 +36,12 @@ public class DatabaseConfig {
                 athleteRole.setName("ATHLETE");
                 roleRepository.save(athleteRole);
             }
+
+            if (roleRepository.findByName(Role.Values.ATHLETE.name()) == null) {
+                Role adminRole = new Role();
+                adminRole.setName("ADMIN");
+                roleRepository.save(adminRole);
+            }
         };
     }
 }

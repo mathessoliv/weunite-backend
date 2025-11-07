@@ -15,7 +15,6 @@
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="weunite@localhost" uuid="fda7a594-1db3-472a-b0d2-7253f6d49ce4">
-    <data-source source="LOCAL" name="weunite@localhost" uuid="2f8a43db-d38e-4bb0-8e08-e3c6c52b287d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
