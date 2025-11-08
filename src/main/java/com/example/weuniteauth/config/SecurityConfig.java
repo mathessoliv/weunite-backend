@@ -93,10 +93,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/admin/reports/resolve/{entityId}/{type}").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated())
-
-                        // Qualquer outra requisição precisa estar autenticada
-                        .anyRequest().authenticated()
-                )
+                
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new JwtAuthenticationConverter())
