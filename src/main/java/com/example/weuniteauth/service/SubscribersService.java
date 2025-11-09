@@ -84,4 +84,22 @@ public class SubscribersService {
 
         return subscribersRepository.findByAthleteAndOpportunity(athlete, opportunity).isPresent();
     }
+
+    @Transactional(readOnly = true)
+    public List<SubscriberDTO> getSubscribersByAthlete(Long athleteId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(UserNotFoundException::new);
+
+        List<Subscriber> subscribers = subscribersRepository.findByAthleteId(athleteId);
+
+        // Forçar carregamento dos relacionamentos LAZY
+        subscribers.forEach(subscriber -> {
+            subscriber.getAthlete().getUsername(); // Força carregamento do athlete
+            subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
+            subscriber.getOpportunity().getCompany().getUsername(); // Força carregamento da company
+            subscriber.getOpportunity().getSubscribers().size(); // Força carregamento dos subscribers da opportunity
+        });
+
+        return subscribersMapper.mapSubscribersToList(subscribers);
+    }
 }

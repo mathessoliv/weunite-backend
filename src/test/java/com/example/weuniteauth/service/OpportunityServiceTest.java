@@ -150,18 +150,16 @@ public class OpportunityServiceTest {
 
         // Criar UserDTO para o company
         UserDTO companyDTO = new UserDTO(
-                userId,
+                String.valueOf(userId),
+                "Test Company",
                 "testuser",
+                "COMPANY",
+                null,
                 "test@example.com",
                 null,
                 null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                false,
+                Instant.now(),
                 null
         );
 
@@ -222,18 +220,16 @@ public class OpportunityServiceTest {
         Long opportunityId = 999L;
 
         UserDTO companyDTO = new UserDTO(
-                userId,
+                String.valueOf(userId),
+                "Test Company",
                 "testuser",
+                "COMPANY",
+                null,
                 "test@example.com",
                 null,
                 null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                false,
+                Instant.now(),
                 null
         );
 
@@ -269,18 +265,16 @@ public class OpportunityServiceTest {
         Long opportunityId = 1L;
 
         UserDTO companyDTO = new UserDTO(
-                userId,
+                String.valueOf(userId),
+                "Test Company",
                 "testuser",
+                "COMPANY",
+                null,
                 "test@example.com",
                 null,
                 null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                false,
+                Instant.now(),
                 null
         );
 
