@@ -3,6 +3,9 @@ package com.example.weuniteauth.controller;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
+import com.example.weuniteauth.dto.admin.AdminStatsDTO;
+import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
+import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
@@ -21,6 +24,28 @@ public class AdminController {
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
+
+    // ========== Endpoints de Estatísticas ==========
+
+    @GetMapping("/stats")
+    public ResponseEntity<AdminStatsDTO> getAdminStats() {
+        AdminStatsDTO stats = adminService.getAdminStats();
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/stats/monthly")
+    public ResponseEntity<List<MonthlyDataDTO>> getMonthlyData() {
+        List<MonthlyDataDTO> monthlyData = adminService.getMonthlyData();
+        return ResponseEntity.ok(monthlyData);
+    }
+
+    @GetMapping("/stats/user-types")
+    public ResponseEntity<List<UserTypeDataDTO>> getUserTypeData() {
+        List<UserTypeDataDTO> userTypeData = adminService.getUserTypeData();
+        return ResponseEntity.ok(userTypeData);
+    }
+
+    // ========== Endpoints de Posts Reportados ==========
 
     @GetMapping("/posts/reported")
     public ResponseEntity<List<ReportSummaryDTO>> getReportedPosts() {
