@@ -1,76 +1,53 @@
 package com.example.weuniteauth.service;
 
-import com.example.weuniteauth.domain.report.Report;
-import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.report.ReportDTO;
 import com.example.weuniteauth.dto.report.ReportRequestDTO;
-import com.example.weuniteauth.dto.report.ReportSummaryDTO;
-import com.example.weuniteauth.exceptions.user.UserNotFoundException;
-import com.example.weuniteauth.mapper.ReportMapper;
-import com.example.weuniteauth.repository.ReportRepository;
-import com.example.weuniteauth.repository.user.UserRepository;
+import com.example.weuniteauth.service.report.ReportCreationService;
+import com.example.weuniteauth.service.report.ReportQueryService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Serviço facade para operações de denúncias.
+ * Delega para serviços especializados:
+ * - ReportCreationService: Criação de denúncias
+ * - ReportQueryService: Consulta de denúncias
+ */
 @Service
 public class ReportService {
 
-    private final ReportRepository reportRepository;
-    private final UserRepository userRepository;
-    private final ReportMapper reportMapper;
+    private final ReportCreationService reportCreationService;
+    private final ReportQueryService reportQueryService;
 
-    public ReportService(ReportRepository reportRepository, UserRepository userRepository, ReportMapper reportMapper) {
-        this.reportRepository = reportRepository;
-        this.userRepository = userRepository;
-        this.reportMapper = reportMapper;
+    public ReportService(ReportCreationService reportCreationService, ReportQueryService reportQueryService) {
+        this.reportCreationService = reportCreationService;
+        this.reportQueryService = reportQueryService;
     }
 
-    @Transactional
+    // ========== Delegação para ReportCreationService ==========
+
     public ResponseDTO<ReportDTO> createReport(Long userId, ReportRequestDTO reportRequestDTO) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-
-        Report.ReportType type = Report.ReportType.valueOf(reportRequestDTO.type().toUpperCase());
-
-        Report report = new Report(
-                user,
-                type,
-                reportRequestDTO.entityId(),
-                reportRequestDTO.reason()
-        );
-
-        reportRepository.save(report);
-
-        return reportMapper.toResponseDTO("Denúncia registrada com sucesso!", report);
+        return reportCreationService.createReport(userId, reportRequestDTO);
     }
 
-    @Transactional(readOnly = true)
+    // ========== Delegação para ReportQueryService ==========
+
     public List<ReportDTO> getAllPendingReports() {
-        List<Report> reports = reportRepository.findAllPendingReports();
-        return reportMapper.toReportDTOList(reports);
+        return reportQueryService.getAllPendingReports();
     }
 
-    @Transactional(readOnly = true)
     public List<ReportDTO> getAllReports() {
-        List<Report> reports = reportRepository.findAllReports();
-        return reportMapper.toReportDTOList(reports);
+        return reportQueryService.getAllReports();
     }
 
-    @Transactional(readOnly = true)
     public List<ReportDTO> getAllReportsByStatus(String status) {
-        Report.ReportStatus reportStatus = Report.ReportStatus.valueOf(status.toUpperCase());
-        List<Report> reports = reportRepository.findAllReportsByStatus(reportStatus);
-        return reportMapper.toReportDTOList(reports);
+        return reportQueryService.getAllReportsByStatus(status);
     }
 
-    @Transactional(readOnly = true)
     public Long getReportCount(Long entityId, String type) {
-        Report.ReportType reportType = Report.ReportType.valueOf(type.toUpperCase());
-        return reportRepository.countByEntityIdAndTypeAndStatus(entityId, reportType, Report.ReportStatus.PENDING);
+        return reportQueryService.getReportCount(entityId, type);
     }
 }
 
