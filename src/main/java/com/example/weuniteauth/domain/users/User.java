@@ -26,6 +26,8 @@ public class User{
         this.password = password;
         this.emailVerified = false;
         this.isPrivate = false;
+        this.isBanned = false;
+        this.isSuspended = false;
     }
 
     @Id
@@ -69,6 +71,29 @@ public class User{
 
     @Column(length = 500)
     private String bio;
+
+    // Campos de banimento
+    @Column
+    private Boolean isBanned;
+
+    @Column
+    private Instant bannedAt;
+
+    @Column(length = 500)
+    private String bannedReason;
+
+    @Column
+    private Long bannedByAdminId;
+
+    // Campos de suspensão
+    @Column
+    private Boolean isSuspended;
+
+    @Column
+    private Instant suspendedUntil;
+
+    @Column(length = 500)
+    private String suspensionReason;
 
     @Column(nullable = false)
     @ManyToMany(fetch = FetchType.EAGER )

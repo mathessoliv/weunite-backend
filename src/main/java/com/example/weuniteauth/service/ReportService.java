@@ -55,6 +55,19 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
+    public List<ReportDTO> getAllReports() {
+        List<Report> reports = reportRepository.findAllReports();
+        return reportMapper.toReportDTOList(reports);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReportDTO> getAllReportsByStatus(String status) {
+        Report.ReportStatus reportStatus = Report.ReportStatus.valueOf(status.toUpperCase());
+        List<Report> reports = reportRepository.findAllReportsByStatus(reportStatus);
+        return reportMapper.toReportDTOList(reports);
+    }
+
+    @Transactional(readOnly = true)
     public Long getReportCount(Long entityId, String type) {
         Report.ReportType reportType = Report.ReportType.valueOf(type.toUpperCase());
         return reportRepository.countByEntityIdAndTypeAndStatus(entityId, reportType, Report.ReportStatus.PENDING);

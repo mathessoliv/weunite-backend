@@ -4,12 +4,15 @@ import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.admin.AdminStatsDTO;
+import com.example.weuniteauth.dto.admin.BanUserRequestDTO;
 import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
+import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
 import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
 import com.example.weuniteauth.service.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,6 +119,26 @@ public class AdminController {
             @PathVariable Long entityId,
             @PathVariable String type) {
         ResponseDTO<String> response = adminService.resolveReports(entityId, type);
+        return ResponseEntity.ok(response);
+    }
+
+    // ========== Endpoints de Moderação de Usuários ==========
+
+    /**
+     * Bane um usuário permanentemente
+     */
+    @PostMapping("/users/ban")
+    public ResponseEntity<ResponseDTO<String>> banUser(@Valid @RequestBody BanUserRequestDTO request) {
+        ResponseDTO<String> response = adminService.banUser(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Suspende um usuário temporariamente
+     */
+    @PostMapping("/users/suspend")
+    public ResponseEntity<ResponseDTO<String>> suspendUser(@Valid @RequestBody SuspendUserRequestDTO request) {
+        ResponseDTO<String> response = adminService.suspendUser(request);
         return ResponseEntity.ok(response);
     }
 }

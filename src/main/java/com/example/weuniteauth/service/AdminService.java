@@ -3,12 +3,15 @@ package com.example.weuniteauth.service;
 import com.example.weuniteauth.domain.opportunity.Opportunity;
 import com.example.weuniteauth.domain.post.Post;
 import com.example.weuniteauth.domain.report.Report;
+import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.admin.AdminStatsDTO;
+import com.example.weuniteauth.dto.admin.BanUserRequestDTO;
 import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
 import com.example.weuniteauth.dto.admin.PreviousMonthStatsDTO;
+import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
 import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
 import com.example.weuniteauth.dto.report.ReportDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
@@ -16,6 +19,7 @@ import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
 import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
+import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.OpportunityMapper;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.mapper.ReportMapper;
@@ -147,11 +151,15 @@ public class AdminService {
                 Report.ReportStatus.PENDING
         );
 
-        reports.forEach(report -> report.setStatus(Report.ReportStatus.REVIEWED));
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+            report.setResolvedAt(Instant.now());
+        });
         reportRepository.saveAll(reports);
 
         return new ResponseDTO<>(
-                "Denúncias marcadas como revisadas",
+                "Denúncias marcadas como resolvidas",
                 reports.size() + " denúncias foram marcadas como em análise"
         );
     }
@@ -165,19 +173,19 @@ public class AdminService {
                 Report.ReportStatus.PENDING
         );
 
-        List<Report> reviewedReports = reportRepository.findByEntityIdAndTypeAndStatus(
+        List<Report> resolvedReports = reportRepository.findByEntityIdAndTypeAndStatus(
                 entityId,
                 reportType,
-                Report.ReportStatus.REVIEWED
+                Report.ReportStatus.RESOLVED
         );
 
         reports.forEach(report -> report.setStatus(Report.ReportStatus.DISMISSED));
-        reviewedReports.forEach(report -> report.setStatus(Report.ReportStatus.DISMISSED));
+        resolvedReports.forEach(report -> report.setStatus(Report.ReportStatus.DISMISSED));
         
         reportRepository.saveAll(reports);
-        reportRepository.saveAll(reviewedReports);
+        reportRepository.saveAll(resolvedReports);
 
-        int totalResolved = reports.size() + reviewedReports.size();
+        int totalResolved = reports.size() + resolvedReports.size();
 
         return new ResponseDTO<>(
                 "Denúncias resolvidas com sucesso",
@@ -191,13 +199,18 @@ public class AdminService {
                 type,
                 Report.ReportStatus.PENDING
         );
-        reports.forEach(report -> report.setStatus(Report.ReportStatus.REVIEWED));
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+            report.setResolvedAt(Instant.now());
+        });
         reportRepository.saveAll(reports);
     }
 
     @Transactional(readOnly = true)
     public List<ReportedPostDetailDTO> getReportedPostsDetails() {
-        List<Object[]> results = reportRepository.findEntitiesWithManyReports(
+        // Usar o novo método que busca TODAS as denúncias, não só PENDING
+        List<Object[]> results = reportRepository.findAllEntitiesWithReports(
                 Report.ReportType.POST,
                 REPORT_THRESHOLD
         );
@@ -205,25 +218,29 @@ public class AdminService {
         return results.stream()
                 .map(result -> {
                     Long postId = (Long) result[0];
-                    Long reportCount = (Long) result[2];
 
                     Post post = postRepository.findById(postId)
                             .orElseThrow(PostNotFoundException::new);
 
-                    List<Report> reports = reportRepository.findByEntityIdAndTypeAndStatus(
+                    // Buscar TODAS as denúncias desta entidade
+                    List<Report> allReports = reportRepository.findByEntityIdAndType(
                             postId,
-                            Report.ReportType.POST,
-                            Report.ReportStatus.PENDING
+                            Report.ReportType.POST
                     );
 
                     PostDTO postDTO = postMapper.toPostDTO(post);
-                    List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(reports);
+                    List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(allReports);
+
+                    // Determinar status baseado nas denúncias
+                    boolean hasPending = allReports.stream()
+                            .anyMatch(r -> r.getStatus() == Report.ReportStatus.PENDING);
+                    String status = hasPending ? "pending" : "resolved";
 
                     return new ReportedPostDetailDTO(
                             postDTO,
                             reportDTOs,
-                            reportCount,
-                            "pending"
+                            (long) allReports.size(),
+                            status
                     );
                 })
                 .collect(Collectors.toList());
@@ -231,7 +248,8 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public List<ReportedOpportunityDetailDTO> getReportedOpportunitiesDetails() {
-        List<Object[]> results = reportRepository.findEntitiesWithManyReports(
+        // Usar o novo método que busca TODAS as denúncias, não só PENDING
+        List<Object[]> results = reportRepository.findAllEntitiesWithReports(
                 Report.ReportType.OPPORTUNITY,
                 REPORT_THRESHOLD
         );
@@ -239,25 +257,29 @@ public class AdminService {
         return results.stream()
                 .map(result -> {
                     Long opportunityId = (Long) result[0];
-                    Long reportCount = (Long) result[2];
 
                     Opportunity opportunity = opportunityRepository.findById(opportunityId)
                             .orElseThrow(OpportunityNotFoundException::new);
 
-                    List<Report> reports = reportRepository.findByEntityIdAndTypeAndStatus(
+                    // Buscar TODAS as denúncias desta entidade
+                    List<Report> allReports = reportRepository.findByEntityIdAndType(
                             opportunityId,
-                            Report.ReportType.OPPORTUNITY,
-                            Report.ReportStatus.PENDING
+                            Report.ReportType.OPPORTUNITY
                     );
 
                     OpportunityDTO opportunityDTO = opportunityMapper.toOpportunityDTO(opportunity);
-                    List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(reports);
+                    List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(allReports);
+
+                    // Determinar status baseado nas denúncias
+                    boolean hasPending = allReports.stream()
+                            .anyMatch(r -> r.getStatus() == Report.ReportStatus.PENDING);
+                    String status = hasPending ? "pending" : "resolved";
 
                     return new ReportedOpportunityDetailDTO(
                             opportunityDTO,
                             reportDTOs,
-                            reportCount,
-                            "pending"
+                            (long) allReports.size(),
+                            status
                     );
                 })
                 .collect(Collectors.toList());
@@ -422,6 +444,79 @@ public class AdminService {
         userTypeData.add(new UserTypeDataDTO("Empresas", companiesCount));
         
         return userTypeData;
+    }
+
+    /**
+     * Bane um usuário permanentemente
+     * Fecha TODAS as denúncias relacionadas ao usuário
+     */
+    @Transactional
+    public ResponseDTO<String> banUser(BanUserRequestDTO request) {
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(UserNotFoundException::new);
+
+        // Marcar usuário como banido
+        user.setIsBanned(true);
+        user.setBannedAt(Instant.now());
+        user.setBannedReason(request.reason());
+        user.setBannedByAdminId(request.adminId());
+        userRepository.save(user);
+
+        // Resolver todas as denúncias pendentes do usuário
+        List<Report> userReports = reportRepository.findPendingReportsByUser(user);
+        Instant now = Instant.now();
+        
+        userReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.USER_BANNED);
+            report.setResolvedByAdminId(request.adminId());
+            report.setResolvedAt(now);
+        });
+        
+        reportRepository.saveAll(userReports);
+
+        return new ResponseDTO<>(
+                "Usuário banido com sucesso",
+                String.format("Usuário @%s foi banido permanentemente. %d denúncias foram resolvidas.", 
+                        user.getUsername(), userReports.size())
+        );
+    }
+
+    /**
+     * Suspende um usuário temporariamente
+     * Fecha APENAS a denúncia específica
+     */
+    @Transactional
+    public ResponseDTO<String> suspendUser(SuspendUserRequestDTO request) {
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(UserNotFoundException::new);
+
+        // Marcar usuário como suspenso
+        user.setIsSuspended(true);
+        Instant suspendedUntil = Instant.now().plus(request.durationInDays(), ChronoUnit.DAYS);
+        user.setSuspendedUntil(suspendedUntil);
+        user.setSuspensionReason(request.reason());
+        userRepository.save(user);
+
+        // Resolver apenas a denúncia específica (se fornecida)
+        if (request.reportId() != null) {
+            Report report = reportRepository.findById(request.reportId())
+                    .orElse(null);
+            
+            if (report != null) {
+                report.setStatus(Report.ReportStatus.RESOLVED);
+                report.setActionTaken(Report.ActionTaken.USER_SUSPENDED);
+                report.setResolvedByAdminId(request.adminId());
+                report.setResolvedAt(Instant.now());
+                reportRepository.save(report);
+            }
+        }
+
+        return new ResponseDTO<>(
+                "Usuário suspenso com sucesso",
+                String.format("Usuário @%s foi suspenso por %d dia(s).", 
+                        user.getUsername(), request.durationInDays())
+        );
     }
 }
 
