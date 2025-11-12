@@ -33,18 +33,30 @@ public class PostService {
         this.cloudinaryService = cloudinaryService;
     }
 
+    private boolean isVideoFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && contentType.startsWith("video/");
+    }
+
     @Transactional
-    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post, MultipartFile image) {
+    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post, MultipartFile media) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        String imageUrl = null;
+        Post createdPost = new Post(user, post.text());
 
-        if (image != null && !image.isEmpty()) {
-            imageUrl = cloudinaryService.uploadPost(image, userId);
+        // ✅ ATUALIZADO: Diferencia vídeo de imagem
+        if (media != null && !media.isEmpty()) {
+            String mediaUrl = cloudinaryService.uploadPost(media, userId);
+
+            if (isVideoFile(media)) {
+                createdPost.setVideoUrl(mediaUrl);
+                createdPost.setImageUrl(null);
+            } else {
+                createdPost.setImageUrl(mediaUrl);
+                createdPost.setVideoUrl(null);
+            }
         }
-
-        Post createdPost = new Post(user, post.text(), imageUrl);
 
         postRepository.save(createdPost);
 

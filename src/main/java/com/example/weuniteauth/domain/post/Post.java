@@ -46,6 +46,9 @@ public class Post {
     @Column(length = 500)
     private String imageUrl;
 
+    @Column(length = 500)
+    private String videoUrl;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Like> likes = new HashSet<>();
 

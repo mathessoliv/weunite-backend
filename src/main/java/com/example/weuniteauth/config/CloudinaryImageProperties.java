@@ -35,4 +35,24 @@ public class CloudinaryImageProperties {
         private int verticalMaxHeight = 500; // For vertical images
         private int verticalMaxWidth = 375; // For vertical images
     }
+
+    @Getter
+    @Setter
+    public static class VideoProperties {
+        private int maxDuration = 120;
+        private int maxSizeInMB = 100;
+        // Vertical videos
+        private int verticalMaxWidth = 375;
+        private int verticalMaxHeight = 500;  // ✅ ATUALIZADO: 667 → 500
+        // Horizontal videos
+        private int horizontalMaxWidth = 1280;
+        private int horizontalMaxHeight = 720;
+        // Quality settings
+        private int qualityLevel = 90;  // ✅ ATUALIZADO: 85 → 90
+        private String bitrate = "12000k";  // ✅ NOVO: Bitrate configurável
+        private String videoCodec = "h264";
+    }
+
+    private VideoProperties video = new VideoProperties();
+
 }

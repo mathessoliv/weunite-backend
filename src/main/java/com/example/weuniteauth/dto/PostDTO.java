@@ -7,6 +7,7 @@ public record PostDTO(
         String id,
         String text,
         String imageUrl,
+        String videoUrl,
         List<LikeDTO> likes,
         List<CommentDTO> comments,
         Instant createdAt,
