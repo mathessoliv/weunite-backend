@@ -1,10 +1,8 @@
 package com.example.weuniteauth.controller;
 
 import com.example.weuniteauth.dto.CommentDTO;
-import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.comment.CommentRequestDTO;
-import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.service.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

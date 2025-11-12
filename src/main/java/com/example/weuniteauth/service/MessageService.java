@@ -26,6 +26,7 @@ public class MessageService {
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
     private final MessageMapper messageMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public MessageDTO sendMessage(SendMessageRequestDTO request) {
@@ -54,6 +55,20 @@ public class MessageService {
         // Update conversation's updatedAt timestamp
         conversation.setUpdatedAt(Instant.now());
         conversationRepository.save(conversation);
+
+        // Create notification for the recipient (the other participant)
+        Long senderId = sender.getId();
+        conversation.getParticipants().stream()
+                .filter(participant -> !participant.getId().equals(senderId))
+                .forEach(recipient -> {
+                    notificationService.createNotification(
+                            recipient.getId(),
+                            "NEW_MESSAGE",
+                            senderId,
+                            conversation.getId(), // relatedEntityId points to the conversation
+                            null
+                    );
+                });
 
         return messageMapper.toDTO(savedMessage);
     }

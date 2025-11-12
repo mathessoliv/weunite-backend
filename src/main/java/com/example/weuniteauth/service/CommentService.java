@@ -15,6 +15,7 @@ import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final UserRepository userRepository;
@@ -29,15 +31,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
     private final CloudinaryService cloudinaryService;
-
-
-    public CommentService(UserRepository userRepository, CommentRepository commentRepository, PostRepository postRepository, CommentMapper commentMapper, CloudinaryService cloudinaryService) {
-        this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
-        this.commentMapper = commentMapper;
-        this.cloudinaryService = cloudinaryService;
-    }
+    private final NotificationService notificationService;
 
     @Transactional
     public ResponseDTO<CommentDTO> createComment(Long userId, Long postId, CommentRequestDTO comment) {
@@ -56,6 +50,18 @@ public class CommentService {
 
         commentRepository.save(newComment);
 
+        // Create notification for post owner (if not commenting on own post)
+        Long postOwnerId = post.getUser().getId();
+        if (!postOwnerId.equals(userId)) {
+            notificationService.createNotification(
+                    postOwnerId,
+                    "POST_COMMENT",
+                    userId,
+                    postId,
+                    null
+            );
+        }
+
         return commentMapper.toResponseDTO("Comentário criado com sucesso!", newComment);
     }
 
@@ -70,7 +76,7 @@ public class CommentService {
         return commentMapper.mapCommentsToList(comments);
     }
 
-   @Transactional
+    @Transactional
     public List<CommentDTO> getCommentsByUser(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException();
