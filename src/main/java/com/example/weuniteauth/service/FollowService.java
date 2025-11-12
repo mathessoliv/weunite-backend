@@ -9,6 +9,7 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.FollowMapper;
 import com.example.weuniteauth.repository.FollowRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +17,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FollowService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final FollowMapper followMapper;
     private final UserService userService;
-
-    public FollowService(UserRepository userRepository, FollowRepository followRepository, FollowMapper followMapper, UserService userService) {
-        this.followMapper = followMapper;
-        this.userRepository = userRepository;
-        this.followRepository = followRepository;
-        this.userService = userService;
-    }
+    private final NotificationService notificationService;
 
     @Transactional
     public ResponseDTO<FollowDTO> followUser(User follower, User followed) {
@@ -36,6 +32,18 @@ public class FollowService {
         Follow follow = new Follow(follower, followed);
 
         followRepository.save(follow);
+
+        // Create notification for the followed user
+        Long followedUserId = followed.getId();
+        Long followerUserId = follower.getId();
+
+        notificationService.createNotification(
+                followedUserId,
+                "NEW_FOLLOWER",
+                followerUserId,
+                followedUserId, // relatedEntityId points to the followed user's profile
+                null
+        );
 
         return followMapper.toResponseDTO("Seguiu com sucesso", follow);
     }
