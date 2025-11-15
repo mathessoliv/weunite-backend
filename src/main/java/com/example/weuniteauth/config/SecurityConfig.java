@@ -58,6 +58,7 @@ public class SecurityConfig {
                         // Comments endpoints
                         .requestMatchers(HttpMethod.POST, "/api/comment/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/comment/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/comment/get/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/comment/update/{userId}/{commentId}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/comment/delete/{userId}/{postId}").permitAll()
 

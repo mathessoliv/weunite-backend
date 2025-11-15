@@ -82,11 +82,12 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException());
 
+        ResponseDTO<UserDTO> response = userMapper.toResponseDTO("Usuário deletado com sucesso", user);
         user.getRole().clear();
 
         userRepository.delete(user);
 
-        return userMapper.toResponseDTO("Usuário deletado com sucesso", user);
+        return response;
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
