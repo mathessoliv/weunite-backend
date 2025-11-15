@@ -94,6 +94,7 @@ public class CommentServiceTest {
                 "1",
                 "Test post",
                 null,
+                null,
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),

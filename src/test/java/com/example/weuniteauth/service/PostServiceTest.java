@@ -82,6 +82,7 @@ public class PostServiceTest {
                 "1",
                 "This is a test post",
                 "http://image.url/test.jpg",
+                null,
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),
@@ -144,6 +145,7 @@ public class PostServiceTest {
         PostDTO postDTO = new PostDTO(
                 "1",
                 "This is a test post without image",
+                null,
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -228,6 +230,7 @@ public class PostServiceTest {
                 "1",
                 "Updated post text",
                 "http://new-image.url",
+                null,
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),
@@ -339,6 +342,7 @@ public class PostServiceTest {
         PostDTO deletedPostDTO = new PostDTO(
                 "1",
                 "Post to be deleted",
+                null,
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
