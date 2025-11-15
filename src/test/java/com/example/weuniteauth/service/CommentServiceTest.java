@@ -71,6 +71,7 @@ public class CommentServiceTest {
         Post mockPost = new Post();
         mockPost.setId(postId);
         mockPost.setText("Test post");
+        mockPost.setUser(mockUser);
 
         Comment createdComment = new Comment(mockUser, mockPost, commentRequest.text(), commentRequest.image());
         createdComment.setId(1L);

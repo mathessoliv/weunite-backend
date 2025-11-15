@@ -71,7 +71,7 @@ public class SubscriberServiceTest {
         when(subscribersRepository.findByAthleteAndOpportunity(mockAthlete, mockOpportunity))
                 .thenReturn(Optional.empty());
         when(subscribersRepository.save(any(Subscriber.class))).thenReturn(newSubscriber);
-        when(subscribersMapper.toResponseDTO("Inscrição criada com sucesso!", any(Subscriber.class)))
+        when(subscribersMapper.toResponseDTO(eq("Inscrição criada com sucesso!"), any(Subscriber.class)))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -86,7 +86,7 @@ public class SubscriberServiceTest {
         verify(opportunityRepository).findById(opportunityId);
         verify(subscribersRepository).findByAthleteAndOpportunity(mockAthlete, mockOpportunity);
         verify(subscribersRepository).save(any(Subscriber.class));
-        verify(subscribersMapper).toResponseDTO("Inscrição criada com sucesso!", any(Subscriber.class));
+        verify(subscribersMapper).toResponseDTO(eq("Inscrição criada com sucesso!"), any(Subscriber.class));
     }
 
     @Test

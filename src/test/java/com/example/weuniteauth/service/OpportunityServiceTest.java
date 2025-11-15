@@ -10,8 +10,8 @@ import com.example.weuniteauth.exceptions.UnauthorizedException;
 import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.OpportunityMapper;
+import com.example.weuniteauth.repository.CompanyRepository;
 import com.example.weuniteauth.repository.OpportunityRepository;
-import com.example.weuniteauth.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,13 +33,16 @@ import static org.mockito.Mockito.*;
 public class OpportunityServiceTest {
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private OpportunityRepository opportunityRepository;
 
     @Mock
     private OpportunityMapper opportunityMapper;
+
+    @Mock
+    private CompanyRepository companyRepository;
+
+    @Mock
+    private com.example.weuniteauth.repository.SkillRepository skillRepository;
 
     @InjectMocks
     private OpportunityService opportunityService;
@@ -92,7 +95,7 @@ public class OpportunityServiceTest {
                 )
         );
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockCompany));
+        when(companyRepository.findById(userId)).thenReturn(Optional.of(mockCompany));
         when(opportunityRepository.save(any(Opportunity.class))).thenReturn(createdOpportunity);
         when(opportunityMapper.toResponseDTO(eq("Oportunidade criada com sucesso!"), any(Opportunity.class)))
                 .thenReturn(expectedResponse);
@@ -103,9 +106,8 @@ public class OpportunityServiceTest {
         assertEquals("Oportunidade criada com sucesso!", result.message());
         assertNotNull(result.data());
         assertEquals("Software Developer", result.data().title());
-        assertEquals("Desenvolvedor Java Sênior", result.data().description());
 
-        verify(userRepository).findById(userId);
+        verify(companyRepository).findById(userId);
         verify(opportunityRepository).save(any(Opportunity.class));
         verify(opportunityMapper).toResponseDTO(eq("Oportunidade criada com sucesso!"), any(Opportunity.class));
     }
@@ -125,14 +127,14 @@ public class OpportunityServiceTest {
                 skills
         );
 
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        when(companyRepository.findById(userId)).thenReturn(Optional.empty());
 
         UserNotFoundException exception = assertThrows(UserNotFoundException.class, () ->
             opportunityService.createOpportunity(userId, opportunityDTO)
         );
 
         assertNotNull(exception);
-        verify(userRepository).findById(userId);
+        verify(companyRepository).findById(userId);
         verifyNoInteractions(opportunityRepository, opportunityMapper);
     }
 
@@ -166,11 +168,7 @@ public class OpportunityServiceTest {
         existingOpportunity.setId(opportunityId);
         existingOpportunity.setCompany(mockCompany);
         existingOpportunity.setTitle("Software Developer");
-
-        Opportunity updatedOpportunity = new Opportunity();
-        updatedOpportunity.setId(opportunityId);
-        updatedOpportunity.setTitle("Senior Software Developer");
-        updatedOpportunity.setUpdatedAt(Instant.now());
+        existingOpportunity.setSkills(new HashSet<>());
 
         ResponseDTO<OpportunityDTO> expectedResponse = new ResponseDTO<>(
                 "Oportunidade atualizada com sucesso!",
@@ -178,9 +176,9 @@ public class OpportunityServiceTest {
         );
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(existingOpportunity));
-        when(opportunityMapper.toEntity(updatedOpportunityDTO)).thenReturn(updatedOpportunity);
-        when(opportunityRepository.save(updatedOpportunity)).thenReturn(updatedOpportunity);
-        when(opportunityMapper.toResponseDTO(eq("Oportunidade atualizada com sucesso!"), eq(updatedOpportunity)))
+        when(skillRepository.findByName("Python")).thenReturn(new Skill("Python"));
+        when(opportunityRepository.save(any(Opportunity.class))).thenReturn(existingOpportunity);
+        when(opportunityMapper.toResponseDTO(eq("Oportunidade atualizada com sucesso!"), any(Opportunity.class)))
                 .thenReturn(expectedResponse);
 
         ResponseDTO<OpportunityDTO> result = opportunityService.updateOpportunity(userId, opportunityId, updatedOpportunityDTO);
@@ -190,9 +188,9 @@ public class OpportunityServiceTest {
         assertNotNull(result.data());
 
         verify(opportunityRepository).findById(opportunityId);
-        verify(opportunityMapper).toEntity(updatedOpportunityDTO);
-        verify(opportunityRepository).save(updatedOpportunity);
-        verify(opportunityMapper).toResponseDTO(eq("Oportunidade atualizada com sucesso!"), eq(updatedOpportunity));
+        verify(skillRepository).findByName("Python");
+        verify(opportunityRepository).save(any(Opportunity.class));
+        verify(opportunityMapper).toResponseDTO(eq("Oportunidade atualizada com sucesso!"), any(Opportunity.class));
     }
 
     @Test

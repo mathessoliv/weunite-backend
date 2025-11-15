@@ -44,6 +44,9 @@ class MessageServiceTest {
     @Mock
     private MessageMapper messageMapper;
 
+    @Mock
+    private NotificationService notificationService;
+
     @InjectMocks
     private MessageService messageService;
 
