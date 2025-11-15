@@ -1,4 +1,4 @@
-package com.example.weuniteauth.service;
+package com.example.weuniteauth.service.admin;
 
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
@@ -9,9 +9,7 @@ import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
 import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
 import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
-import com.example.weuniteauth.service.admin.AdminModerationService;
-import com.example.weuniteauth.service.admin.AdminReportService;
-import com.example.weuniteauth.service.admin.AdminStatsService;
+import com.example.weuniteauth.service.AdminService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

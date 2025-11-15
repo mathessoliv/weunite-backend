@@ -1,4 +1,4 @@
-package com.example.weuniteauth.service;
+package com.example.weuniteauth.service.user;
 
 import com.example.weuniteauth.domain.users.Role;
 import com.example.weuniteauth.domain.users.User;
@@ -12,6 +12,7 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.UserMapper;
 import com.example.weuniteauth.repository.RoleRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
+import com.example.weuniteauth.service.UserService;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

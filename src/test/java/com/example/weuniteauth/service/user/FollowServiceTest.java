@@ -1,4 +1,4 @@
-package com.example.weuniteauth.service;
+package com.example.weuniteauth.service.user;
 
 import com.example.weuniteauth.domain.users.Follow;
 import com.example.weuniteauth.domain.users.User;
@@ -9,6 +9,9 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.FollowMapper;
 import com.example.weuniteauth.repository.FollowRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
+import com.example.weuniteauth.service.FollowService;
+import com.example.weuniteauth.service.NotificationService;
+import com.example.weuniteauth.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

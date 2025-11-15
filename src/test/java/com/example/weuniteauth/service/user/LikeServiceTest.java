@@ -1,4 +1,4 @@
-package com.example.weuniteauth.service;
+package com.example.weuniteauth.service.user;
 
 import com.example.weuniteauth.domain.post.Comment;
 import com.example.weuniteauth.domain.post.Like;
@@ -14,6 +14,8 @@ import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.LikeRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
+import com.example.weuniteauth.service.LikeService;
+import com.example.weuniteauth.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
