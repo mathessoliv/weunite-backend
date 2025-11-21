@@ -16,6 +16,7 @@ public record   OpportunityDTO(
         Set<Skill> skills,
         Instant createdAt,
         Instant updatedAt,
-        UserDTO company
+        UserDTO company,
+        Integer subscribersCount
 ) {
 }
