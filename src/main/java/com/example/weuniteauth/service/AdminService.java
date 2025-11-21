@@ -8,6 +8,7 @@ import com.example.weuniteauth.dto.admin.BanUserRequestDTO;
 import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
 import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
 import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
+import com.example.weuniteauth.dto.admin.OpportunityCategoryWithSkillsDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
@@ -52,6 +53,10 @@ public class AdminService {
 
     public List<UserTypeDataDTO> getUserTypeData() {
         return adminStatsService.getUserTypeData();
+    }
+
+    public List<OpportunityCategoryWithSkillsDTO> getOpportunitiesWithSkills() {
+        return adminStatsService.getOpportunitiesWithSkills();
     }
 
     // ========== Delegação para AdminReportService ==========

@@ -21,4 +21,7 @@ public interface OpportunityRepository extends JpaRepository<Opportunity, Long> 
 
     @Query("SELECT FUNCTION('MONTH', o.createdAt) as month, COUNT(o) FROM Opportunity o WHERE o.createdAt >= :startDate GROUP BY FUNCTION('MONTH', o.createdAt) ORDER BY month")
     List<Object[]> countOpportunitiesByMonth(@Param("startDate") Instant startDate);
+
+    @Query("SELECT DISTINCT o FROM Opportunity o LEFT JOIN FETCH o.skills")
+    List<Opportunity> findAllWithSkills();
 }

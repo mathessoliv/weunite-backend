@@ -79,8 +79,8 @@ class AdminStatsServiceTest {
 
         AdminStatsDTO result = adminStatsService.getAdminStats();
 
-        // Engagement Rate = (500 + 300) / 100 * 100 = 800%
-        assertEquals(800.0, result.engagementRate(), 0.01);
+        // Engagement Rate = (500 + 300) / (100 * 30) * 100 = 26.67%
+        assertEquals(26.67, result.engagementRate(), 0.01);
     }
 
     @Test
@@ -92,6 +92,22 @@ class AdminStatsServiceTest {
         when(postRepository.countTotalLikes()).thenReturn(0L);
         when(postRepository.countTotalComments()).thenReturn(0L);
         when(postRepository.countPostsBetweenDates(any(Instant.class), any(Instant.class))).thenReturn(0L);
+        when(opportunityRepository.countOpportunitiesBetweenDates(any(Instant.class), any(Instant.class))).thenReturn(40L);
+
+        AdminStatsDTO result = adminStatsService.getAdminStats();
+
+        assertEquals(0.0, result.engagementRate());
+    }
+
+    @Test
+    @DisplayName("Should handle zero active users when calculating engagement rate")
+    void handleZeroActiveUsersEngagementRate() {
+        when(postRepository.count()).thenReturn(100L);
+        when(opportunityRepository.count()).thenReturn(50L);
+        when(userRepository.countActiveUsersByPostActivity(any(Instant.class))).thenReturn(0L);
+        when(postRepository.countTotalLikes()).thenReturn(200L);
+        when(postRepository.countTotalComments()).thenReturn(150L);
+        when(postRepository.countPostsBetweenDates(any(Instant.class), any(Instant.class))).thenReturn(80L);
         when(opportunityRepository.countOpportunitiesBetweenDates(any(Instant.class), any(Instant.class))).thenReturn(40L);
 
         AdminStatsDTO result = adminStatsService.getAdminStats();

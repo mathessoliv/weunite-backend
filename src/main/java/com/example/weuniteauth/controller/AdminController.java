@@ -8,6 +8,7 @@ import com.example.weuniteauth.dto.admin.BanUserRequestDTO;
 import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
 import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
 import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
+import com.example.weuniteauth.dto.admin.OpportunityCategoryWithSkillsDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
@@ -46,6 +47,12 @@ public class AdminController {
     public ResponseEntity<List<UserTypeDataDTO>> getUserTypeData() {
         List<UserTypeDataDTO> userTypeData = adminService.getUserTypeData();
         return ResponseEntity.ok(userTypeData);
+    }
+
+    @GetMapping("/stats/opportunities-skills")
+    public ResponseEntity<List<OpportunityCategoryWithSkillsDTO>> getOpportunitiesWithSkills() {
+        List<OpportunityCategoryWithSkillsDTO> opportunitiesWithSkills = adminService.getOpportunitiesWithSkills();
+        return ResponseEntity.ok(opportunitiesWithSkills);
     }
 
     // ========== Endpoints de Posts Reportados ==========

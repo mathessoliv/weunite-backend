@@ -4,6 +4,7 @@ import com.example.weuniteauth.dto.admin.AdminStatsDTO;
 import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
 import com.example.weuniteauth.dto.admin.PreviousMonthStatsDTO;
 import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
+import com.example.weuniteauth.dto.admin.OpportunityCategoryWithSkillsDTO;
 import com.example.weuniteauth.repository.OpportunityRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
@@ -15,8 +16,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.Locale;
 
 /**
@@ -63,7 +64,7 @@ public class AdminStatsService {
         // Calcular taxa de engajamento
         Long totalLikes = postRepository.countTotalLikes();
         Long totalComments = postRepository.countTotalComments();
-        Double engagementRate = calculateEngagementRate(totalPosts, totalLikes, totalComments);
+        Double engagementRate = calculateEngagementRate(totalPosts, totalLikes, totalComments, activeUsers);
         
         // Estatísticas do mês anterior
         Long previousMonthPosts = postRepository.countPostsBetweenDates(startOfLastMonth, endOfLastMonth);
@@ -94,15 +95,23 @@ public class AdminStatsService {
     
     /**
      * Calcula a taxa de engajamento.
-     * Fórmula: (Total de Likes + Total de Comentários) / Total de Posts * 100
+     * Fórmula: ((Likes + Comentários) / (Posts * Usuários ativos)) * 100
      */
-    private Double calculateEngagementRate(Long totalPosts, Long totalLikes, Long totalComments) {
-        if (totalPosts == 0) {
+    private Double calculateEngagementRate(Long totalPosts, Long totalLikes, Long totalComments, Long activeUsers) {
+        if (totalPosts == null || totalPosts == 0 || activeUsers == null || activeUsers == 0) {
             return 0.0;
         }
-        
-        Long totalEngagement = totalLikes + totalComments;
-        return (totalEngagement.doubleValue() / totalPosts.doubleValue()) * 100;
+
+        long safeLikes = totalLikes != null ? totalLikes : 0L;
+        long safeComments = totalComments != null ? totalComments : 0L;
+        long totalInteractions = safeLikes + safeComments;
+
+        double potentialInteractions = totalPosts.doubleValue() * activeUsers.doubleValue();
+        if (potentialInteractions == 0.0) {
+            return 0.0;
+        }
+
+        return (totalInteractions / potentialInteractions) * 100;
     }
     
     /**
@@ -153,6 +162,66 @@ public class AdminStatsService {
         userTypeData.add(new UserTypeDataDTO("Empresas", companiesCount));
         
         return userTypeData;
+    }
+
+    /**
+     * Retorna top 5 skills mais frequentes baseado no número de oportunidades que as usam
+     * Simples: apenas contar quantas oportunidades cada skill aparece
+     */
+    @Transactional(readOnly = true)
+    public List<OpportunityCategoryWithSkillsDTO> getOpportunitiesWithSkills() {
+        // Mapa para contar quantas oportunidades usam cada skill
+        Map<String, Long> skillCountMap = new HashMap<>();
+        
+        try {
+            // Buscar todas as oportunidades
+            var allOpportunities = opportunityRepository.findAll();
+            
+            if (allOpportunities == null || allOpportunities.isEmpty()) {
+                return new ArrayList<>();
+            }
+            
+            // Contar: para cada skill única, quantas oportunidades a possuem
+            for (var opportunity : allOpportunities) {
+                if (opportunity.getSkills() != null && !opportunity.getSkills().isEmpty()) {
+                    // Usar Set para evitar contar a mesma skill múltiplas vezes na mesma oportunidade
+                    Set<String> uniqueSkillNames = new HashSet<>();
+                    for (var skill : opportunity.getSkills()) {
+                        if (skill != null && skill.getName() != null) {
+                            uniqueSkillNames.add(skill.getName());
+                        }
+                    }
+                    
+                    // Incrementar contagem para cada skill única
+                    for (String skillName : uniqueSkillNames) {
+                        skillCountMap.put(skillName, skillCountMap.getOrDefault(skillName, 0L) + 1);
+                    }
+                }
+            }
+            
+            // Se não houver skills, retornar lista vazia
+            if (skillCountMap.isEmpty()) {
+                return new ArrayList<>();
+            }
+            
+            // Pegar top 5 skills mais frequentes e criar DTOs
+            List<OpportunityCategoryWithSkillsDTO> result = skillCountMap.entrySet().stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .limit(5)
+                .map(entry -> new OpportunityCategoryWithSkillsDTO(
+                    entry.getKey(),  // skill name como "category"
+                    entry.getValue(), // count de oportunidades
+                    new ArrayList<>() // topSkills vazio (sem skills relacionadas)
+                ))
+                .collect(Collectors.toList());
+            
+            return result;
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar skills: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }
 
