@@ -120,7 +120,8 @@ class OpportunityControllerIntegrationTest {
                 buildSkills("Kotlin", "Kafka"),
                 null,
                 null,
-                null
+                null,
+                0
         );
 
         mockMvc.perform(

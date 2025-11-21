@@ -73,7 +73,7 @@ class AdminServiceTest {
         List<ReportSummaryDTO> summaries = List.of(new ReportSummaryDTO(1L, "POST", 3L));
         ReportedPostDetailDTO postDetail = new ReportedPostDetailDTO(null, List.of(), 0L, "OPEN");
         ReportedOpportunityDetailDTO opportunityDetail = new ReportedOpportunityDetailDTO(
-                new OpportunityDTO(1L, "title", "desc", "remote", null, Set.of(), Instant.now(), Instant.now(), null),
+                new OpportunityDTO(1L, "title", "desc", "remote", null, Set.of(), Instant.now(), Instant.now(), null, 0),
                 List.of(), 0L, "OPEN"
         );
         ResponseDTO<PostDTO> deletePostResponse = new ResponseDTO<>("deleted", null);

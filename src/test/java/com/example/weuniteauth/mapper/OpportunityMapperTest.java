@@ -210,7 +210,8 @@ class OpportunityMapperTest {
                 null,
                 Instant.now(),
                 null,
-                null
+                null,
+                0
         );
 
         Opportunity result = opportunityMapper.toEntity(dto);
@@ -234,7 +235,8 @@ class OpportunityMapperTest {
                 null,
                 Instant.now(),
                 Instant.now(),
-                null
+                null,
+                0
         );
 
         Opportunity result = opportunityMapper.toEntity(dto);

@@ -90,10 +90,10 @@ class SubscribersMapperTest {
         assertNotNull(result);
         assertEquals(1L, result.id());
         assertNotNull(result.opportunity());
-        assertEquals(1L, result.opportunity().getId());
-        assertEquals("Software Developer", result.opportunity().getTitle());
+        assertEquals(1L, result.opportunity().id());
+        assertEquals("Software Developer", result.opportunity().title());
         assertNotNull(result.athlete());
-        assertEquals("athlete", result.athlete().getUsername());
+        assertEquals("athlete", result.athlete().username());
     }
 
     @Test
@@ -103,10 +103,10 @@ class SubscribersMapperTest {
 
         assertNotNull(result);
         assertNotNull(result.opportunity());
-        assertEquals(1L, result.opportunity().getId());
-        assertEquals("Software Developer", result.opportunity().getTitle());
-        assertEquals("Great opportunity", result.opportunity().getDescription());
-        assertEquals("Remote", result.opportunity().getLocation());
+        assertEquals(1L, result.opportunity().id());
+        assertEquals("Software Developer", result.opportunity().title());
+        assertEquals("Great opportunity", result.opportunity().description());
+        assertEquals("Remote", result.opportunity().location());
     }
 
     @Test
@@ -116,9 +116,9 @@ class SubscribersMapperTest {
 
         assertNotNull(result);
         assertNotNull(result.athlete());
-        assertEquals(1L, result.athlete().getId());
-        assertEquals("Test Athlete", result.athlete().getName());
-        assertEquals("athlete@test.com", result.athlete().getEmail());
+        assertEquals(1L, result.athlete().id());
+        assertEquals("Test Athlete", result.athlete().name());
+        assertEquals("athlete@test.com", result.athlete().email());
     }
 
     @Test
@@ -128,9 +128,9 @@ class SubscribersMapperTest {
 
         assertNotNull(result);
         assertNotNull(result.opportunity());
-        assertNotNull(result.opportunity().getCompany());
-        assertEquals("company", result.opportunity().getCompany().getUsername());
-        assertEquals("Test Company", result.opportunity().getCompany().getName());
+        assertNotNull(result.opportunity().company());
+        assertEquals("company", result.opportunity().company().username());
+        assertEquals("Test Company", result.opportunity().company().name());
     }
 
     // MAP SUBSCRIBERS TO LIST TESTS
@@ -171,9 +171,9 @@ class SubscribersMapperTest {
 
         assertNotNull(result);
         assertEquals(3, result.size());
-        assertEquals("athlete", result.get(0).athlete().getUsername());
-        assertEquals("athlete2", result.get(1).athlete().getUsername());
-        assertEquals("athlete", result.get(2).athlete().getUsername());
+        assertEquals("athlete", result.get(0).athlete().username());
+        assertEquals("athlete2", result.get(1).athlete().username());
+        assertEquals("athlete", result.get(2).athlete().username());
     }
 
     @Test
@@ -209,7 +209,7 @@ class SubscribersMapperTest {
         assertEquals(message, result.message());
         assertNotNull(result.data());
         assertEquals(1L, result.data().id());
-        assertEquals("athlete", result.data().athlete().getUsername());
+        assertEquals("athlete", result.data().athlete().username());
     }
 
     @Test
@@ -223,9 +223,9 @@ class SubscribersMapperTest {
         assertEquals(message, result.message());
         assertNotNull(result.data());
         assertNotNull(result.data().opportunity());
-        assertEquals("Software Developer", result.data().opportunity().getTitle());
+        assertEquals("Software Developer", result.data().opportunity().title());
         assertNotNull(result.data().athlete());
-        assertEquals("Test Athlete", result.data().athlete().getName());
+        assertEquals("Test Athlete", result.data().athlete().name());
     }
 
     // EDGE CASE TESTS
@@ -274,9 +274,9 @@ class SubscribersMapperTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         // Ambos têm a mesma oportunidade
-        assertEquals(result.get(0).opportunity().getId(), result.get(1).opportunity().getId());
+        assertEquals(result.get(0).opportunity().id(), result.get(1).opportunity().id());
         // Mas atletas diferentes
-        assertNotEquals(result.get(0).athlete().getId(), result.get(1).athlete().getId());
+        assertNotEquals(result.get(0).athlete().id(), result.get(1).athlete().id());
     }
 }
 

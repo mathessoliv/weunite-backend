@@ -147,7 +147,8 @@ class AdminServiceTest {
                 null,
                 Instant.now(),
                 null,
-                null
+                null,
+                0
         );
         ResponseDTO<OpportunityDTO> expectedResponse = new ResponseDTO<>(
                 "Oportunidade deletada com sucesso",

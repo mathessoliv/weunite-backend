@@ -265,7 +265,7 @@ class AdminReportServiceTest {
     @Test
     @DisplayName("Should delete opportunity by admin successfully")
     void deleteOpportunityByAdminSuccess() {
-        OpportunityDTO mockOpportunityDTO = new OpportunityDTO(1L, "Test opportunity", null, null, null, null, null, null, null);
+        OpportunityDTO mockOpportunityDTO = new OpportunityDTO(1L, "Test opportunity", null, null, null, null, null, null, null, 0);
         ResponseDTO<OpportunityDTO> expectedResponse = new ResponseDTO<>("Oportunidade excluída com sucesso", mockOpportunityDTO);
 
         when(opportunityRepository.findById(1L)).thenReturn(Optional.of(testOpportunity));

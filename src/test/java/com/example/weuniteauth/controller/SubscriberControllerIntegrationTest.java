@@ -1,19 +1,21 @@
 package com.example.weuniteauth.controller;
 
-import com.example.weuniteauth.domain.opportunity.Opportunity;
-import com.example.weuniteauth.domain.users.Athlete;
+import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.Opportunity.SubscriberDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.service.SubscribersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -30,11 +32,38 @@ class SubscriberControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private SubscribersService subscribersService;
 
     private SubscriberDTO sampleSubscriber() {
-        return new SubscriberDTO(1L, new Athlete(), new Opportunity());
+        UserDTO athleteDTO = new UserDTO(
+                "1",
+                "Athlete",
+                "athlete_user",
+                "BASIC",
+                null,
+                "athlete@test.com",
+                null,
+                null,
+                false,
+                Instant.now(),
+                Instant.now()
+        );
+
+        OpportunityDTO opportunityDTO = new OpportunityDTO(
+                1L,
+                "Sample Opportunity",
+                "Description",
+                "Remote",
+                null,
+                Set.of(),
+                Instant.now(),
+                Instant.now(),
+                athleteDTO,
+                0
+        );
+
+        return new SubscriberDTO(1L, athleteDTO, opportunityDTO);
     }
 
     @Test

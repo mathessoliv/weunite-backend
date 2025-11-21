@@ -113,7 +113,7 @@ class AdminControllerTest {
     void shouldHandleReportedOpportunities() {
         ReportSummaryDTO summary = new ReportSummaryDTO(1L, "OPPORTUNITY", 2L);
         ReportedOpportunityDetailDTO detail = new ReportedOpportunityDetailDTO(
-                new OpportunityDTO(1L, "title", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser),
+                new OpportunityDTO(1L, "title", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser, 0),
                 List.of(),
                 0L,
                 "OPEN"
@@ -128,7 +128,7 @@ class AdminControllerTest {
     @Test
     void shouldHandleReportedOpportunityDetail() {
         ReportedOpportunityDetailDTO detail = new ReportedOpportunityDetailDTO(
-                new OpportunityDTO(1L, "title", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser),
+                new OpportunityDTO(1L, "title", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser, 0),
                 List.of(),
                 0L,
                 "OPEN"

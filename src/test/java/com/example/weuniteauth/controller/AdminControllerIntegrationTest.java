@@ -9,17 +9,15 @@ import com.example.weuniteauth.dto.admin.BanUserRequestDTO;
 import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
 import com.example.weuniteauth.dto.admin.PreviousMonthStatsDTO;
 import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
-import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
 import com.example.weuniteauth.dto.report.ReportDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
-import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.service.AdminService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,7 +42,7 @@ class AdminControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private AdminService adminService;
 
     @Test
@@ -115,7 +113,7 @@ class AdminControllerIntegrationTest {
     void getReportedOpportunityDetailShouldReturnPayload() throws Exception {
         ReportDTO report = new ReportDTO("1", sampleUser(), "POST", 3L, "Spam", "PENDING", Instant.now());
         ReportedOpportunityDetailDTO detail = new ReportedOpportunityDetailDTO(
-                new OpportunityDTO(1L, "Opportunity", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser()),
+                new OpportunityDTO(1L, "Opportunity", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser(), 0),
                 List.of(report),
                 1L,
                 "OPEN"

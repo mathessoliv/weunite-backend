@@ -35,7 +35,7 @@ class OpportunityControllerTest {
 
     @BeforeEach
     void setUp() {
-        dto = new OpportunityDTO(1L, "Title", "Desc", "Remote", LocalDate.now(), Set.of(), Instant.now(), Instant.now(), null);
+        dto = new OpportunityDTO(1L, "Title", "Desc", "Remote", LocalDate.now(), Set.of(), Instant.now(), Instant.now(), null, 0);
         response = new ResponseDTO<>("ok", dto);
     }
 
@@ -59,8 +59,8 @@ class OpportunityControllerTest {
         when(opportunityService.getOpportunitiesByCompanyId(3L)).thenReturn(List.of(dto));
 
         assertThat(opportunityController.getOpportunity(2L).getBody()).isEqualTo(response);
-        assertThat(opportunityController.getOpportunities().getBody()).containsExactly(dto);
-        assertThat(opportunityController.getOpportunitiesByCompanyId(3L).getBody()).containsExactly(dto);
+        assertThat(opportunityController.getOpportunities().getBody().data()).containsExactly(dto);
+        assertThat(opportunityController.getOpportunitiesByCompanyId(3L).getBody().data()).containsExactly(dto);
     }
 
     @Test
