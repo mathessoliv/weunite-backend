@@ -77,10 +77,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get/{opportunityId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get/user/{userId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/opportunities/get/company/{companyId}").permitAll()
 
                         // Qualquer outra requisição precisa estar autenticada
                         .anyRequest().authenticated()
                 )
+
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new JwtAuthenticationConverter())

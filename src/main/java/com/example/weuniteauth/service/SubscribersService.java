@@ -47,10 +47,12 @@ public class SubscribersService {
             Subscriber newSubscriber = new Subscriber(athlete, opportunity);
             opportunity.addSubscriber(newSubscriber);
             subscribersRepository.save(newSubscriber);
+            opportunityRepository.save(opportunity);
             return subscribersMapper.toResponseDTO("Inscrição criada com sucesso!", newSubscriber);
         } else {
             opportunity.removeSubscriber(existingSubscriber);
-            subscribersRepository.save(existingSubscriber);
+            subscribersRepository.delete(existingSubscriber);
+            opportunityRepository.save(opportunity);
             return subscribersMapper.toResponseDTO("Inscrição removida com sucesso!", existingSubscriber);
         }
     }
@@ -61,6 +63,43 @@ public class SubscribersService {
                 orElseThrow(OpportunityNotFoundException::new);
 
         List<Subscriber> subscribers = subscribersRepository.findByOpportunityId(opportunityId);
+
+        // Forçar carregamento dos relacionamentos LAZY
+        subscribers.forEach(subscriber -> {
+            subscriber.getAthlete().getUsername(); // Força carregamento do athlete
+            subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
+            subscriber.getOpportunity().getSubscribers().size(); // Força carregamento dos subscribers da opportunity
+        });
+
+        return subscribersMapper.mapSubscribersToList(subscribers);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean isSubscribed(Long athleteId, Long opportunityId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Opportunity opportunity = opportunityRepository.findById(opportunityId)
+                .orElseThrow(OpportunityNotFoundException::new);
+
+        return subscribersRepository.findByAthleteAndOpportunity(athlete, opportunity).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubscriberDTO> getSubscribersByAthlete(Long athleteId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(UserNotFoundException::new);
+
+        List<Subscriber> subscribers = subscribersRepository.findByAthleteId(athleteId);
+
+        // Forçar carregamento dos relacionamentos LAZY
+        subscribers.forEach(subscriber -> {
+            subscriber.getAthlete().getUsername(); // Força carregamento do athlete
+            subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
+            subscriber.getOpportunity().getCompany().getUsername(); // Força carregamento da company
+            subscriber.getOpportunity().getSubscribers().size(); // Força carregamento dos subscribers da opportunity
+        });
+
         return subscribersMapper.mapSubscribersToList(subscribers);
     }
 }
