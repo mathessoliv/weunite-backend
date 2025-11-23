@@ -99,9 +99,21 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/posts/{postId}/restore")
+    public ResponseEntity<ResponseDTO<PostDTO>> restorePost(@PathVariable Long postId) {
+        ResponseDTO<PostDTO> response = adminService.restorePostByAdmin(postId);
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/opportunities/{opportunityId}")
     public ResponseEntity<ResponseDTO<OpportunityDTO>> deleteOpportunity(@PathVariable Long opportunityId) {
         ResponseDTO<OpportunityDTO> response = adminService.deleteOpportunityByAdmin(opportunityId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/opportunities/{opportunityId}/restore")
+    public ResponseEntity<ResponseDTO<OpportunityDTO>> restoreOpportunity(@PathVariable Long opportunityId) {
+        ResponseDTO<OpportunityDTO> response = adminService.restoreOpportunityByAdmin(opportunityId);
         return ResponseEntity.ok(response);
     }
 

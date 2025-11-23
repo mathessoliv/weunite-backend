@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface OpportunityRepository extends JpaRepository<Opportunity, Long> {
 
-    @Query("SELECT o FROM Opportunity o ORDER BY COALESCE(o.updatedAt, o.createdAt) DESC")
+    @Query("SELECT o FROM Opportunity o WHERE o.deleted = false ORDER BY COALESCE(o.updatedAt, o.createdAt) DESC")
     List<Opportunity> findAllOrderedByCreationDate();
 
     List<Opportunity> findByCompanyId(Long userId);

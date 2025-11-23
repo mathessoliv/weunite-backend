@@ -104,7 +104,8 @@ public class OpportunityService {
             throw new UnauthorizedException("Você não possui autorização para deletar esta oportunidade.");
         }
 
-        opportunityRepository.delete(existingOpportunity);
+        existingOpportunity.setDeleted(true);
+        opportunityRepository.save(existingOpportunity);
 
         return opportunityMapper.toResponseDTO("Oportunidade deletada com sucesso!", existingOpportunity);
 
@@ -114,6 +115,10 @@ public class OpportunityService {
     public ResponseDTO<OpportunityDTO> getOpportunity(Long opportunityId) {
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
                 .orElseThrow(OpportunityNotFoundException::new);
+
+        if (opportunity.isDeleted()) {
+            throw new OpportunityNotFoundException();
+        }
 
         // Força o carregamento dos subscribers
         opportunity.getSubscribers().size();

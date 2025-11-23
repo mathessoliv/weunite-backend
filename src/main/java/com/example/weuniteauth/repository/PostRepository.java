@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("SELECT p FROM Post p ORDER BY COALESCE(p.updatedAt, p.createdAt) DESC")
+    @Query("SELECT p FROM Post p WHERE p.deleted = false ORDER BY COALESCE(p.updatedAt, p.createdAt) DESC")
     List<Post> findAllOrderedByCreationDate();
 
     @Query("SELECT COUNT(p) FROM Post p WHERE p.createdAt >= :startDate AND p.createdAt < :endDate")

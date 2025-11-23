@@ -10,6 +10,7 @@ import com.example.weuniteauth.dto.report.ReportDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.mapper.OpportunityMapper;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -81,27 +83,53 @@ public class AdminReportService {
         );
 
         return results.stream()
-                .filter(result -> {
-                    Long postId = (Long) result[0];
-                    return postRepository.existsById(postId);
-                })
                 .map(result -> {
                     Long postId = (Long) result[0];
 
-                    Post post = postRepository.findById(postId)
-                            .orElseThrow(PostNotFoundException::new);
-
+                    Post post = postRepository.findById(postId).orElse(null);
+                    
                     List<Report> allReports = reportRepository.findByEntityIdAndType(
                             postId,
                             Report.ReportType.POST
                     );
 
-                    PostDTO postDTO = postMapper.toPostDTO(post);
+                    PostDTO postDTO;
+                    if (post != null) {
+                        postDTO = postMapper.toPostDTO(post);
+                    } else {
+                        // Cria um DTO placeholder para post deletado permanentemente
+                        postDTO = new PostDTO(
+                            String.valueOf(postId),
+                            "Conteúdo removido permanentemente",
+                            null,
+                            null,
+                            List.of(),
+                            List.of(),
+                            Instant.now(),
+                            Instant.now(),
+                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now())
+                        );
+                    }
+
                     List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(allReports);
 
                     boolean hasPending = allReports.stream()
                             .anyMatch(r -> r.getStatus() == Report.ReportStatus.PENDING);
-                    String status = hasPending ? "pending" : "resolved";
+                    boolean hasReviewed = allReports.stream()
+                            .anyMatch(r -> r.getStatus() == Report.ReportStatus.REVIEWED);
+
+                    String status;
+                    if (post != null && post.isDeleted()) {
+                        status = "deleted";
+                    } else if (post == null) {
+                        status = "deleted";
+                    } else if (hasPending) {
+                        status = "pending";
+                    } else if (hasReviewed) {
+                        status = "reviewed";
+                    } else {
+                        status = "resolved";
+                    }
 
                     return new ReportedPostDetailDTO(
                             postDTO,
@@ -141,9 +169,21 @@ public class AdminReportService {
                 .orElseThrow(PostNotFoundException::new);
 
         markReportsAsReviewed(postId, Report.ReportType.POST);
-        postRepository.delete(post);
+        post.setDeleted(true);
+        postRepository.save(post);
 
         return postMapper.toResponseDTO("Post excluído com sucesso pelo administrador", post);
+    }
+
+    @Transactional
+    public ResponseDTO<PostDTO> restorePostByAdmin(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        post.setDeleted(false);
+        postRepository.save(post);
+
+        return postMapper.toResponseDTO("Post restaurado com sucesso pelo administrador", post);
     }
 
     // ========== Oportunidades Reportadas ==========
@@ -172,27 +212,54 @@ public class AdminReportService {
         );
 
         return results.stream()
-                .filter(result -> {
-                    Long opportunityId = (Long) result[0];
-                    return opportunityRepository.existsById(opportunityId);
-                })
                 .map(result -> {
                     Long opportunityId = (Long) result[0];
 
-                    Opportunity opportunity = opportunityRepository.findById(opportunityId)
-                            .orElseThrow(OpportunityNotFoundException::new);
+                    Opportunity opportunity = opportunityRepository.findById(opportunityId).orElse(null);
 
                     List<Report> allReports = reportRepository.findByEntityIdAndType(
                             opportunityId,
                             Report.ReportType.OPPORTUNITY
                     );
 
-                    OpportunityDTO opportunityDTO = opportunityMapper.toOpportunityDTO(opportunity);
+                    OpportunityDTO opportunityDTO;
+                    if (opportunity != null) {
+                        opportunityDTO = opportunityMapper.toOpportunityDTO(opportunity);
+                    } else {
+                        // Cria um DTO placeholder para oportunidade deletada permanentemente
+                        opportunityDTO = new OpportunityDTO(
+                            opportunityId,
+                            "Oportunidade removida permanentemente",
+                            "Conteúdo indisponível",
+                            "Localização indisponível",
+                            null,
+                            Set.of(),
+                            Instant.now(),
+                            Instant.now(),
+                            new UserDTO("0", "Empresa Desconhecida", "unknown", "COMPANY", "", "", "", "", false, Instant.now(), Instant.now()),
+                            0
+                        );
+                    }
+
                     List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(allReports);
 
                     boolean hasPending = allReports.stream()
                             .anyMatch(r -> r.getStatus() == Report.ReportStatus.PENDING);
-                    String status = hasPending ? "pending" : "resolved";
+                    boolean hasReviewed = allReports.stream()
+                            .anyMatch(r -> r.getStatus() == Report.ReportStatus.REVIEWED);
+
+                    String status;
+                    if (opportunity != null && opportunity.isDeleted()) {
+                        status = "deleted";
+                    } else if (opportunity == null) {
+                        status = "deleted";
+                    } else if (hasPending) {
+                        status = "pending";
+                    } else if (hasReviewed) {
+                        status = "reviewed";
+                    } else {
+                        status = "resolved";
+                    }
 
                     return new ReportedOpportunityDetailDTO(
                             opportunityDTO,
@@ -232,9 +299,21 @@ public class AdminReportService {
                 .orElseThrow(OpportunityNotFoundException::new);
 
         markReportsAsReviewed(opportunityId, Report.ReportType.OPPORTUNITY);
-        opportunityRepository.delete(opportunity);
+        opportunity.setDeleted(true);
+        opportunityRepository.save(opportunity);
 
         return opportunityMapper.toResponseDTO("Oportunidade excluída com sucesso pelo administrador", opportunity);
+    }
+
+    @Transactional
+    public ResponseDTO<OpportunityDTO> restoreOpportunityByAdmin(Long opportunityId) {
+        Opportunity opportunity = opportunityRepository.findById(opportunityId)
+                .orElseThrow(OpportunityNotFoundException::new);
+
+        opportunity.setDeleted(false);
+        opportunityRepository.save(opportunity);
+
+        return opportunityMapper.toResponseDTO("Oportunidade restaurada com sucesso pelo administrador", opportunity);
     }
 
     // ========== Ações sobre Reports ==========
@@ -242,18 +321,35 @@ public class AdminReportService {
     @Transactional
     public ResponseDTO<String> dismissReports(Long entityId, String type) {
         Report.ReportType reportType = Report.ReportType.valueOf(type.toUpperCase());
-        List<Report> reports = reportRepository.findByEntityIdAndTypeAndStatus(
+        List<Report> pendingReports = reportRepository.findByEntityIdAndTypeAndStatus(
                 entityId,
                 reportType,
                 Report.ReportStatus.PENDING
         );
+        
+        List<Report> reviewedReports = reportRepository.findByEntityIdAndTypeAndStatus(
+                entityId,
+                reportType,
+                Report.ReportStatus.REVIEWED
+        );
 
-        reports.forEach(report -> report.setStatus(Report.ReportStatus.DISMISSED));
-        reportRepository.saveAll(reports);
+        pendingReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        reviewedReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        
+        reportRepository.saveAll(pendingReports);
+        reportRepository.saveAll(reviewedReports);
 
         return new ResponseDTO<>(
                 "Denúncias descartadas com sucesso",
-                reports.size() + " denúncias foram descartadas"
+                (pendingReports.size() + reviewedReports.size()) + " denúncias foram descartadas"
         );
     }
 
@@ -267,14 +363,13 @@ public class AdminReportService {
         );
 
         reports.forEach(report -> {
-            report.setStatus(Report.ReportStatus.RESOLVED);
-            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+            report.setStatus(Report.ReportStatus.REVIEWED);
             report.setResolvedAt(Instant.now());
         });
         reportRepository.saveAll(reports);
 
         return new ResponseDTO<>(
-                "Denúncias marcadas como resolvidas",
+                "Denúncias marcadas como em análise",
                 reports.size() + " denúncias foram marcadas como em análise"
         );
     }
@@ -282,10 +377,16 @@ public class AdminReportService {
     @Transactional
     public ResponseDTO<String> resolveReports(Long entityId, String type) {
         Report.ReportType reportType = Report.ReportType.valueOf(type.toUpperCase());
-        List<Report> reports = reportRepository.findByEntityIdAndTypeAndStatus(
+        List<Report> pendingReports = reportRepository.findByEntityIdAndTypeAndStatus(
                 entityId,
                 reportType,
                 Report.ReportStatus.PENDING
+        );
+
+        List<Report> reviewedReports = reportRepository.findByEntityIdAndTypeAndStatus(
+                entityId,
+                reportType,
+                Report.ReportStatus.REVIEWED
         );
 
         List<Report> resolvedReports = reportRepository.findByEntityIdAndTypeAndStatus(
@@ -294,13 +395,27 @@ public class AdminReportService {
                 Report.ReportStatus.RESOLVED
         );
 
-        reports.forEach(report -> report.setStatus(Report.ReportStatus.DISMISSED));
-        resolvedReports.forEach(report -> report.setStatus(Report.ReportStatus.DISMISSED));
+        pendingReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        reviewedReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        resolvedReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
 
-        reportRepository.saveAll(reports);
+        reportRepository.saveAll(pendingReports);
+        reportRepository.saveAll(reviewedReports);
         reportRepository.saveAll(resolvedReports);
 
-        int totalResolved = reports.size() + resolvedReports.size();
+        int totalResolved = pendingReports.size() + reviewedReports.size() + resolvedReports.size();
 
         return new ResponseDTO<>(
                 "Denúncias resolvidas com sucesso",
@@ -311,17 +426,32 @@ public class AdminReportService {
     // ========== Métodos Privados ==========
 
     private void markReportsAsReviewed(Long entityId, Report.ReportType type) {
-        List<Report> reports = reportRepository.findByEntityIdAndTypeAndStatus(
+        List<Report> pendingReports = reportRepository.findByEntityIdAndTypeAndStatus(
                 entityId,
                 type,
                 Report.ReportStatus.PENDING
         );
-        reports.forEach(report -> {
+        
+        List<Report> reviewedReports = reportRepository.findByEntityIdAndTypeAndStatus(
+                entityId,
+                type,
+                Report.ReportStatus.REVIEWED
+        );
+        
+        pendingReports.forEach(report -> {
             report.setStatus(Report.ReportStatus.RESOLVED);
             report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
             report.setResolvedAt(Instant.now());
         });
-        reportRepository.saveAll(reports);
+        
+        reviewedReports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+            report.setResolvedAt(Instant.now());
+        });
+        
+        reportRepository.saveAll(pendingReports);
+        reportRepository.saveAll(reviewedReports);
     }
 }
 

@@ -90,6 +90,10 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
+        if (post.isDeleted()) {
+            throw new PostNotFoundException();
+        }
+
         return postMapper.toResponseDTO("Publicação consultada com sucesso!", post);
     }
 
@@ -111,7 +115,8 @@ public class PostService {
             throw new UnauthorizedException("Você precisa estar logado para deletar essa publicação!");
         }
 
-        postRepository.delete(post);
+        post.setDeleted(true);
+        postRepository.save(post);
 
         return postMapper.toResponseDTO("Publicação excluída com sucesso", post);
     }

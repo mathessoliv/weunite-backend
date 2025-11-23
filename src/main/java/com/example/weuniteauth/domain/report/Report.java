@@ -22,7 +22,7 @@ public class Report {
     public enum ReportStatus {
         PENDING,
         RESOLVED,
-        DISMISSED
+        REVIEWED
     }
 
     public enum ActionTaken {

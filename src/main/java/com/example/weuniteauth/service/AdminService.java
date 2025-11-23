@@ -77,6 +77,10 @@ public class AdminService {
         return adminReportService.deletePostByAdmin(postId);
     }
 
+    public ResponseDTO<PostDTO> restorePostByAdmin(Long postId) {
+        return adminReportService.restorePostByAdmin(postId);
+    }
+
     public List<ReportSummaryDTO> getOpportunitiesWithManyReports() {
         return adminReportService.getOpportunitiesWithManyReports();
     }
@@ -91,6 +95,10 @@ public class AdminService {
 
     public ResponseDTO<OpportunityDTO> deleteOpportunityByAdmin(Long opportunityId) {
         return adminReportService.deleteOpportunityByAdmin(opportunityId);
+    }
+
+    public ResponseDTO<OpportunityDTO> restoreOpportunityByAdmin(Long opportunityId) {
+        return adminReportService.restoreOpportunityByAdmin(opportunityId);
     }
 
     public ResponseDTO<String> dismissReports(Long entityId, String type) {
