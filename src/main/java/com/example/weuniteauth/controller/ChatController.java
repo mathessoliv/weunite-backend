@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,7 +39,10 @@ public class ChatController {
     }
 
     @MessageMapping("/chat.markAsRead")
-    public void markAsRead(@Payload Long conversationId, @Payload Long userId) {
+    public void markAsRead(@Payload Map<String, Long> payload) {
+        Long conversationId = payload.get("conversationId");
+        Long userId = payload.get("userId");
+
         messageService.markMessagesAsRead(conversationId, userId);
 
         messagingTemplate.convertAndSend(
@@ -47,6 +51,53 @@ public class ChatController {
         );
     }
 
+    @DeleteMapping("/messages/{messageId}")
+    @ResponseBody
+    public ResponseEntity<?> deleteMessage(
+            @PathVariable Long messageId,
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "false") boolean forEveryone
+    ) {
+        try {
+            MessageDTO deletedMessage = messageService.deleteMessage(messageId, userId, forEveryone);
+
+            Map<String, Object> deleteEvent = new HashMap<>();
+            deleteEvent.put("type", "DELETE");
+            deleteEvent.put("messageId", messageId);
+            deleteEvent.put("forEveryone", forEveryone);
+            deleteEvent.put("userId", userId);
+
+            messagingTemplate.convertAndSend(
+                    "/topic/conversation/" + deletedMessage.conversationId(),
+                    deleteEvent
+            );
+
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/messages/{messageId}")
+    @ResponseBody
+    public ResponseEntity<?> editMessage(
+            @PathVariable Long messageId,
+            @RequestParam Long userId,
+            @RequestParam String content
+    ) {
+        try {
+            MessageDTO editedMessage = messageService.editMessage(messageId, userId, content);
+
+            messagingTemplate.convertAndSend(
+                    "/topic/conversation/" + editedMessage.conversationId(),
+                    editedMessage
+            );
+
+            return ResponseEntity.ok(editedMessage);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 
     @PostMapping("/messages/upload")
     @ResponseBody

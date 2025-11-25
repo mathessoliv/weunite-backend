@@ -43,9 +43,28 @@ public class Message {
     @Column(nullable = false)
     private MessageType type = MessageType.TEXT;
 
+    @Column(name = "deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean deleted = false;
+
+    @Column(name = "edited", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean edited = false;
+
+    @Column(name = "edited_at")
+    private Instant editedAt;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Instant.now();
+        if (this.deleted == null) this.deleted = false;
+        if (this.edited == null) this.edited = false;
+        this.isRead = false;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        if (this.deleted == null) this.deleted = false;
+        if (this.edited == null) this.edited = false;
+
     }
 
     public enum MessageType {
