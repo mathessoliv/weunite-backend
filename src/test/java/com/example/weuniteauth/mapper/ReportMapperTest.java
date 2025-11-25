@@ -98,9 +98,9 @@ class ReportMapperTest {
         ReportDTO resultResolved = reportMapper.toReportDTO(testReport);
         assertEquals("RESOLVED", resultResolved.status());
 
-        testReport.setStatus(Report.ReportStatus.DISMISSED);
-        ReportDTO resultDismissed = reportMapper.toReportDTO(testReport);
-        assertEquals("DISMISSED", resultDismissed.status());
+        testReport.setStatus(Report.ReportStatus.REVIEWED);
+        ReportDTO resultReviewed = reportMapper.toReportDTO(testReport);
+        assertEquals("REVIEWED", resultReviewed.status());
     }
 
     @Test

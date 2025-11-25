@@ -36,7 +36,7 @@ class ReportControllerTest {
     void setUp() {
         UserDTO reporter = new UserDTO("1", "Reporter", "rep", "BASIC", null,
                 "rep@test.com", null, null, false, Instant.now(), Instant.now());
-        reportDTO = new ReportDTO("1", reporter, "POST", 2L, "reason", "OPEN", Instant.now());
+        reportDTO = new ReportDTO("1", reporter, "POST", 2L, "reason", "OPEN", Instant.now(), null, null);
     }
 
     @Test

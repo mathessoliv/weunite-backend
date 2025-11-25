@@ -46,7 +46,7 @@ class ReportCreationServiceTest {
         User user = mock(User.class);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        ReportDTO reportDTO = new ReportDTO("id-1", null, "POST", 10L, "SPAM", "PENDING", null);
+        ReportDTO reportDTO = new ReportDTO("id-1", null, "POST", 10L, "SPAM", "PENDING", null, null, null);
         @SuppressWarnings("unchecked")
         ResponseDTO<ReportDTO> responseDTO = new ResponseDTO("Denúncia registrada com sucesso!", reportDTO);
 

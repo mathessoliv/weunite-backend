@@ -111,7 +111,7 @@ class AdminControllerIntegrationTest {
 
     @Test
     void getReportedOpportunityDetailShouldReturnPayload() throws Exception {
-        ReportDTO report = new ReportDTO("1", sampleUser(), "POST", 3L, "Spam", "PENDING", Instant.now());
+        ReportDTO report = new ReportDTO("1", sampleUser(), "POST", 3L, "Spam", "PENDING", Instant.now(), null, null);
         ReportedOpportunityDetailDTO detail = new ReportedOpportunityDetailDTO(
                 new OpportunityDTO(1L, "Opportunity", "desc", "Remote", null, Set.of(), Instant.now(), Instant.now(), sampleUser(), 0),
                 List.of(report),

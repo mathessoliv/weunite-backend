@@ -37,7 +37,7 @@ class ReportServiceTest {
         Long userId = 1L;
         ReportRequestDTO requestDTO = new ReportRequestDTO("POST", 10L, "SPAM");
         UserDTO reporter = mock(UserDTO.class);
-        ReportDTO reportDTO = new ReportDTO("id-1", reporter, "POST", 10L, "SPAM", "PENDING", Instant.now());
+        ReportDTO reportDTO = new ReportDTO("id-1", reporter, "POST", 10L, "SPAM", "PENDING", Instant.now(), null, null);
         ResponseDTO<ReportDTO> responseDTO = new ResponseDTO<>("ok", reportDTO);
 
         when(reportCreationService.createReport(userId, requestDTO)).thenReturn(responseDTO);
@@ -51,7 +51,7 @@ class ReportServiceTest {
     @Test
     @DisplayName("getAllPendingReports deve delegar para ReportQueryService")
     void getAllPendingReports_deveDelegarParaServicoDeConsulta() {
-        ReportDTO dto = new ReportDTO("id-1", mock(UserDTO.class), "POST", 10L, "SPAM", "PENDING", Instant.now());
+        ReportDTO dto = new ReportDTO("id-1", mock(UserDTO.class), "POST", 10L, "SPAM", "PENDING", Instant.now(), null, null);
         List<ReportDTO> list = List.of(dto);
         when(reportQueryService.getAllPendingReports()).thenReturn(list);
 
@@ -64,7 +64,7 @@ class ReportServiceTest {
     @Test
     @DisplayName("getAllReports deve delegar para ReportQueryService")
     void getAllReports_deveDelegarParaServicoDeConsulta() {
-        ReportDTO dto = new ReportDTO("id-1", mock(UserDTO.class), "POST", 10L, "SPAM", "PENDING", Instant.now());
+        ReportDTO dto = new ReportDTO("id-1", mock(UserDTO.class), "POST", 10L, "SPAM", "PENDING", Instant.now(), null, null);
         List<ReportDTO> list = List.of(dto);
         when(reportQueryService.getAllReports()).thenReturn(list);
 
@@ -77,7 +77,7 @@ class ReportServiceTest {
     @Test
     @DisplayName("getAllReportsByStatus deve delegar para ReportQueryService")
     void getAllReportsByStatus_deveDelegarParaServicoDeConsulta() {
-        ReportDTO dto = new ReportDTO("id-1", mock(UserDTO.class), "POST", 10L, "SPAM", "PENDING", Instant.now());
+        ReportDTO dto = new ReportDTO("id-1", mock(UserDTO.class), "POST", 10L, "SPAM", "PENDING", Instant.now(), null, null);
         List<ReportDTO> list = List.of(dto);
         when(reportQueryService.getAllReportsByStatus("PENDING")).thenReturn(list);
 

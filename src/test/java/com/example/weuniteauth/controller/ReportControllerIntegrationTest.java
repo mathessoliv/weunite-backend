@@ -38,7 +38,7 @@ class ReportControllerIntegrationTest {
 
     private ReportDTO sampleReport() {
         UserDTO reporter = new UserDTO("1", "Reporter", "reporter", "BASIC", null, "report@test.com", null, null, false, Instant.now(), Instant.now());
-        return new ReportDTO("10", reporter, "POST", 99L, "Spam", "PENDING", Instant.now());
+        return new ReportDTO("10", reporter, "POST", 99L, "Spam", "PENDING", Instant.now(), null, null);
     }
 
     @Test
