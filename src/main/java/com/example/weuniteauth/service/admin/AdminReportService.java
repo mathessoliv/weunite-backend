@@ -168,7 +168,14 @@ public class AdminReportService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        markReportsAsReviewed(postId, Report.ReportType.POST);
+        // Marcar todas as denúncias relacionadas como DELETED
+        List<Report> reports = reportRepository.findByEntityIdAndType(postId, Report.ReportType.POST);
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.DELETED);
+            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+        });
+        reportRepository.saveAll(reports);
+
         post.setDeleted(true);
         postRepository.save(post);
 
@@ -298,7 +305,14 @@ public class AdminReportService {
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
                 .orElseThrow(OpportunityNotFoundException::new);
 
-        markReportsAsReviewed(opportunityId, Report.ReportType.OPPORTUNITY);
+        // Marcar todas as denúncias relacionadas como DELETED
+        List<Report> reports = reportRepository.findByEntityIdAndType(opportunityId, Report.ReportType.OPPORTUNITY);
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.DELETED);
+            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+        });
+        reportRepository.saveAll(reports);
+
         opportunity.setDeleted(true);
         opportunityRepository.save(opportunity);
 
@@ -424,34 +438,5 @@ public class AdminReportService {
     }
 
     // ========== Métodos Privados ==========
-
-    private void markReportsAsReviewed(Long entityId, Report.ReportType type) {
-        List<Report> pendingReports = reportRepository.findByEntityIdAndTypeAndStatus(
-                entityId,
-                type,
-                Report.ReportStatus.PENDING
-        );
-        
-        List<Report> reviewedReports = reportRepository.findByEntityIdAndTypeAndStatus(
-                entityId,
-                type,
-                Report.ReportStatus.REVIEWED
-        );
-        
-        pendingReports.forEach(report -> {
-            report.setStatus(Report.ReportStatus.RESOLVED);
-            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
-            report.setResolvedAt(Instant.now());
-        });
-        
-        reviewedReports.forEach(report -> {
-            report.setStatus(Report.ReportStatus.RESOLVED);
-            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
-            report.setResolvedAt(Instant.now());
-        });
-        
-        reportRepository.saveAll(pendingReports);
-        reportRepository.saveAll(reviewedReports);
-    }
 }
 
