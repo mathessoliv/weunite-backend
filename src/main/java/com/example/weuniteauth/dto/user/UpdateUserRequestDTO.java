@@ -16,6 +16,12 @@ public record UpdateUserRequestDTO(
 
         Boolean isPrivate,
 
+        Double height,
+        Double weight,
+        String footDomain,
+        String position,
+        java.time.LocalDate birthDate,
+
         java.util.List<com.example.weuniteauth.dto.SkillDTO> skills
         ) {
 }

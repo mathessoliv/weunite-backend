@@ -151,6 +151,12 @@ public class UserService {
                 athlete.setPrivate(requestDTO.isPrivate());
             }
 
+            if (requestDTO.height() != null) athlete.setHeight(requestDTO.height());
+            if (requestDTO.weight() != null) athlete.setWeight(requestDTO.weight());
+            if (requestDTO.footDomain() != null) athlete.setFootDomain(requestDTO.footDomain());
+            if (requestDTO.position() != null) athlete.setPosition(requestDTO.position());
+            if (requestDTO.birthDate() != null) athlete.setBirthDate(requestDTO.birthDate());
+
             if (profileImage != null && !profileImage.isEmpty()) {
                 String imageUrl = cloudinaryService.uploadProfileImg(profileImage, username);
                 athlete.setProfileImg(imageUrl);
