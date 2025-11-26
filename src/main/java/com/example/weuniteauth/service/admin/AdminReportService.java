@@ -119,7 +119,7 @@ public class AdminReportService {
                             List.of(),
                             Instant.now(),
                             Instant.now(),
-                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now())
+                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now(), List.of())
                         );
                     }
 
@@ -264,7 +264,7 @@ public class AdminReportService {
                             Set.of(),
                             Instant.now(),
                             Instant.now(),
-                            new UserDTO("0", "Empresa Desconhecida", "unknown", "COMPANY", "", "", "", "", false, Instant.now(), Instant.now()),
+                            new UserDTO("0", "Empresa Desconhecida", "unknown", "COMPANY", "", "", "", "", false, Instant.now(), Instant.now(), List.of()),
                             0
                         );
                     }
@@ -403,7 +403,7 @@ public class AdminReportService {
                         // Cria um DTO placeholder para comentário deletado permanentemente
                         commentDTO = new CommentDTO(
                             String.valueOf(commentId),
-                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now()),
+                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now(), List.of()),
                             null,
                             "Comentário removido permanentemente",
                             null,
