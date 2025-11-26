@@ -190,6 +190,15 @@ public class AdminReportService {
         post.setDeleted(false);
         postRepository.save(post);
 
+        // Atualizar status dos reports relacionados para RESOLVED
+        List<Report> reports = reportRepository.findByEntityIdAndType(postId, Report.ReportType.POST);
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        reportRepository.saveAll(reports);
+
         return postMapper.toResponseDTO("Post restaurado com sucesso pelo administrador", post);
     }
 
@@ -326,6 +335,15 @@ public class AdminReportService {
 
         opportunity.setDeleted(false);
         opportunityRepository.save(opportunity);
+
+        // Atualizar status dos reports relacionados para RESOLVED
+        List<Report> reports = reportRepository.findByEntityIdAndType(opportunityId, Report.ReportType.OPPORTUNITY);
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        reportRepository.saveAll(reports);
 
         return opportunityMapper.toResponseDTO("Oportunidade restaurada com sucesso pelo administrador", opportunity);
     }
