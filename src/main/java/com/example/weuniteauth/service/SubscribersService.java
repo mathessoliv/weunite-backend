@@ -40,6 +40,11 @@ public class SubscribersService {
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
                 .orElseThrow(OpportunityNotFoundException::new);
 
+        // Verifica se a oportunidade já passou da data limite
+        if (opportunity.getDateEnd() != null && opportunity.getDateEnd().isBefore(java.time.LocalDate.now())) {
+            throw new com.example.weuniteauth.exceptions.BusinessRuleException("Prazo da oportunidade já expirou");
+        }
+
         Subscriber existingSubscriber = subscribersRepository.findByAthleteAndOpportunity(athlete, opportunity)
                 .orElse(null);
 
