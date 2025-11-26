@@ -16,7 +16,8 @@ public class Report {
 
     public enum ReportType {
         POST,
-        OPPORTUNITY
+        OPPORTUNITY,
+        COMMENT
     }
 
     public enum ReportStatus {

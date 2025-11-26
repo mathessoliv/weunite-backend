@@ -114,7 +114,8 @@ public class CommentService {
             throw new UnauthorizedException("Você precisa estar logado para deletar esse comentário!");
         }
 
-        commentRepository.delete(comment);
+        comment.setDeleted(true);
+        commentRepository.save(comment);
 
         return commentMapper.toResponseDTO("Comentário excluída com sucesso", comment);
     }

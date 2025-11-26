@@ -35,6 +35,17 @@ public class DatabaseFixConfig {
             jdbcTemplate.execute("ALTER TABLE report ADD CONSTRAINT report_status_check CHECK (status IN ('PENDING', 'RESOLVED', 'REVIEWED'))");
             
             System.out.println("Constraint 'report_status_check' atualizada com sucesso para incluir apenas PENDING, RESOLVED e REVIEWED.");
+
+            // --- FIX PARA REPORT TYPE (Adicionando COMMENT) ---
+            try {
+                jdbcTemplate.execute("ALTER TABLE report DROP CONSTRAINT IF EXISTS report_type_check");
+            } catch (Exception e) {
+                System.out.println("Aviso: Não foi possível remover a constraint report_type_check: " + e.getMessage());
+            }
+
+            jdbcTemplate.execute("ALTER TABLE report ADD CONSTRAINT report_type_check CHECK (type IN ('POST', 'OPPORTUNITY', 'COMMENT'))");
+            System.out.println("Constraint 'report_type_check' atualizada com sucesso para incluir COMMENT.");
+
         } catch (Exception e) {
             System.err.println("Erro ao tentar atualizar constraint do banco de dados: " + e.getMessage());
             // Não lançamos a exceção para não impedir a inicialização da aplicação, 

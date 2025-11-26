@@ -1,5 +1,6 @@
 package com.example.weuniteauth.controller;
 
+import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -12,6 +13,7 @@ import com.example.weuniteauth.dto.admin.OpportunityCategoryWithSkillsDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
+import com.example.weuniteauth.dto.report.ReportedCommentDetailDTO;
 import com.example.weuniteauth.service.AdminService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -114,6 +116,36 @@ public class AdminController {
     @PutMapping("/opportunities/{opportunityId}/restore")
     public ResponseEntity<ResponseDTO<OpportunityDTO>> restoreOpportunity(@PathVariable Long opportunityId) {
         ResponseDTO<OpportunityDTO> response = adminService.restoreOpportunityByAdmin(opportunityId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/comments/reported")
+    public ResponseEntity<List<ReportSummaryDTO>> getReportedComments() {
+        List<ReportSummaryDTO> reportedComments = adminService.getCommentsWithManyReports();
+        return ResponseEntity.ok(reportedComments);
+    }
+
+    @GetMapping("/comments/reported/details")
+    public ResponseEntity<List<ReportedCommentDetailDTO>> getReportedCommentsDetails() {
+        List<ReportedCommentDetailDTO> reportedComments = adminService.getReportedCommentsDetails();
+        return ResponseEntity.ok(reportedComments);
+    }
+
+    @GetMapping("/comments/reported/{commentId}")
+    public ResponseEntity<ReportedCommentDetailDTO> getReportedCommentDetail(@PathVariable Long commentId) {
+        ReportedCommentDetailDTO reportedComment = adminService.getReportedCommentDetail(commentId);
+        return ResponseEntity.ok(reportedComment);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<ResponseDTO<CommentDTO>> deleteComment(@PathVariable Long commentId) {
+        ResponseDTO<CommentDTO> response = adminService.deleteCommentByAdmin(commentId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/comments/{commentId}/restore")
+    public ResponseEntity<ResponseDTO<CommentDTO>> restoreComment(@PathVariable Long commentId) {
+        ResponseDTO<CommentDTO> response = adminService.restoreCommentByAdmin(commentId);
         return ResponseEntity.ok(response);
     }
 

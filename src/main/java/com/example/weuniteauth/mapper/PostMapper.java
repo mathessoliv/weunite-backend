@@ -79,6 +79,7 @@ public interface PostMapper {
         }
 
         return comments.stream()
+                .filter(comment -> !comment.isDeleted())
                 .map(this::mapCommentWithoutPost)
                 .collect(Collectors.toList());
     }

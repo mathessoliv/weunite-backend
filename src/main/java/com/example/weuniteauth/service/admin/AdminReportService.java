@@ -1,21 +1,27 @@
 package com.example.weuniteauth.service.admin;
 
 import com.example.weuniteauth.domain.opportunity.Opportunity;
+import com.example.weuniteauth.domain.post.Comment;
 import com.example.weuniteauth.domain.post.Post;
 import com.example.weuniteauth.domain.report.Report;
+import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.report.ReportDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
+import com.example.weuniteauth.dto.report.ReportedCommentDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.UserDTO;
+import com.example.weuniteauth.exceptions.comment.CommentNotFoundException;
 import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
+import com.example.weuniteauth.mapper.CommentMapper;
 import com.example.weuniteauth.mapper.OpportunityMapper;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.mapper.ReportMapper;
+import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.OpportunityRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.ReportRepository;
@@ -37,8 +43,10 @@ public class AdminReportService {
     private final ReportRepository reportRepository;
     private final PostRepository postRepository;
     private final OpportunityRepository opportunityRepository;
+    private final CommentRepository commentRepository;
     private final PostMapper postMapper;
     private final OpportunityMapper opportunityMapper;
+    private final CommentMapper commentMapper;
     private final ReportMapper reportMapper;
 
     private static final Long REPORT_THRESHOLD = 1L;
@@ -46,14 +54,18 @@ public class AdminReportService {
     public AdminReportService(ReportRepository reportRepository,
                               PostRepository postRepository,
                               OpportunityRepository opportunityRepository,
+                              CommentRepository commentRepository,
                               PostMapper postMapper,
                               OpportunityMapper opportunityMapper,
+                              CommentMapper commentMapper,
                               ReportMapper reportMapper) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
         this.opportunityRepository = opportunityRepository;
+        this.commentRepository = commentRepository;
         this.postMapper = postMapper;
         this.opportunityMapper = opportunityMapper;
+        this.commentMapper = commentMapper;
         this.reportMapper = reportMapper;
     }
 
@@ -346,6 +358,151 @@ public class AdminReportService {
         reportRepository.saveAll(reports);
 
         return opportunityMapper.toResponseDTO("Oportunidade restaurada com sucesso pelo administrador", opportunity);
+    }
+
+    // ========== Comentários Reportados ==========
+
+    @Transactional(readOnly = true)
+    public List<ReportSummaryDTO> getCommentsWithManyReports() {
+        List<Object[]> results = reportRepository.findEntitiesWithManyReports(
+                Report.ReportType.COMMENT,
+                REPORT_THRESHOLD
+        );
+
+        return results.stream()
+                .map(result -> new ReportSummaryDTO(
+                        (Long) result[0],
+                        ((Report.ReportType) result[1]).name(),
+                        (Long) result[2]
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReportedCommentDetailDTO> getReportedCommentsDetails() {
+        List<Object[]> results = reportRepository.findAllEntitiesWithReports(
+                Report.ReportType.COMMENT,
+                REPORT_THRESHOLD
+        );
+
+        return results.stream()
+                .map(result -> {
+                    Long commentId = (Long) result[0];
+
+                    Comment comment = commentRepository.findById(commentId).orElse(null);
+
+                    List<Report> allReports = reportRepository.findByEntityIdAndType(
+                            commentId,
+                            Report.ReportType.COMMENT
+                    );
+
+                    CommentDTO commentDTO;
+                    if (comment != null) {
+                        commentDTO = commentMapper.toCommentDTO(comment);
+                    } else {
+                        // Cria um DTO placeholder para comentário deletado permanentemente
+                        commentDTO = new CommentDTO(
+                            String.valueOf(commentId),
+                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now()),
+                            null,
+                            "Comentário removido permanentemente",
+                            null,
+                            null,
+                            List.of(),
+                            Instant.now(),
+                            Instant.now()
+                        );
+                    }
+
+                    List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(allReports);
+
+                    boolean hasPending = allReports.stream()
+                            .anyMatch(r -> r.getStatus() == Report.ReportStatus.PENDING);
+                    boolean hasReviewed = allReports.stream()
+                            .anyMatch(r -> r.getStatus() == Report.ReportStatus.REVIEWED);
+
+                    String status;
+                    if (comment != null && comment.isDeleted()) {
+                        status = "deleted";
+                    } else if (comment == null) {
+                        status = "deleted";
+                    } else if (hasPending) {
+                        status = "pending";
+                    } else if (hasReviewed) {
+                        status = "reviewed";
+                    } else {
+                        status = "resolved";
+                    }
+
+                    return new ReportedCommentDetailDTO(
+                            commentDTO,
+                            reportDTOs,
+                            (long) allReports.size(),
+                            status
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public ReportedCommentDetailDTO getReportedCommentDetail(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        List<Report> reports = reportRepository.findByEntityIdAndTypeAndStatus(
+                commentId,
+                Report.ReportType.COMMENT,
+                Report.ReportStatus.PENDING
+        );
+
+        CommentDTO commentDTO = commentMapper.toCommentDTO(comment);
+        List<ReportDTO> reportDTOs = reportMapper.toReportDTOList(reports);
+
+        return new ReportedCommentDetailDTO(
+                commentDTO,
+                reportDTOs,
+                (long) reports.size(),
+                reports.isEmpty() ? "resolved" : "pending"
+        );
+    }
+
+    @Transactional
+    public ResponseDTO<CommentDTO> deleteCommentByAdmin(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        // Marcar todas as denúncias relacionadas como DELETED
+        List<Report> reports = reportRepository.findByEntityIdAndType(commentId, Report.ReportType.COMMENT);
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.DELETED);
+            report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
+        });
+        reportRepository.saveAll(reports);
+
+        comment.setDeleted(true);
+        commentRepository.save(comment);
+
+        return commentMapper.toResponseDTO("Comentário excluído com sucesso pelo administrador", comment);
+    }
+
+    @Transactional
+    public ResponseDTO<CommentDTO> restoreCommentByAdmin(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        comment.setDeleted(false);
+        commentRepository.save(comment);
+
+        // Atualizar status dos reports relacionados para RESOLVED
+        List<Report> reports = reportRepository.findByEntityIdAndType(commentId, Report.ReportType.COMMENT);
+        reports.forEach(report -> {
+            report.setStatus(Report.ReportStatus.RESOLVED);
+            report.setActionTaken(Report.ActionTaken.NONE);
+            report.setResolvedAt(Instant.now());
+        });
+        reportRepository.saveAll(reports);
+
+        return commentMapper.toResponseDTO("Comentário restaurado com sucesso pelo administrador", comment);
     }
 
     // ========== Ações sobre Reports ==========

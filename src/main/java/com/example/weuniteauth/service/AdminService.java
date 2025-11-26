@@ -1,5 +1,6 @@
 package com.example.weuniteauth.service;
 
+import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -12,6 +13,7 @@ import com.example.weuniteauth.dto.admin.OpportunityCategoryWithSkillsDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
+import com.example.weuniteauth.dto.report.ReportedCommentDetailDTO;
 import com.example.weuniteauth.service.admin.AdminReportService;
 import com.example.weuniteauth.service.admin.AdminModerationService;
 import com.example.weuniteauth.service.admin.AdminStatsService;
@@ -99,6 +101,26 @@ public class AdminService {
 
     public ResponseDTO<OpportunityDTO> restoreOpportunityByAdmin(Long opportunityId) {
         return adminReportService.restoreOpportunityByAdmin(opportunityId);
+    }
+
+    public List<ReportSummaryDTO> getCommentsWithManyReports() {
+        return adminReportService.getCommentsWithManyReports();
+    }
+
+    public List<ReportedCommentDetailDTO> getReportedCommentsDetails() {
+        return adminReportService.getReportedCommentsDetails();
+    }
+
+    public ReportedCommentDetailDTO getReportedCommentDetail(Long commentId) {
+        return adminReportService.getReportedCommentDetail(commentId);
+    }
+
+    public ResponseDTO<CommentDTO> deleteCommentByAdmin(Long commentId) {
+        return adminReportService.deleteCommentByAdmin(commentId);
+    }
+
+    public ResponseDTO<CommentDTO> restoreCommentByAdmin(Long commentId) {
+        return adminReportService.restoreCommentByAdmin(commentId);
     }
 
     public ResponseDTO<String> dismissReports(Long entityId, String type) {
