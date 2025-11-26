@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/saved-opportunities")
+@RequestMapping("/api/saved-opportunities")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Saved Opportunities", description = "Endpoints para gerenciar oportunidades salvas")
