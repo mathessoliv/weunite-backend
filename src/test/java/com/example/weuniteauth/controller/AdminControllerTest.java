@@ -45,7 +45,7 @@ class AdminControllerTest {
     @BeforeEach
     void setUp() {
         sampleUser = new UserDTO("1", "Admin", "admin", "ADMIN", null, "admin@test.com",
-                null, null, false, Instant.now(), Instant.now());
+                null, null, false, Instant.now(), Instant.now(), null, null, null, null, null, List.of());
         statsDTO = new AdminStatsDTO(
                 10L,
                 5L,

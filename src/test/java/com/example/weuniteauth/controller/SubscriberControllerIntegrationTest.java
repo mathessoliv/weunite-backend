@@ -47,7 +47,13 @@ class SubscriberControllerIntegrationTest {
                 null,
                 false,
                 Instant.now(),
-                Instant.now()
+                Instant.now(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO opportunityDTO = new OpportunityDTO(

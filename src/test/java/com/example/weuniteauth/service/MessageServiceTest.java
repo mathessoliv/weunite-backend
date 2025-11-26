@@ -95,7 +95,10 @@ class MessageServiceTest {
                 false,
                 Instant.now(),
                 null,
-                Message.MessageType.TEXT
+                Message.MessageType.TEXT,
+                false,
+                false,
+                null
         );
 
         sendMessageRequest = new SendMessageRequestDTO(
@@ -313,7 +316,10 @@ class MessageServiceTest {
                 false,
                 Instant.now(),
                 null,
-                Message.MessageType.IMAGE
+                Message.MessageType.IMAGE,
+                false,
+                false,
+                null
         );
 
         when(conversationRepository.findById(1L)).thenReturn(Optional.of(conversation));

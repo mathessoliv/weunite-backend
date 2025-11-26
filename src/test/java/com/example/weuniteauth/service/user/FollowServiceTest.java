@@ -20,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -73,8 +75,8 @@ class FollowServiceTest {
         follow.setCreatedAt(Instant.now());
         follow.setStatus(Follow.FollowStatus.ACCEPTED);
 
-        UserDTO followerDTO = new UserDTO("1", "Follower", "follower", "BASIC", null, "follower@example.com", null, null, false, Instant.now(), null);
-        UserDTO followedDTO = new UserDTO("2", "Followed", "followed", "BASIC", null, "followed@example.com", null, null, false, Instant.now(), null);
+        UserDTO followerDTO = new UserDTO("1", "Follower", "follower", "BASIC", null, "follower@example.com", null, null, false, Instant.now(), null, null, null, null, null, null, List.of());
+        UserDTO followedDTO = new UserDTO("2", "Followed", "followed", "BASIC", null, "followed@example.com", null, null, false, Instant.now(), null, null, null, null, null, null, List.of());
 
         followDTO = new FollowDTO(
                 1L,

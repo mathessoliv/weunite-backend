@@ -66,7 +66,10 @@ class ConversationControllerTest {
                 false,
                 Instant.now(),
                 null,
-                Message.MessageType.TEXT
+                Message.MessageType.TEXT,
+                false,
+                false,
+                null
         );
 
         createRequest = new CreateConversationRequestDTO(
@@ -288,7 +291,10 @@ class ConversationControllerTest {
                 true,
                 Instant.now(),
                 Instant.now(),
-                Message.MessageType.TEXT
+                Message.MessageType.TEXT,
+                false,
+                false,
+                null
         );
 
         ConversationDTO conversationWithLastMessage = new ConversationDTO(
@@ -317,13 +323,13 @@ class ConversationControllerTest {
     void shouldHandleDifferentMessageTypesInConversationMessages() throws Exception {
         // Given
         MessageDTO textMessage = new MessageDTO(
-                1L, 1L, 1L, "Text", false, Instant.now(), null, Message.MessageType.TEXT
+                1L, 1L, 1L, "Text", false, Instant.now(), null, Message.MessageType.TEXT, false, false, null
         );
         MessageDTO imageMessage = new MessageDTO(
-                2L, 1L, 2L, "https://example.com/image.jpg", false, Instant.now(), null, Message.MessageType.IMAGE
+                2L, 1L, 2L, "https://example.com/image.jpg", false, Instant.now(), null, Message.MessageType.IMAGE, false, false, null
         );
         MessageDTO fileMessage = new MessageDTO(
-                3L, 1L, 1L, "https://example.com/file.pdf", false, Instant.now(), null, Message.MessageType.FILE
+                3L, 1L, 1L, "https://example.com/file.pdf", false, Instant.now(), null, Message.MessageType.FILE, false, false, null
         );
 
         List<MessageDTO> messages = Arrays.asList(textMessage, imageMessage, fileMessage);

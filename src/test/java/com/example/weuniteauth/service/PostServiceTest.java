@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,7 +76,13 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO postDTO = new PostDTO(
@@ -139,7 +146,13 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO postDTO = new PostDTO(
@@ -223,7 +236,13 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO updatedPostDTO = new PostDTO(
@@ -336,7 +355,13 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO deletedPostDTO = new PostDTO(

@@ -35,7 +35,7 @@ class ReportControllerTest {
     @BeforeEach
     void setUp() {
         UserDTO reporter = new UserDTO("1", "Reporter", "rep", "BASIC", null,
-                "rep@test.com", null, null, false, Instant.now(), Instant.now());
+                "rep@test.com", null, null, false, Instant.now(), Instant.now(), null, null, null, null, null, List.of());
         reportDTO = new ReportDTO("1", reporter, "POST", 2L, "reason", "OPEN", Instant.now(), null, null);
     }
 

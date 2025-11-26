@@ -13,7 +13,7 @@ class ChatDtoTest {
 
     @Test
     void conversationDtoShouldExposeData() {
-        MessageDTO lastMessage = new MessageDTO(2L, 1L, 10L, "Hi", true, Instant.now(), Instant.now(), Message.MessageType.TEXT);
+        MessageDTO lastMessage = new MessageDTO(2L, 1L, 10L, "Hi", true, Instant.now(), Instant.now(), Message.MessageType.TEXT, false, false, null);
         ConversationDTO dto = new ConversationDTO(1L, Set.of(1L, 2L), lastMessage, Instant.MIN, Instant.MAX, 3);
 
         assertThat(dto.id()).isEqualTo(1L);

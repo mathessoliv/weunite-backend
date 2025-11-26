@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,7 +40,7 @@ class ChatControllerTest {
     @Test
     void shouldSendMessage() {
         SendMessageRequestDTO request = new SendMessageRequestDTO(1L, 2L, "hi", Message.MessageType.TEXT);
-        MessageDTO messageDTO = new MessageDTO(5L, 1L, 2L, "hi", true, Instant.now(), Instant.now(), Message.MessageType.TEXT);
+        MessageDTO messageDTO = new MessageDTO(5L, 1L, 2L, "hi", true, Instant.now(), Instant.now(), Message.MessageType.TEXT, false, false, null);
 
         when(messageService.sendMessage(any(SendMessageRequestDTO.class))).thenReturn(messageDTO);
 
@@ -51,7 +52,8 @@ class ChatControllerTest {
 
     @Test
     void shouldMarkAsRead() {
-        chatController.markAsRead(1L, 2L);
+        Map<String, Long> payload = Map.of("conversationId", 1L, "userId", 2L);
+        chatController.markAsRead(payload);
         verify(messageService).markMessagesAsRead(1L, 2L);
         verify(messagingTemplate).convertAndSend("/topic/conversation/1/read", 2L);
     }

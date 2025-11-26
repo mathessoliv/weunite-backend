@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -162,7 +163,13 @@ public class OpportunityServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
@@ -228,7 +235,13 @@ public class OpportunityServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
@@ -273,7 +286,13 @@ public class OpportunityServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO updatedOpportunityDTO = new OpportunityDTO(
@@ -336,7 +355,13 @@ public class OpportunityServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         ResponseDTO<OpportunityDTO> expectedResponse = new ResponseDTO<>(

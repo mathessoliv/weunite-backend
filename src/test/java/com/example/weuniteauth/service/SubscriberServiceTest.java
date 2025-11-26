@@ -76,7 +76,13 @@ public class SubscriberServiceTest {
                 null,
                 false,
                 java.time.Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO mockOpportunityDTO = new OpportunityDTO(
@@ -147,7 +153,13 @@ public class SubscriberServiceTest {
                 null,
                 false,
                 java.time.Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO mockOpportunityDTO = new OpportunityDTO(
@@ -269,7 +281,13 @@ public class SubscriberServiceTest {
                 null,
                 false,
                 java.time.Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         UserDTO athleteDTO2 = new UserDTO(
@@ -283,7 +301,13 @@ public class SubscriberServiceTest {
                 null,
                 false,
                 java.time.Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         OpportunityDTO mockOpportunityDTO = new OpportunityDTO(

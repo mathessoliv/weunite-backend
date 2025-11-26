@@ -88,7 +88,13 @@ public class CommentServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO postDTO = new PostDTO(
@@ -208,7 +214,13 @@ public class CommentServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         CommentDTO updatedCommentDTO = new CommentDTO(
@@ -350,7 +362,13 @@ public class CommentServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         CommentDTO deletedCommentDTO = new CommentDTO(

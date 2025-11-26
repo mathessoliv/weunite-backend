@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -35,7 +36,7 @@ class AuthControllerIntegrationTest {
     private AuthService authService;
 
     private ResponseDTO<AuthDTO> sampleResponse() {
-        UserDTO user = new UserDTO("1", "Test", "tester", "BASIC", null, "tester@example.com", null, null, false, Instant.now(), Instant.now());
+        UserDTO user = new UserDTO("1", "Test", "tester", "BASIC", null, "tester@example.com", null, null, false, Instant.now(), Instant.now(), null, null, null, null, null, List.of());
         return new ResponseDTO<>("ok", new AuthDTO(user, "token", 3600L));
     }
 

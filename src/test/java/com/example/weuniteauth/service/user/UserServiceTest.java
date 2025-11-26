@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -85,7 +86,13 @@ class UserServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
     }
 
@@ -222,7 +229,13 @@ class UserServiceTest {
                 "Updated Name",
                 "updateduser",
                 "Updated bio",
-                true
+                true,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         ResponseDTO<UserDTO> expectedResponse = new ResponseDTO<>("Usuário atualizado com sucesso!", userDTO);

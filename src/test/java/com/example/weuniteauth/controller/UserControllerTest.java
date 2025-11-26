@@ -35,7 +35,7 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         UserDTO dto = new UserDTO("1", "user", "username", "BASIC", null, "user@test.com",
-                null, null, false, Instant.now(), Instant.now());
+                null, null, false, Instant.now(), Instant.now(), null, null, null, null, null, List.of());
         responseDTO = new ResponseDTO<>("ok", dto);
     }
 
@@ -64,7 +64,7 @@ class UserControllerTest {
     @Test
     void shouldUpdateUser() {
         when(userService.updateUser(any(UpdateUserRequestDTO.class), any(String.class), any(), any())).thenReturn(responseDTO);
-        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO("name", "username", "bio", true);
+        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO("name", "username", "bio", true, null, null, null, null, null, List.of());
         MockMultipartFile profile = new MockMultipartFile("profileImage", new byte[0]);
         MockMultipartFile banner = new MockMultipartFile("bannerImage", new byte[0]);
 

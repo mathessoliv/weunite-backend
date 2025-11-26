@@ -150,6 +150,6 @@ class AdminControllerIntegrationTest {
     }
 
     private UserDTO sampleUser() {
-        return new UserDTO("1", "Test", "test_user", "BASIC", null, "test@example.com", null, null, false, Instant.now(), Instant.now());
+        return new UserDTO("1", "Test", "test_user", "BASIC", null, "test@example.com", null, null, false, Instant.now(), Instant.now(), null, null, null, null, null, List.of());
     }
 }

@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +39,7 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         UserDTO user = new UserDTO("1", "Test", "tester", "BASIC", null, "tester@example.com",
-                null, null, false, Instant.now(), Instant.now());
+                null, null, false, Instant.now(), Instant.now(), null, null, null, null, null, List.of());
         response = new ResponseDTO<>("ok", new AuthDTO(user, "token", 3600L));
     }
 

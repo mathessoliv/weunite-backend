@@ -58,7 +58,7 @@ class ConversationControllerIntegrationTest {
 
     @Test
     void getConversationMessagesShouldReturnList() throws Exception {
-        MessageDTO messageDTO = new MessageDTO(1L, 1L, 1L, "hello", true, Instant.now(), Instant.now(), Message.MessageType.TEXT);
+        MessageDTO messageDTO = new MessageDTO(1L, 1L, 1L, "hello", true, Instant.now(), Instant.now(), Message.MessageType.TEXT, false, false, null);
         when(messageService.getConversationMessages(1L, 2L)).thenReturn(List.of(messageDTO));
 
         mockMvc.perform(get("/api/conversations/{conversationId}/messages/{userId}", 1L, 2L))
