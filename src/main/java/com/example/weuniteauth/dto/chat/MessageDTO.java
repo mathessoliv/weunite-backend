@@ -12,5 +12,8 @@ public record MessageDTO(
         boolean isRead,
         Instant createdAt,
         Instant readAt,
-        Message.MessageType type
+        Message.MessageType type,
+        boolean deleted,
+        boolean edited,
+        Instant editedAt
 ) {}

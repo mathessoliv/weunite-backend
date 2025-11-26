@@ -52,11 +52,9 @@ public class MessageService {
 
         Message savedMessage = messageRepository.save(message);
 
-        // Update conversation's updatedAt timestamp
         conversation.setUpdatedAt(Instant.now());
         conversationRepository.save(conversation);
 
-        // Create notification for the recipient (the other participant)
         Long senderId = sender.getId();
         conversation.getParticipants().stream()
                 .filter(participant -> !participant.getId().equals(senderId))
@@ -65,7 +63,7 @@ public class MessageService {
                             recipient.getId(),
                             "NEW_MESSAGE",
                             senderId,
-                            conversation.getId(), // relatedEntityId points to the conversation
+                            conversation.getId(),
                             null
                     );
                 });
@@ -94,10 +92,48 @@ public class MessageService {
         List<Message> unreadMessages = messageRepository.findUnreadMessagesByConversationAndUser(conversationId, userId);
 
         for (Message message : unreadMessages) {
-            message.setRead(true);
-            message.setReadAt(Instant.now());
+            if (!message.isRead()) {
+                message.setRead(true);
+                message.setReadAt(Instant.now());
+            }
+        }
+        messageRepository.saveAll(unreadMessages);
+    }
+
+    @Transactional
+    public MessageDTO deleteMessage(Long messageId, Long userId, boolean forEveryone) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new NotFoundResourceException("Mensagem não encontrada"));
+
+        if (!message.getSender().getId().equals(userId)) {
+            throw new UnauthorizedException("Você não tem permissão para apagar esta mensagem");
         }
 
-        messageRepository.saveAll(unreadMessages);
+        MessageDTO messageDTO = messageMapper.toDTO(message);
+
+        messageRepository.delete(message);
+
+        return messageDTO;
+    }
+
+    @Transactional
+    public MessageDTO editMessage(Long messageId, Long userId, String newContent) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new NotFoundResourceException("Mensagem não encontrada"));
+
+        if (!message.getSender().getId().equals(userId)) {
+            throw new UnauthorizedException("Você não tem permissão para editar esta mensagem");
+        }
+
+        if (!"TEXT".equals(message.getType().toString())) {
+            throw new UnauthorizedException("Apenas mensagens de texto podem ser editadas");
+        }
+
+        message.setContent(newContent);
+        message.setEdited(true);
+        message.setEditedAt(Instant.now());
+
+        Message savedMessage = messageRepository.save(message);
+        return messageMapper.toDTO(savedMessage);
     }
 }
