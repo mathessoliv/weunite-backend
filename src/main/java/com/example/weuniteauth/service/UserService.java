@@ -4,16 +4,22 @@ import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.dto.user.UpdateUserRequestDTO;
+import com.example.weuniteauth.dto.SkillDTO;
 import com.example.weuniteauth.exceptions.NotFoundResourceException;
 import com.example.weuniteauth.exceptions.auth.ExpiredTokenException;
 import com.example.weuniteauth.exceptions.auth.InvalidTokenException;
 import com.example.weuniteauth.exceptions.user.UserAlreadyExistsException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.UserMapper;
+import com.example.weuniteauth.domain.opportunity.Skill;
+import com.example.weuniteauth.domain.users.Athlete;
 import com.example.weuniteauth.domain.users.Role;
 import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.repository.RoleRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
+import com.example.weuniteauth.repository.SkillRepository;
+import com.example.weuniteauth.repository.user.AthleteRepository;
+import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -23,6 +29,7 @@ import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,19 +43,25 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final CloudinaryService cloudinaryService;
+    private final SkillRepository skillRepository;
+    private final AthleteRepository athleteRepository;
 
     public UserService(
             UserRepository userRepository,
             UserMapper userMapper,
             PasswordEncoder passwordEncoder,
             RoleRepository roleRepository,
-            CloudinaryService cloudinaryService
+            CloudinaryService cloudinaryService,
+            SkillRepository skillRepository,
+            AthleteRepository athleteRepository
     ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.cloudinaryService = cloudinaryService;
+        this.skillRepository = skillRepository;
+        this.athleteRepository = athleteRepository;
     }
 
     @Transactional
@@ -120,36 +133,92 @@ public class UserService {
 
     @Transactional
     public ResponseDTO<UserDTO> updateUser(UpdateUserRequestDTO requestDTO, String username, MultipartFile profileImage, MultipartFile bannerImage) {
-        User user = findUserEntityByUsername(username);
+        // Tenta encontrar como Atleta primeiro para garantir a instância correta desde o início
+        Athlete athlete = athleteRepository.findByUsername(username).orElse(null);
 
-        if (userRepository.existsByUsername(requestDTO.username())) {
-
-            if (!user.getUsername().equals(requestDTO.username())) {
+        if (athlete != null) {
+            // === ATUALIZAÇÃO DE ATLETA ===
+            // Validação de username único (se mudou)
+            if (userRepository.existsByUsername(requestDTO.username()) && !athlete.getUsername().equals(requestDTO.username())) {
                 throw new UserAlreadyExistsException();
             }
+
+            athlete.setUsername(requestDTO.username());
+            athlete.setName(requestDTO.name());
+            athlete.setBio(requestDTO.bio());
+
+            if (requestDTO.isPrivate() != null) {
+                athlete.setPrivate(requestDTO.isPrivate());
+            }
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadProfileImg(profileImage, username);
+                athlete.setProfileImg(imageUrl);
+            }
+
+            if (bannerImage != null && !bannerImage.isEmpty()) {
+                String bannerUrl = cloudinaryService.uploadBannerImg(bannerImage, username);
+                athlete.setBannerImg(bannerUrl);
+            }
+
+            // Atualiza skills se fornecidas
+            if (requestDTO.skills() != null) {
+                updateAthleteSkills(athlete, requestDTO.skills());
+            }
+
+            athlete = athleteRepository.saveAndFlush(athlete);
+            return userMapper.toResponseDTO("Perfil de atleta atualizado com sucesso!", athlete);
+
+        } else {
+            // === ATUALIZAÇÃO DE USUÁRIO COMUM/EMPRESA ===
+            User user = findUserEntityByUsername(username);
+
+            if (userRepository.existsByUsername(requestDTO.username()) && !user.getUsername().equals(requestDTO.username())) {
+                throw new UserAlreadyExistsException();
+            }
+
+            user.setUsername(requestDTO.username());
+            user.setName(requestDTO.name());
+            user.setBio(requestDTO.bio());
+
+            if (requestDTO.isPrivate() != null) {
+                user.setPrivate(requestDTO.isPrivate());
+            }
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadProfileImg(profileImage, username);
+                user.setProfileImg(imageUrl);
+            }
+
+            if (bannerImage != null && !bannerImage.isEmpty()) {
+                String bannerUrl = cloudinaryService.uploadBannerImg(bannerImage, username);
+                user.setBannerImg(bannerUrl);
+            }
+
+            user = userRepository.save(user);
+            return userMapper.toResponseDTO("Perfil atualizado com sucesso!", user);
         }
+    }
 
-        user.setUsername(requestDTO.username());
-        user.setName(requestDTO.name());
-        user.setBio(requestDTO.bio());
-
-        if (requestDTO.isPrivate() != null) {
-            user.setPrivate(requestDTO.isPrivate());
+    private void updateAthleteSkills(Athlete athlete, List<SkillDTO> skillDTOs) {
+        // Limpa as skills antigas
+        if (athlete.getSkills() != null) {
+            athlete.getSkills().clear();
+        } else {
+            athlete.setSkills(new HashSet<>());
         }
-
-        if (profileImage != null && !profileImage.isEmpty()) {
-            String imageUrl = cloudinaryService.uploadProfileImg(profileImage, username);
-            user.setProfileImg(imageUrl);
+        
+        // Adiciona as novas skills
+        for (SkillDTO skillDTO : skillDTOs) {
+            String skillName = skillDTO.name();
+            Skill skill = skillRepository.findByName(skillName);
+            if (skill == null) {
+                skill = new Skill(skillName);
+                // Salva a nova skill antes de associar
+                skill = skillRepository.save(skill);
+            }
+            athlete.getSkills().add(skill);
         }
-
-        if (bannerImage != null && !bannerImage.isEmpty()) {
-            String bannerUrl = cloudinaryService.uploadBannerImg(bannerImage, username);
-            user.setBannerImg(bannerUrl);
-        }
-
-        userRepository.save(user);
-
-        return userMapper.toResponseDTO("Usuário atualizado com sucesso!", user);
     }
 
     @Transactional(readOnly = true)

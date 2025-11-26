@@ -13,6 +13,7 @@ public record UserDTO(
         String bannerImg,
         boolean isPrivate,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        java.util.List<SkillDTO> skills
 ) {
 }
