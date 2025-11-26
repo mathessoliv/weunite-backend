@@ -80,6 +80,39 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get/company/{companyId}").permitAll()
 
+                        // Subscribers endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/subscriber/toggleSubscriber/{athleteId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subscriber/subscribers/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subscriber/isSubscribed/{athleteId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subscriber/athlete/{athleteId}").permitAll()
+
+                        // Saved Opportunities endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/saved-opportunities/toggle/{athleteId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/saved-opportunities/athlete/{athleteId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/saved-opportunities/isSaved/{athleteId}/{opportunityId}").permitAll()
+
+                        // Notifications endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/notifications/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/notifications/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/notifications/**").permitAll()
+
+                        // Chat endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/chat/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/chat/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/chat/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/chat/**").permitAll()
+
+                        // Report endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/reports/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reports/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/reports/**").permitAll()
+
+                        // Admin endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/admin/**").permitAll()
+
                         // Qualquer outra requisição precisa estar autenticada
                         .anyRequest().authenticated()
                 )

@@ -62,13 +62,16 @@ public class SubscribersService {
         Opportunity opportunity = opportunityRepository.findById(opportunityId).
                 orElseThrow(OpportunityNotFoundException::new);
 
-        List<Subscriber> subscribers = subscribersRepository.findByOpportunityId(opportunityId);
+        List<Subscriber> subscribers = subscribersRepository.findByOpportunityIdWithAthlete(opportunityId);
 
         // Forçar carregamento dos relacionamentos LAZY
         subscribers.forEach(subscriber -> {
             subscriber.getAthlete().getUsername(); // Força carregamento do athlete
-            subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
-            subscriber.getOpportunity().getSubscribers().size(); // Força carregamento dos subscribers da opportunity
+            subscriber.getAthlete().getName(); // Força carregamento do nome
+            subscriber.getAthlete().getEmail(); // Força carregamento do email
+            if (subscriber.getOpportunity() != null) {
+                subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
+            }
         });
 
         return subscribersMapper.mapSubscribersToList(subscribers);

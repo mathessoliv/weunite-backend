@@ -26,8 +26,9 @@ public class SubscriberController {
     }
 
     @GetMapping("/subscribers/{opportunityId}")
-    public ResponseEntity<List<SubscriberDTO>> getSubscribersByOpportunity(@PathVariable Long opportunityId) {
-        List<SubscriberDTO> result = subscribersService.getSubscribersByOpportunity(opportunityId);
+    public ResponseEntity<ResponseDTO<List<SubscriberDTO>>> getSubscribersByOpportunity(@PathVariable Long opportunityId) {
+        List<SubscriberDTO> subscribers = subscribersService.getSubscribersByOpportunity(opportunityId);
+        ResponseDTO<List<SubscriberDTO>> result = new ResponseDTO<>("Inscritos carregados com sucesso!", subscribers);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
