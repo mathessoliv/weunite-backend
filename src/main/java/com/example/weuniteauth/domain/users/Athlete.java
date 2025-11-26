@@ -40,7 +40,7 @@ public class Athlete extends User {
     @Column
     private LocalDate birthDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_skills",
             joinColumns = @JoinColumn(name = "user_id"),
