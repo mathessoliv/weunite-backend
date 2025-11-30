@@ -1,9 +1,11 @@
 package com.example.weuniteauth.controller;
 
 import com.example.weuniteauth.dto.PostDTO;
+import com.example.weuniteauth.dto.RepostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.post.PostRequestDTO;
 import com.example.weuniteauth.service.PostService;
+import com.example.weuniteauth.service.RepostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,12 +19,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 @Validated
-public class    PostController {
+public class PostController {
 
     private final PostService postService;
+    private final RepostService repostService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, RepostService repostService) {
         this.postService = postService;
+        this.repostService = repostService;
+    }
+
+    @PostMapping("/repost/{userId}/{postId}")
+    public ResponseEntity<ResponseDTO<RepostDTO>> toggleRepost(@PathVariable Long userId, @PathVariable Long postId) {
+        ResponseDTO<RepostDTO> result = repostService.toggleRepost(userId, postId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping(value = "/create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

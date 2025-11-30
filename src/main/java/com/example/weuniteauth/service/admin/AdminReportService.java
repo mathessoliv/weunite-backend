@@ -117,9 +117,12 @@ public class AdminReportService {
                             null,
                             List.of(),
                             List.of(),
+                            List.of(),
                             Instant.now(),
                             Instant.now(),
-                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now(), null, null, null, null, null, List.of())
+                            new UserDTO("0", "Usuário Desconhecido", "unknown", "USER", "", "", "", "", false, Instant.now(), Instant.now(), null, null, null, null, null, List.of()),
+                            null,
+                            null
                         );
                     }
 

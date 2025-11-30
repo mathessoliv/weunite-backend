@@ -1,6 +1,7 @@
 package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.post.Post;
+import com.example.weuniteauth.domain.post.Repost;
 import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -10,12 +11,15 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.repository.PostRepository;
+import com.example.weuniteauth.repository.RepostRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -23,12 +27,14 @@ public class PostService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final RepostRepository repostRepository;
     private final PostMapper postMapper;
     private final CloudinaryService cloudinaryService;
 
-    public PostService(UserRepository userRepository, PostRepository postRepository, PostMapper postMapper, CloudinaryService cloudinaryService) {
+    public PostService(UserRepository userRepository, PostRepository postRepository, RepostRepository repostRepository, PostMapper postMapper, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.repostRepository = repostRepository;
         this.postMapper = postMapper;
         this.cloudinaryService = cloudinaryService;
     }
@@ -101,9 +107,17 @@ public class PostService {
     public List<PostDTO> getPosts() {
 
         List<Post> posts = postRepository.findAllOrderedByCreationDate();
+        List<Repost> reposts = repostRepository.findAllActiveReposts();
 
-        return postMapper.toPostDTOList(posts);
+        List<PostDTO> postDTOs = new ArrayList<>(postMapper.toPostDTOList(posts));
+        List<PostDTO> repostDTOs = postMapper.toPostDTOListFromReposts(reposts);
 
+        postDTOs.addAll(repostDTOs);
+
+        // Sort by createdAt (which is repostedAt for reposts) descending
+        postDTOs.sort(Comparator.comparing(PostDTO::createdAt).reversed());
+
+        return postDTOs;
     }
 
     @Transactional

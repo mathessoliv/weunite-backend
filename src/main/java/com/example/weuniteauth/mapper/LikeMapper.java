@@ -29,6 +29,9 @@ public interface LikeMapper {
     @Mapping(target = "createdAt", source = "post.createdAt")
     @Mapping(target = "updatedAt", source = "post.updatedAt")
     @Mapping(target = "user", source = "post.user")
+    @Mapping(target = "reposts", ignore = true)
+    @Mapping(target = "repostedBy", ignore = true)
+    @Mapping(target = "repostedAt", ignore = true)
     PostDTO mapPostWithoutLikes(Post post);
 
     default ResponseDTO<LikeDTO> toResponseDTO(String message, Like like) {

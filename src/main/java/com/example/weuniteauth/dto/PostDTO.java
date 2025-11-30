@@ -10,9 +10,12 @@ public record PostDTO(
         String videoUrl,
         List<LikeDTO> likes,
         List<CommentDTO> comments,
+        List<RepostDTO> reposts,
         Instant createdAt,
         Instant updatedAt,
-        UserDTO user
+        UserDTO user,
+        UserDTO repostedBy,
+        Instant repostedAt
 ) {
 
 }
