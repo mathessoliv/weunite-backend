@@ -183,10 +183,10 @@ public class AdminReportService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        // Marcar todas as denúncias relacionadas como DELETED
+        // Marcar todas as denúncias relacionadas como RESOLVED (pois o conteúdo foi removido)
         List<Report> reports = reportRepository.findByEntityIdAndType(postId, Report.ReportType.POST);
         reports.forEach(report -> {
-            report.setStatus(Report.ReportStatus.DELETED);
+            report.setStatus(Report.ReportStatus.RESOLVED);
             report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
         });
         reportRepository.saveAll(reports);
@@ -329,10 +329,10 @@ public class AdminReportService {
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
                 .orElseThrow(OpportunityNotFoundException::new);
 
-        // Marcar todas as denúncias relacionadas como DELETED
+        // Marcar todas as denúncias relacionadas como RESOLVED (pois o conteúdo foi removido)
         List<Report> reports = reportRepository.findByEntityIdAndType(opportunityId, Report.ReportType.OPPORTUNITY);
         reports.forEach(report -> {
-            report.setStatus(Report.ReportStatus.DELETED);
+            report.setStatus(Report.ReportStatus.RESOLVED);
             report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
         });
         reportRepository.saveAll(reports);
@@ -474,10 +474,10 @@ public class AdminReportService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
 
-        // Marcar todas as denúncias relacionadas como DELETED
+        // Marcar todas as denúncias relacionadas como RESOLVED (pois o conteúdo foi removido)
         List<Report> reports = reportRepository.findByEntityIdAndType(commentId, Report.ReportType.COMMENT);
         reports.forEach(report -> {
-            report.setStatus(Report.ReportStatus.DELETED);
+            report.setStatus(Report.ReportStatus.RESOLVED);
             report.setActionTaken(Report.ActionTaken.CONTENT_REMOVED);
         });
         reportRepository.saveAll(reports);
