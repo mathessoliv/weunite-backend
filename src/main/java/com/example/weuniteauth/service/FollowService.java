@@ -77,13 +77,9 @@ public class FollowService {
 
     @Transactional(readOnly = true)
     public FollowDTO getFollow(Long followerId, Long followedId) {
-        User follower = userService.findUserEntityById(followerId);
+        Optional<Follow> existingFollow = followRepository.findByFollowerIdAndFollowedId(followerId, followedId);
 
-        User followed = userService.findUserEntityById(followedId);
-
-        Follow follow = new Follow(follower, followed);
-
-        return followMapper.toFollowDTO(follow);
+        return existingFollow.map(followMapper::toFollowDTO).orElse(null);
     }
 
     @Transactional(readOnly = true)

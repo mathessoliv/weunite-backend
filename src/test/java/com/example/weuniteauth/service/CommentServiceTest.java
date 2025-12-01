@@ -97,7 +97,7 @@ public class CommentServiceTest {
                 List.of()
         );
 
-        PostDTO postDTO = new PostDTO(
+        PostDTO postDTO = 43new PostDTO(
                 "1",
                 "Test post",
                 null,
