@@ -92,9 +92,12 @@ public class PostServiceTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>("Publicação criada com sucesso!", postDTO);
@@ -162,9 +165,12 @@ public class PostServiceTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>("Publicação criada com sucesso!", postDTO);
@@ -252,9 +258,12 @@ public class PostServiceTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                new ArrayList<>(),
                 Instant.now(),
                 Instant.now(),
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>(
@@ -371,9 +380,12 @@ public class PostServiceTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>(
@@ -392,7 +404,7 @@ public class PostServiceTest {
         assertNotNull(result.data());
 
         verify(postRepository).findById(postId);
-        verify(postRepository).delete(existingPost);
+        verify(postRepository).save(existingPost);
         verify(postMapper).toResponseDTO(eq("Publicação excluída com sucesso"), eq(existingPost));
     }
 

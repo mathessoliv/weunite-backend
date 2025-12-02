@@ -97,16 +97,19 @@ public class CommentServiceTest {
                 List.of()
         );
 
-        PostDTO postDTO = 43new PostDTO(
+        PostDTO postDTO = new PostDTO(
                 "1",
                 "Test post",
                 null,
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         CommentDTO commentDTO = new CommentDTO(
@@ -399,7 +402,7 @@ public class CommentServiceTest {
         assertNotNull(result.data());
 
         verify(commentRepository).findById(commentId);
-        verify(commentRepository).delete(existingComment);
+        verify(commentRepository).save(existingComment);
         verify(commentMapper).toResponseDTO(eq("Comentário excluída com sucesso"), eq(existingComment));
     }
 

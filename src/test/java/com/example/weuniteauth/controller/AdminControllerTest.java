@@ -84,7 +84,7 @@ class AdminControllerTest {
     void shouldHandleReportedPosts() {
         ReportSummaryDTO summary = new ReportSummaryDTO(1L, "POST", 3L);
         ReportedPostDetailDTO detail = new ReportedPostDetailDTO(
-                new PostDTO("1", "text", null, null, List.of(), List.of(), Instant.now(), Instant.now(), sampleUser),
+                new PostDTO("1", "text", null, null, List.of(), List.of(), List.of(), Instant.now(), Instant.now(), sampleUser, null, null),
                 List.of(new ReportDTO("1", sampleUser, "POST", 1L, "reason", "OPEN", Instant.now(), null, null)),
                 1L,
                 "OPEN"
@@ -99,7 +99,7 @@ class AdminControllerTest {
     @Test
     void shouldHandleReportedPostDetail() {
         ReportedPostDetailDTO detail = new ReportedPostDetailDTO(
-                new PostDTO("1", "text", null, null, List.of(), List.of(), Instant.now(), Instant.now(), sampleUser),
+                new PostDTO("1", "text", null, null, List.of(), List.of(), List.of(), Instant.now(), Instant.now(), sampleUser, null, null),
                 List.of(new ReportDTO("1", sampleUser, "POST", 1L, "reason", "OPEN", Instant.now(), null, null)),
                 1L,
                 "OPEN"

@@ -391,7 +391,7 @@ public class OpportunityServiceTest {
         assertNotNull(result.data());
 
         verify(opportunityRepository).findById(opportunityId);
-        verify(opportunityRepository).delete(existingOpportunity);
+        verify(opportunityRepository).save(existingOpportunity);
         verify(opportunityMapper).toResponseDTO(eq("Oportunidade deletada com sucesso!"), eq(existingOpportunity));
     }
 

@@ -182,7 +182,6 @@ public class SubscriberServiceTest {
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(mockOpportunity));
         when(subscribersRepository.findByAthleteAndOpportunity(mockAthlete, mockOpportunity))
                 .thenReturn(Optional.of(existingSubscriber));
-        when(subscribersRepository.save(existingSubscriber)).thenReturn(existingSubscriber);
         when(subscribersMapper.toResponseDTO(eq("Inscrição removida com sucesso!"), eq(existingSubscriber)))
                 .thenReturn(expectedResponse);
 
@@ -197,7 +196,8 @@ public class SubscriberServiceTest {
         verify(athleteRepository).findById(athleteId);
         verify(opportunityRepository).findById(opportunityId);
         verify(subscribersRepository).findByAthleteAndOpportunity(mockAthlete, mockOpportunity);
-        verify(subscribersRepository).save(existingSubscriber);
+        verify(subscribersRepository).delete(existingSubscriber);
+        verify(opportunityRepository).save(mockOpportunity);
         verify(subscribersMapper).toResponseDTO(eq("Inscrição removida com sucesso!"), eq(existingSubscriber));
     }
 
@@ -328,7 +328,7 @@ public class SubscriberServiceTest {
         List<SubscriberDTO> expectedSubscriberDTOs = List.of(subscriberDTO1, subscriberDTO2);
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(mockOpportunity));
-        when(subscribersRepository.findByOpportunityId(opportunityId)).thenReturn(subscribers);
+        when(subscribersRepository.findByOpportunityIdWithAthlete(opportunityId)).thenReturn(subscribers);
         when(subscribersMapper.mapSubscribersToList(subscribers)).thenReturn(expectedSubscriberDTOs);
 
         // Act
@@ -340,7 +340,7 @@ public class SubscriberServiceTest {
         assertEquals(expectedSubscriberDTOs, result);
 
         verify(opportunityRepository).findById(opportunityId);
-        verify(subscribersRepository).findByOpportunityId(opportunityId);
+        verify(subscribersRepository).findByOpportunityIdWithAthlete(opportunityId);
         verify(subscribersMapper).mapSubscribersToList(subscribers);
     }
 
@@ -358,7 +358,7 @@ public class SubscriberServiceTest {
         List<SubscriberDTO> emptySubscriberDTOs = List.of();
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(mockOpportunity));
-        when(subscribersRepository.findByOpportunityId(opportunityId)).thenReturn(emptySubscribers);
+        when(subscribersRepository.findByOpportunityIdWithAthlete(opportunityId)).thenReturn(emptySubscribers);
         when(subscribersMapper.mapSubscribersToList(emptySubscribers)).thenReturn(emptySubscriberDTOs);
 
         // Act
@@ -369,7 +369,7 @@ public class SubscriberServiceTest {
         assertTrue(result.isEmpty());
 
         verify(opportunityRepository).findById(opportunityId);
-        verify(subscribersRepository).findByOpportunityId(opportunityId);
+        verify(subscribersRepository).findByOpportunityIdWithAthlete(opportunityId);
         verify(subscribersMapper).mapSubscribersToList(emptySubscribers);
     }
 

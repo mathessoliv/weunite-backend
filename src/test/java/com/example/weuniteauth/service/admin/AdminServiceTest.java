@@ -119,7 +119,10 @@ class AdminServiceTest {
                 null,
                 Arrays.asList(),
                 Arrays.asList(),
+                Arrays.asList(),
                 Instant.now(),
+                null,
+                null,
                 null,
                 null
         );

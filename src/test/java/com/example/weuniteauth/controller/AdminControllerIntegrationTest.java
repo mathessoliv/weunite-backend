@@ -75,7 +75,7 @@ class AdminControllerIntegrationTest {
     void deletePostShouldReturnResponseMessage() throws Exception {
         ResponseDTO<PostDTO> response = new ResponseDTO<>(
                 "Post removed",
-                new PostDTO("1", "text", null, null, List.of(), List.of(), Instant.now(), Instant.now(), sampleUser())
+                new PostDTO("1", "text", null, null, List.of(), List.of(), List.of(), Instant.now(), Instant.now(), sampleUser(), null, null)
         );
         when(adminService.deletePostByAdmin(1L)).thenReturn(response);
 

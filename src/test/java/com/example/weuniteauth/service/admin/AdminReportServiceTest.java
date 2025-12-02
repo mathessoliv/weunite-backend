@@ -132,7 +132,7 @@ class AdminReportServiceTest {
         List<Object[]> mockResults = new ArrayList<>();
         mockResults.add(mockResult);
 
-        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, Instant.now(), null, null);
+        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, null, Instant.now(), null, null, null, null);
 
         when(reportRepository.findAllEntitiesWithReports(eq(Report.ReportType.POST), eq(1L)))
                 .thenReturn(mockResults);
@@ -178,7 +178,7 @@ class AdminReportServiceTest {
     @Test
     @DisplayName("Should get reported post detail successfully")
     void getReportedPostDetailSuccess() {
-        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, Instant.now(), null, null);
+        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, null, Instant.now(), null, null, null, null);
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(testPost));
         when(reportRepository.findByEntityIdAndTypeAndStatus(1L, Report.ReportType.POST, Report.ReportStatus.PENDING))
@@ -211,7 +211,7 @@ class AdminReportServiceTest {
     @Test
     @DisplayName("Should return resolved status when no pending reports")
     void getReportedPostDetailResolvedStatus() {
-        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, Instant.now(), null, null);
+        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, null, Instant.now(), null, null, null, null);
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(testPost));
         when(reportRepository.findByEntityIdAndTypeAndStatus(1L, Report.ReportType.POST, Report.ReportStatus.PENDING))
@@ -231,7 +231,7 @@ class AdminReportServiceTest {
     @Test
     @DisplayName("Should delete post by admin successfully")
     void deletePostByAdminSuccess() {
-        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, Instant.now(), null, null);
+        PostDTO mockPostDTO = new PostDTO("1", "Test post", null, null, null, null, null, Instant.now(), null, null, null, null);
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>("Post excluído com sucesso pelo administrador", mockPostDTO);
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(testPost));
