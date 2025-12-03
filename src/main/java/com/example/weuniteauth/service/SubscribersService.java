@@ -23,12 +23,14 @@ public class SubscribersService {
     private final OpportunityRepository opportunityRepository;
     private final AthleteRepository athleteRepository;
     private final SubscribersMapper subscribersMapper;
+    private final NotificationService notificationService;
 
-    public SubscribersService(SubscribersRepository subscribersRepository, OpportunityRepository opportunityRepository, AthleteRepository athleteRepository, SubscribersMapper subscribersMapper) {
+    public SubscribersService(SubscribersRepository subscribersRepository, OpportunityRepository opportunityRepository, AthleteRepository athleteRepository, SubscribersMapper subscribersMapper, NotificationService notificationService) {
         this.opportunityRepository = opportunityRepository;
         this.subscribersRepository = subscribersRepository;
         this.athleteRepository = athleteRepository;
         this.subscribersMapper = subscribersMapper;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -48,6 +50,15 @@ public class SubscribersService {
             opportunity.addSubscriber(newSubscriber);
             subscribersRepository.save(newSubscriber);
             opportunityRepository.save(opportunity);
+
+            notificationService.createNotification(
+                    opportunity.getCompany().getId(),
+                    "OPPORTUNITY_SUBSCRIPTION",
+                    athleteId,
+                    opportunityId,
+                    null
+            );
+
             return subscribersMapper.toResponseDTO("Inscrição criada com sucesso!", newSubscriber);
         } else {
             opportunity.removeSubscriber(existingSubscriber);
@@ -64,13 +75,12 @@ public class SubscribersService {
 
         List<Subscriber> subscribers = subscribersRepository.findByOpportunityIdWithAthlete(opportunityId);
 
-        // Forçar carregamento dos relacionamentos LAZY
         subscribers.forEach(subscriber -> {
-            subscriber.getAthlete().getUsername(); // Força carregamento do athlete
-            subscriber.getAthlete().getName(); // Força carregamento do nome
-            subscriber.getAthlete().getEmail(); // Força carregamento do email
+            subscriber.getAthlete().getUsername();
+            subscriber.getAthlete().getName();
+            subscriber.getAthlete().getEmail();
             if (subscriber.getOpportunity() != null) {
-                subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
+                subscriber.getOpportunity().getTitle();
             }
         });
 
@@ -95,12 +105,11 @@ public class SubscribersService {
 
         List<Subscriber> subscribers = subscribersRepository.findByAthleteId(athleteId);
 
-        // Forçar carregamento dos relacionamentos LAZY
         subscribers.forEach(subscriber -> {
-            subscriber.getAthlete().getUsername(); // Força carregamento do athlete
-            subscriber.getOpportunity().getTitle(); // Força carregamento da opportunity
-            subscriber.getOpportunity().getCompany().getUsername(); // Força carregamento da company
-            subscriber.getOpportunity().getSubscribers().size(); // Força carregamento dos subscribers da opportunity
+            subscriber.getAthlete().getUsername();
+            subscriber.getOpportunity().getTitle();
+            subscriber.getOpportunity().getCompany().getUsername();
+            subscriber.getOpportunity().getSubscribers().size();
         });
 
         return subscribersMapper.mapSubscribersToList(subscribers);

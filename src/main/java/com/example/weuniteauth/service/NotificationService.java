@@ -82,6 +82,8 @@ public class NotificationService {
             case "COMMENT_REPLY" -> "respondeu seu comentário";
             case "NEW_FOLLOWER" -> "começou a seguir você";
             case "NEW_MESSAGE" -> "enviou uma mensagem";
+            case "POST_REPOST" -> "republicou seu post";
+            case "OPPORTUNITY_SUBSCRIPTION" -> "se inscreveu na sua oportunidade";
             default -> "interagiu com você";
         };
     }

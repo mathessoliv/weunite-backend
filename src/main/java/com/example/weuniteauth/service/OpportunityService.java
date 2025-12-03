@@ -120,7 +120,6 @@ public class OpportunityService {
             throw new OpportunityNotFoundException();
         }
 
-        // Força o carregamento dos subscribers
         opportunity.getSubscribers().size();
 
         return opportunityMapper.toResponseDTO("Oportunidade encontrada com sucesso!", opportunity);
@@ -132,7 +131,6 @@ public class OpportunityService {
 
         List<Opportunity> opportunities = opportunityRepository.findAllOrderedByCreationDate();
 
-        // Força o carregamento dos subscribers para cada oportunidade
         opportunities.forEach(opportunity -> opportunity.getSubscribers().size());
 
         return opportunityMapper.toOpportunityDTOList(opportunities);
@@ -145,7 +143,6 @@ public class OpportunityService {
 
         List<Opportunity> opportunities = opportunityRepository.findByCompanyId(userId);
 
-        // Força o carregamento dos subscribers para cada oportunidade
         opportunities.forEach(opportunity -> opportunity.getSubscribers().size());
 
         return opportunityMapper.toOpportunityDTOList(opportunities);

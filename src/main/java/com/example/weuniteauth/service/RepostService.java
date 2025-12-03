@@ -23,12 +23,13 @@ public class RepostService {
     private final PostRepository postRepository;
     private final RepostRepository repostRepository;
     private final RepostMapper repostMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public ResponseDTO<RepostDTO> toggleRepost(Long userId, Long postId) {
 
-        User user = userRepository.findById(userId).
-                orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
@@ -40,6 +41,15 @@ public class RepostService {
             Repost newRepost = new Repost(post, user);
             post.addRepost(newRepost);
             repostRepository.save(newRepost);
+
+            notificationService.createNotification(
+                    post.getUser().getId(),
+                    "POST_REPOST",
+                    userId,
+                    postId,
+                    null
+            );
+
             return repostMapper.toResponseDTO("Post republicado com sucesso!", newRepost);
         } else {
             post.removeRepost(existingRepost);
