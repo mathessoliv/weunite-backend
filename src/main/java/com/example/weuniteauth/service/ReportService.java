@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ReportService {
+public class    ReportService {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
