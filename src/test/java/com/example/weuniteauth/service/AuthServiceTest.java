@@ -22,8 +22,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import com.example.weuniteauth.domain.users.Role;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -85,7 +86,13 @@ class AuthServiceTest {
                 mockUser.getBannerImg(),
                 mockUser.isPrivate(),
                 mockUser.getCreatedAt(),
-                mockUser.getUpdatedAt()
+                mockUser.getUpdatedAt(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         AuthDTO authData = new AuthDTO(
@@ -271,7 +278,13 @@ class AuthServiceTest {
                 mockUser.getBannerImg(),
                 mockUser.isPrivate(),
                 mockUser.getCreatedAt(),
-                mockUser.getUpdatedAt()
+                mockUser.getUpdatedAt(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         AuthDTO authData = new AuthDTO(

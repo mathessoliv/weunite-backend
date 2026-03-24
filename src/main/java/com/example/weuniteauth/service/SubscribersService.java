@@ -23,12 +23,14 @@ public class SubscribersService {
     private final OpportunityRepository opportunityRepository;
     private final AthleteRepository athleteRepository;
     private final SubscribersMapper subscribersMapper;
+    private final NotificationService notificationService;
 
-    public SubscribersService(SubscribersRepository subscribersRepository, OpportunityRepository opportunityRepository, AthleteRepository athleteRepository, SubscribersMapper subscribersMapper) {
+    public SubscribersService(SubscribersRepository subscribersRepository, OpportunityRepository opportunityRepository, AthleteRepository athleteRepository, SubscribersMapper subscribersMapper, NotificationService notificationService) {
         this.opportunityRepository = opportunityRepository;
         this.subscribersRepository = subscribersRepository;
         this.athleteRepository = athleteRepository;
         this.subscribersMapper = subscribersMapper;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -47,10 +49,21 @@ public class SubscribersService {
             Subscriber newSubscriber = new Subscriber(athlete, opportunity);
             opportunity.addSubscriber(newSubscriber);
             subscribersRepository.save(newSubscriber);
+            opportunityRepository.save(opportunity);
+
+            notificationService.createNotification(
+                    opportunity.getCompany().getId(),
+                    "OPPORTUNITY_SUBSCRIPTION",
+                    athleteId,
+                    opportunityId,
+                    null
+            );
+
             return subscribersMapper.toResponseDTO("Inscrição criada com sucesso!", newSubscriber);
         } else {
             opportunity.removeSubscriber(existingSubscriber);
-            subscribersRepository.save(existingSubscriber);
+            subscribersRepository.delete(existingSubscriber);
+            opportunityRepository.save(opportunity);
             return subscribersMapper.toResponseDTO("Inscrição removida com sucesso!", existingSubscriber);
         }
     }
@@ -60,7 +73,45 @@ public class SubscribersService {
         Opportunity opportunity = opportunityRepository.findById(opportunityId).
                 orElseThrow(OpportunityNotFoundException::new);
 
-        List<Subscriber> subscribers = subscribersRepository.findByOpportunityId(opportunityId);
+        List<Subscriber> subscribers = subscribersRepository.findByOpportunityIdWithAthlete(opportunityId);
+
+        subscribers.forEach(subscriber -> {
+            subscriber.getAthlete().getUsername();
+            subscriber.getAthlete().getName();
+            subscriber.getAthlete().getEmail();
+            if (subscriber.getOpportunity() != null) {
+                subscriber.getOpportunity().getTitle();
+            }
+        });
+
+        return subscribersMapper.mapSubscribersToList(subscribers);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean isSubscribed(Long athleteId, Long opportunityId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Opportunity opportunity = opportunityRepository.findById(opportunityId)
+                .orElseThrow(OpportunityNotFoundException::new);
+
+        return subscribersRepository.findByAthleteAndOpportunity(athlete, opportunity).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubscriberDTO> getSubscribersByAthlete(Long athleteId) {
+        Athlete athlete = athleteRepository.findById(athleteId)
+                .orElseThrow(UserNotFoundException::new);
+
+        List<Subscriber> subscribers = subscribersRepository.findByAthleteId(athleteId);
+
+        subscribers.forEach(subscriber -> {
+            subscriber.getAthlete().getUsername();
+            subscriber.getOpportunity().getTitle();
+            subscriber.getOpportunity().getCompany().getUsername();
+            subscriber.getOpportunity().getSubscribers().size();
+        });
+
         return subscribersMapper.mapSubscribersToList(subscribers);
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,18 +76,28 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO postDTO = new PostDTO(
                 "1",
                 "This is a test post",
                 "http://image.url/test.jpg",
+                null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>("Publicação criada com sucesso!", postDTO);
@@ -138,18 +149,28 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO postDTO = new PostDTO(
                 "1",
                 "This is a test post without image",
                 null,
+                null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>("Publicação criada com sucesso!", postDTO);
@@ -221,18 +242,28 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO updatedPostDTO = new PostDTO(
                 "1",
                 "Updated post text",
                 "http://new-image.url",
+                null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),
                 Instant.now(),
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>(
@@ -333,18 +364,28 @@ public class PostServiceTest {
                 null,
                 false,
                 Instant.now(),
-                null
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
         );
 
         PostDTO deletedPostDTO = new PostDTO(
                 "1",
                 "Post to be deleted",
                 null,
+                null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 Instant.now(),
                 null,
-                userDTO
+                userDTO,
+                null,
+                null
         );
 
         ResponseDTO<PostDTO> expectedResponse = new ResponseDTO<>(
@@ -363,7 +404,7 @@ public class PostServiceTest {
         assertNotNull(result.data());
 
         verify(postRepository).findById(postId);
-        verify(postRepository).delete(existingPost);
+        verify(postRepository).save(existingPost);
         verify(postMapper).toResponseDTO(eq("Publicação excluída com sucesso"), eq(existingPost));
     }
 

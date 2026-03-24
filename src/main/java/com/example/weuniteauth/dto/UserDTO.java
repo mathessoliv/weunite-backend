@@ -13,6 +13,12 @@ public record UserDTO(
         String bannerImg,
         boolean isPrivate,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        Double height,
+        Double weight,
+        String footDomain,
+        String position,
+        java.time.LocalDate birthDate,
+        java.util.List<SkillDTO> skills
 ) {
 }

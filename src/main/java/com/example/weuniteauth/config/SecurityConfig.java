@@ -58,6 +58,7 @@ public class SecurityConfig {
                         // Comments endpoints
                         .requestMatchers(HttpMethod.POST, "/api/comment/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/comment/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/comment/get/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/comment/update/{userId}/{commentId}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/comment/delete/{userId}/{postId}").permitAll()
 
@@ -77,23 +78,45 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get/{opportunityId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get/user/{userId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/opportunities/get").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/reports/create/{userId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/reports/pending").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/reports/count/{entityId}/{type}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/posts/reported").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/posts/reported/details").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/posts/reported/{postId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/opportunities/reported").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/opportunities/reported/details").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/opportunities/reported/{opportunityId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/admin/posts/{postId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/admin/opportunities/{opportunityId}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/admin/reports/dismiss/{entityId}/{type}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/admin/reports/review/{entityId}/{type}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/admin/reports/resolve/{entityId}/{type}").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/opportunities/get/company/{companyId}").permitAll()
+
+                        // Subscribers endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/subscriber/toggleSubscriber/{athleteId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subscriber/subscribers/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subscriber/isSubscribed/{athleteId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subscriber/athlete/{athleteId}").permitAll()
+
+                        // Saved Opportunities endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/saved-opportunities/toggle/{athleteId}/{opportunityId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/saved-opportunities/athlete/{athleteId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/saved-opportunities/isSaved/{athleteId}/{opportunityId}").permitAll()
+
+                        // Notifications endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/notifications/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/notifications/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/notifications/**").permitAll()
+
+                        // Chat endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/chat/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/chat/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/chat/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/chat/**").permitAll()
+
+                        // Report endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/reports/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reports/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/reports/**").permitAll()
+
+                        // Admin endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/admin/**").permitAll()
+
+                        // Qualquer outra requisição precisa estar autenticada
                         .anyRequest().authenticated()
                 )
+
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new JwtAuthenticationConverter())

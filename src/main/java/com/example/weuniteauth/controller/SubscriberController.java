@@ -26,8 +26,21 @@ public class SubscriberController {
     }
 
     @GetMapping("/subscribers/{opportunityId}")
-    public ResponseEntity<List<SubscriberDTO>> getSubscribersByOpportunity(@PathVariable Long opportunityId) {
-        List<SubscriberDTO> result = subscribersService.getSubscribersByOpportunity(opportunityId);
+    public ResponseEntity<ResponseDTO<List<SubscriberDTO>>> getSubscribersByOpportunity(@PathVariable Long opportunityId) {
+        List<SubscriberDTO> subscribers = subscribersService.getSubscribersByOpportunity(opportunityId);
+        ResponseDTO<List<SubscriberDTO>> result = new ResponseDTO<>("Inscritos carregados com sucesso!", subscribers);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/isSubscribed/{athleteId}/{opportunityId}")
+    public ResponseEntity<Boolean> isSubscribed(@PathVariable Long athleteId, @PathVariable Long opportunityId) {
+        Boolean result = subscribersService.isSubscribed(athleteId, opportunityId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/athlete/{athleteId}")
+    public ResponseEntity<List<SubscriberDTO>> getSubscribersByAthlete(@PathVariable Long athleteId) {
+        List<SubscriberDTO> result = subscribersService.getSubscribersByAthlete(athleteId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

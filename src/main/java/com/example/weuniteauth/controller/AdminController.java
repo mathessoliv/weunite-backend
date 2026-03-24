@@ -1,12 +1,21 @@
 package com.example.weuniteauth.controller;
 
+import com.example.weuniteauth.dto.CommentDTO;
 import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
+import com.example.weuniteauth.dto.admin.AdminStatsDTO;
+import com.example.weuniteauth.dto.admin.BanUserRequestDTO;
+import com.example.weuniteauth.dto.admin.MonthlyDataDTO;
+import com.example.weuniteauth.dto.admin.SuspendUserRequestDTO;
+import com.example.weuniteauth.dto.admin.UserTypeDataDTO;
+import com.example.weuniteauth.dto.admin.OpportunityCategoryWithSkillsDTO;
 import com.example.weuniteauth.dto.report.ReportSummaryDTO;
 import com.example.weuniteauth.dto.report.ReportedPostDetailDTO;
 import com.example.weuniteauth.dto.report.ReportedOpportunityDetailDTO;
+import com.example.weuniteauth.dto.report.ReportedCommentDetailDTO;
 import com.example.weuniteauth.service.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +30,34 @@ public class AdminController {
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
+
+    // ========== Endpoints de Estatísticas ==========
+
+    @GetMapping("/stats")
+    public ResponseEntity<AdminStatsDTO> getAdminStats() {
+        AdminStatsDTO stats = adminService.getAdminStats();
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/stats/monthly")
+    public ResponseEntity<List<MonthlyDataDTO>> getMonthlyData() {
+        List<MonthlyDataDTO> monthlyData = adminService.getMonthlyData();
+        return ResponseEntity.ok(monthlyData);
+    }
+
+    @GetMapping("/stats/user-types")
+    public ResponseEntity<List<UserTypeDataDTO>> getUserTypeData() {
+        List<UserTypeDataDTO> userTypeData = adminService.getUserTypeData();
+        return ResponseEntity.ok(userTypeData);
+    }
+
+    @GetMapping("/stats/opportunities-skills")
+    public ResponseEntity<List<OpportunityCategoryWithSkillsDTO>> getOpportunitiesWithSkills() {
+        List<OpportunityCategoryWithSkillsDTO> opportunitiesWithSkills = adminService.getOpportunitiesWithSkills();
+        return ResponseEntity.ok(opportunitiesWithSkills);
+    }
+
+    // ========== Endpoints de Posts Reportados ==========
 
     @GetMapping("/posts/reported")
     public ResponseEntity<List<ReportSummaryDTO>> getReportedPosts() {
@@ -64,9 +101,51 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/posts/{postId}/restore")
+    public ResponseEntity<ResponseDTO<PostDTO>> restorePost(@PathVariable Long postId) {
+        ResponseDTO<PostDTO> response = adminService.restorePostByAdmin(postId);
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/opportunities/{opportunityId}")
     public ResponseEntity<ResponseDTO<OpportunityDTO>> deleteOpportunity(@PathVariable Long opportunityId) {
         ResponseDTO<OpportunityDTO> response = adminService.deleteOpportunityByAdmin(opportunityId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/opportunities/{opportunityId}/restore")
+    public ResponseEntity<ResponseDTO<OpportunityDTO>> restoreOpportunity(@PathVariable Long opportunityId) {
+        ResponseDTO<OpportunityDTO> response = adminService.restoreOpportunityByAdmin(opportunityId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/comments/reported")
+    public ResponseEntity<List<ReportSummaryDTO>> getReportedComments() {
+        List<ReportSummaryDTO> reportedComments = adminService.getCommentsWithManyReports();
+        return ResponseEntity.ok(reportedComments);
+    }
+
+    @GetMapping("/comments/reported/details")
+    public ResponseEntity<List<ReportedCommentDetailDTO>> getReportedCommentsDetails() {
+        List<ReportedCommentDetailDTO> reportedComments = adminService.getReportedCommentsDetails();
+        return ResponseEntity.ok(reportedComments);
+    }
+
+    @GetMapping("/comments/reported/{commentId}")
+    public ResponseEntity<ReportedCommentDetailDTO> getReportedCommentDetail(@PathVariable Long commentId) {
+        ReportedCommentDetailDTO reportedComment = adminService.getReportedCommentDetail(commentId);
+        return ResponseEntity.ok(reportedComment);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<ResponseDTO<CommentDTO>> deleteComment(@PathVariable Long commentId) {
+        ResponseDTO<CommentDTO> response = adminService.deleteCommentByAdmin(commentId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/comments/{commentId}/restore")
+    public ResponseEntity<ResponseDTO<CommentDTO>> restoreComment(@PathVariable Long commentId) {
+        ResponseDTO<CommentDTO> response = adminService.restoreCommentByAdmin(commentId);
         return ResponseEntity.ok(response);
     }
 
@@ -91,6 +170,26 @@ public class AdminController {
             @PathVariable Long entityId,
             @PathVariable String type) {
         ResponseDTO<String> response = adminService.resolveReports(entityId, type);
+        return ResponseEntity.ok(response);
+    }
+
+    // ========== Endpoints de Moderação de Usuários ==========
+
+    /**
+     * Bane um usuário permanentemente
+     */
+    @PostMapping("/users/ban")
+    public ResponseEntity<ResponseDTO<String>> banUser(@Valid @RequestBody BanUserRequestDTO request) {
+        ResponseDTO<String> response = adminService.banUser(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Suspende um usuário temporariamente
+     */
+    @PostMapping("/users/suspend")
+    public ResponseEntity<ResponseDTO<String>> suspendUser(@Valid @RequestBody SuspendUserRequestDTO request) {
+        ResponseDTO<String> response = adminService.suspendUser(request);
         return ResponseEntity.ok(response);
     }
 }

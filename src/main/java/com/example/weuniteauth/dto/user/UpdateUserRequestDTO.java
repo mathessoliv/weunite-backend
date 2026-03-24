@@ -14,6 +14,14 @@ public record UpdateUserRequestDTO(
         @Size(max = 500, message = "A bio deve conter no máximo 500 caracteres")
         String bio,
 
-        Boolean isPrivate
+        Boolean isPrivate,
+
+        Double height,
+        Double weight,
+        String footDomain,
+        String position,
+        java.time.LocalDate birthDate,
+
+        java.util.List<com.example.weuniteauth.dto.SkillDTO> skills
         ) {
 }

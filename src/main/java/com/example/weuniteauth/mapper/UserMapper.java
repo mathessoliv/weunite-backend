@@ -6,11 +6,13 @@ import com.example.weuniteauth.dto.ResponseDTO;
 import com.example.weuniteauth.dto.user.CreateUserRequestDTO;
 import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.domain.users.User;
+import com.example.weuniteauth.dto.SkillDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -42,7 +44,22 @@ public interface UserMapper {
     @Mapping(target = "isPrivate", source = "user.private")
     @Mapping(target = "createdAt", source = "user.createdAt")
     @Mapping(target = "updatedAt", source = "user.updatedAt")
+    @Mapping(target = "height", expression = "java(user instanceof com.example.weuniteauth.domain.users.Athlete ? ((com.example.weuniteauth.domain.users.Athlete) user).getHeight() : null)")
+    @Mapping(target = "weight", expression = "java(user instanceof com.example.weuniteauth.domain.users.Athlete ? ((com.example.weuniteauth.domain.users.Athlete) user).getWeight() : null)")
+    @Mapping(target = "footDomain", expression = "java(user instanceof com.example.weuniteauth.domain.users.Athlete ? ((com.example.weuniteauth.domain.users.Athlete) user).getFootDomain() : null)")
+    @Mapping(target = "position", expression = "java(user instanceof com.example.weuniteauth.domain.users.Athlete ? ((com.example.weuniteauth.domain.users.Athlete) user).getPosition() : null)")
+    @Mapping(target = "birthDate", expression = "java(user instanceof com.example.weuniteauth.domain.users.Athlete ? ((com.example.weuniteauth.domain.users.Athlete) user).getBirthDate() : null)")
+    @Mapping(target = "skills", expression = "java(mapSkills(user))")
     UserDTO toUserDTO(User user);
+
+    default List<SkillDTO> mapSkills(User user) {
+        if (user instanceof Athlete athlete) {
+            return athlete.getSkills().stream()
+                    .map(skill -> new SkillDTO(skill.getId(), skill.getName()))
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
 
     List<UserDTO> toUserDTOList(List<User> users);
 

@@ -3,8 +3,10 @@ package com.example.weuniteauth.service;
 import com.example.weuniteauth.domain.opportunity.Opportunity;
 import com.example.weuniteauth.domain.opportunity.Subscriber;
 import com.example.weuniteauth.domain.users.Athlete;
+import com.example.weuniteauth.dto.OpportunityDTO;
 import com.example.weuniteauth.dto.Opportunity.SubscriberDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
+import com.example.weuniteauth.dto.UserDTO;
 import com.example.weuniteauth.exceptions.opportunity.OpportunityNotFoundException;
 import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.mapper.SubscribersMapper;
@@ -63,7 +65,40 @@ public class SubscriberServiceTest {
         Subscriber newSubscriber = new Subscriber(mockAthlete, mockOpportunity);
         newSubscriber.setId(1L);
 
-        SubscriberDTO subscriberDTO = new SubscriberDTO(1L, mockAthlete, mockOpportunity);
+        UserDTO mockAthleteDTO = new UserDTO(
+                String.valueOf(athleteId),
+                "Athlete Name",
+                "athlete_test",
+                "ATHLETE",
+                null,
+                "athlete@test.com",
+                null,
+                null,
+                false,
+                java.time.Instant.now(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
+        );
+
+        OpportunityDTO mockOpportunityDTO = new OpportunityDTO(
+                opportunityId,
+                "Test Opportunity",
+                "Test Description",
+                "Test Location",
+                null,
+                new java.util.HashSet<>(),
+                null,
+                null,
+                null,
+                0
+        );
+
+        SubscriberDTO subscriberDTO = new SubscriberDTO(1L, mockAthleteDTO, mockOpportunityDTO);
         ResponseDTO<SubscriberDTO> expectedResponse = new ResponseDTO<>("Inscrição criada com sucesso!", subscriberDTO);
 
         when(athleteRepository.findById(athleteId)).thenReturn(Optional.of(mockAthlete));
@@ -107,14 +142,46 @@ public class SubscriberServiceTest {
         Subscriber existingSubscriber = new Subscriber(mockAthlete, mockOpportunity);
         existingSubscriber.setId(1L);
 
-        SubscriberDTO subscriberDTO = new SubscriberDTO(1L, mockAthlete, mockOpportunity);
+        UserDTO mockAthleteDTO = new UserDTO(
+                String.valueOf(athleteId),
+                "Athlete Name",
+                "athlete_test",
+                "ATHLETE",
+                null,
+                "athlete@test.com",
+                null,
+                null,
+                false,
+                java.time.Instant.now(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
+        );
+
+        OpportunityDTO mockOpportunityDTO = new OpportunityDTO(
+                opportunityId,
+                "Test Opportunity",
+                "Test Description",
+                "Test Location",
+                null,
+                new java.util.HashSet<>(),
+                null,
+                null,
+                null,
+                0
+        );
+
+        SubscriberDTO subscriberDTO = new SubscriberDTO(1L, mockAthleteDTO, mockOpportunityDTO);
         ResponseDTO<SubscriberDTO> expectedResponse = new ResponseDTO<>("Inscrição removida com sucesso!", subscriberDTO);
 
         when(athleteRepository.findById(athleteId)).thenReturn(Optional.of(mockAthlete));
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(mockOpportunity));
         when(subscribersRepository.findByAthleteAndOpportunity(mockAthlete, mockOpportunity))
                 .thenReturn(Optional.of(existingSubscriber));
-        when(subscribersRepository.save(existingSubscriber)).thenReturn(existingSubscriber);
         when(subscribersMapper.toResponseDTO(eq("Inscrição removida com sucesso!"), eq(existingSubscriber)))
                 .thenReturn(expectedResponse);
 
@@ -129,7 +196,8 @@ public class SubscriberServiceTest {
         verify(athleteRepository).findById(athleteId);
         verify(opportunityRepository).findById(opportunityId);
         verify(subscribersRepository).findByAthleteAndOpportunity(mockAthlete, mockOpportunity);
-        verify(subscribersRepository).save(existingSubscriber);
+        verify(subscribersRepository).delete(existingSubscriber);
+        verify(opportunityRepository).save(mockOpportunity);
         verify(subscribersMapper).toResponseDTO(eq("Inscrição removida com sucesso!"), eq(existingSubscriber));
     }
 
@@ -202,12 +270,65 @@ public class SubscriberServiceTest {
 
         List<Subscriber> subscribers = List.of(subscriber1, subscriber2);
 
-        SubscriberDTO subscriberDTO1 = new SubscriberDTO(1L, athlete1, mockOpportunity);
-        SubscriberDTO subscriberDTO2 = new SubscriberDTO(2L, athlete2, mockOpportunity);
+        UserDTO athleteDTO1 = new UserDTO(
+                "1",
+                "Athlete 1",
+                "athlete1",
+                "ATHLETE",
+                null,
+                "athlete1@test.com",
+                null,
+                null,
+                false,
+                java.time.Instant.now(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
+        );
+
+        UserDTO athleteDTO2 = new UserDTO(
+                "2",
+                "Athlete 2",
+                "athlete2",
+                "ATHLETE",
+                null,
+                "athlete2@test.com",
+                null,
+                null,
+                false,
+                java.time.Instant.now(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()
+        );
+
+        OpportunityDTO mockOpportunityDTO = new OpportunityDTO(
+                opportunityId,
+                "Test Opportunity",
+                "Test Description",
+                "Test Location",
+                null,
+                new java.util.HashSet<>(),
+                null,
+                null,
+                null,
+                0
+        );
+
+        SubscriberDTO subscriberDTO1 = new SubscriberDTO(1L, athleteDTO1, mockOpportunityDTO);
+        SubscriberDTO subscriberDTO2 = new SubscriberDTO(2L, athleteDTO2, mockOpportunityDTO);
         List<SubscriberDTO> expectedSubscriberDTOs = List.of(subscriberDTO1, subscriberDTO2);
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(mockOpportunity));
-        when(subscribersRepository.findByOpportunityId(opportunityId)).thenReturn(subscribers);
+        when(subscribersRepository.findByOpportunityIdWithAthlete(opportunityId)).thenReturn(subscribers);
         when(subscribersMapper.mapSubscribersToList(subscribers)).thenReturn(expectedSubscriberDTOs);
 
         // Act
@@ -219,7 +340,7 @@ public class SubscriberServiceTest {
         assertEquals(expectedSubscriberDTOs, result);
 
         verify(opportunityRepository).findById(opportunityId);
-        verify(subscribersRepository).findByOpportunityId(opportunityId);
+        verify(subscribersRepository).findByOpportunityIdWithAthlete(opportunityId);
         verify(subscribersMapper).mapSubscribersToList(subscribers);
     }
 
@@ -237,7 +358,7 @@ public class SubscriberServiceTest {
         List<SubscriberDTO> emptySubscriberDTOs = List.of();
 
         when(opportunityRepository.findById(opportunityId)).thenReturn(Optional.of(mockOpportunity));
-        when(subscribersRepository.findByOpportunityId(opportunityId)).thenReturn(emptySubscribers);
+        when(subscribersRepository.findByOpportunityIdWithAthlete(opportunityId)).thenReturn(emptySubscribers);
         when(subscribersMapper.mapSubscribersToList(emptySubscribers)).thenReturn(emptySubscriberDTOs);
 
         // Act
@@ -248,7 +369,7 @@ public class SubscriberServiceTest {
         assertTrue(result.isEmpty());
 
         verify(opportunityRepository).findById(opportunityId);
-        verify(subscribersRepository).findByOpportunityId(opportunityId);
+        verify(subscribersRepository).findByOpportunityIdWithAthlete(opportunityId);
         verify(subscribersMapper).mapSubscribersToList(emptySubscribers);
     }
 

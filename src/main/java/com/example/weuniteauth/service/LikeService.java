@@ -14,6 +14,7 @@ import com.example.weuniteauth.repository.CommentRepository;
 import com.example.weuniteauth.repository.LikeRepository;
 import com.example.weuniteauth.repository.PostRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class LikeService {
 
     private final UserRepository userRepository;
@@ -30,14 +32,7 @@ public class LikeService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final LikeMapper likeMapper;
-
-    public LikeService(UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, LikeRepository likeRepository, LikeMapper likeMapper) {
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
-        this.likeRepository = likeRepository;
-        this.likeMapper = likeMapper;
-    }
+    private final NotificationService notificationService;
 
     @Transactional
     public ResponseDTO<LikeDTO> toggleLike(Long userId, Long postId) {
@@ -55,6 +50,19 @@ public class LikeService {
             Like newLike = new Like(post, user);
             post.addLike(newLike);
             likeRepository.save(newLike);
+
+            // Create notification for post owner (if not liking own post)
+            Long postOwnerId = post.getUser().getId();
+            if (!postOwnerId.equals(userId)) {
+                notificationService.createNotification(
+                        postOwnerId,
+                        "POST_LIKE",
+                        userId,
+                        postId,
+                        null
+                );
+            }
+
             return likeMapper.toResponseDTO( "Curtida criada com sucesso!", newLike);
         } else {
             post.removeLike(existingLike);
@@ -80,6 +88,19 @@ public class LikeService {
             Like newLike = new Like(comment, user);
             comment.addLike(newLike);
             likeRepository.save(newLike);
+
+            // Create notification for comment owner (if not liking own comment)
+            Long commentOwnerId = comment.getUser().getId();
+            if (!commentOwnerId.equals(userId)) {
+                notificationService.createNotification(
+                        commentOwnerId,
+                        "COMMENT_LIKE",
+                        userId,
+                        commentId,
+                        null
+                );
+            }
+
             return likeMapper.toResponseDTO( "Curtida criada com sucesso!", newLike);
         } else {
             comment.removeLike(existingLike);

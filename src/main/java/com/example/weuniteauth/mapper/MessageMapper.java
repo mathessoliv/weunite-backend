@@ -12,6 +12,7 @@ public interface MessageMapper {
 
     @Mapping(target = "conversationId", source = "conversation.id")
     @Mapping(target = "senderId", source = "sender.id")
+    @Mapping(target = "isRead", source = "read")
     MessageDTO toDTO(Message message);
 
     List<MessageDTO> toDTOList(List<Message> messages);

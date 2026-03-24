@@ -57,6 +57,9 @@ public class Opportunity {
 
     private Instant updatedAt;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted = false;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Instant.now();

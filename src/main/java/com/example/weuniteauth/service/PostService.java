@@ -1,6 +1,7 @@
 package com.example.weuniteauth.service;
 
 import com.example.weuniteauth.domain.post.Post;
+import com.example.weuniteauth.domain.post.Repost;
 import com.example.weuniteauth.domain.users.User;
 import com.example.weuniteauth.dto.PostDTO;
 import com.example.weuniteauth.dto.ResponseDTO;
@@ -10,12 +11,15 @@ import com.example.weuniteauth.exceptions.user.UserNotFoundException;
 import com.example.weuniteauth.exceptions.post.PostNotFoundException;
 import com.example.weuniteauth.mapper.PostMapper;
 import com.example.weuniteauth.repository.PostRepository;
+import com.example.weuniteauth.repository.RepostRepository;
 import com.example.weuniteauth.repository.user.UserRepository;
 import com.example.weuniteauth.service.cloudinary.CloudinaryService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -23,28 +27,42 @@ public class PostService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final RepostRepository repostRepository;
     private final PostMapper postMapper;
     private final CloudinaryService cloudinaryService;
 
-    public PostService(UserRepository userRepository, PostRepository postRepository, PostMapper postMapper, CloudinaryService cloudinaryService) {
+    public PostService(UserRepository userRepository, PostRepository postRepository, RepostRepository repostRepository, PostMapper postMapper, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.repostRepository = repostRepository;
         this.postMapper = postMapper;
         this.cloudinaryService = cloudinaryService;
     }
 
+    private boolean isVideoFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && contentType.startsWith("video/");
+    }
+
     @Transactional
-    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post, MultipartFile image) {
+    public ResponseDTO<PostDTO> createPost(Long userId, PostRequestDTO post, MultipartFile media) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        String imageUrl = null;
+        Post createdPost = new Post(user, post.text());
 
-        if (image != null && !image.isEmpty()) {
-            imageUrl = cloudinaryService.uploadPost(image, userId);
+        // ✅ ATUALIZADO: Diferencia vídeo de imagem
+        if (media != null && !media.isEmpty()) {
+            String mediaUrl = cloudinaryService.uploadPost(media, userId);
+
+            if (isVideoFile(media)) {
+                createdPost.setVideoUrl(mediaUrl);
+                createdPost.setImageUrl(null);
+            } else {
+                createdPost.setImageUrl(mediaUrl);
+                createdPost.setVideoUrl(null);
+            }
         }
-
-        Post createdPost = new Post(user, post.text(), imageUrl);
 
         postRepository.save(createdPost);
 
@@ -78,6 +96,10 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
+        if (post.isDeleted()) {
+            throw new PostNotFoundException();
+        }
+
         return postMapper.toResponseDTO("Publicação consultada com sucesso!", post);
     }
 
@@ -85,9 +107,17 @@ public class PostService {
     public List<PostDTO> getPosts() {
 
         List<Post> posts = postRepository.findAllOrderedByCreationDate();
+        List<Repost> reposts = repostRepository.findAllActiveReposts();
 
-        return postMapper.toPostDTOList(posts);
+        List<PostDTO> postDTOs = new ArrayList<>(postMapper.toPostDTOList(posts));
+        List<PostDTO> repostDTOs = postMapper.toPostDTOListFromReposts(reposts);
 
+        postDTOs.addAll(repostDTOs);
+
+        // Sort by createdAt (which is repostedAt for reposts) descending
+        postDTOs.sort(Comparator.comparing(PostDTO::createdAt).reversed());
+
+        return postDTOs;
     }
 
     @Transactional
@@ -99,7 +129,8 @@ public class PostService {
             throw new UnauthorizedException("Você precisa estar logado para deletar essa publicação!");
         }
 
-        postRepository.delete(post);
+        post.setDeleted(true);
+        postRepository.save(post);
 
         return postMapper.toResponseDTO("Publicação excluída com sucesso", post);
     }

@@ -62,7 +62,10 @@ public abstract class ConversationMapper {
                 lastMessage.isRead(),
                 lastMessage.getCreatedAt(),
                 lastMessage.getReadAt(),
-                lastMessage.getType()
+                lastMessage.getType(),
+                lastMessage.getDeleted() != null ? lastMessage.getDeleted() : false,
+                lastMessage.getEdited() != null ? lastMessage.getEdited() : false,
+                lastMessage.getEditedAt()
         );
     }
 

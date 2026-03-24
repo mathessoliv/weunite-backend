@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 public class AuthService {
 
@@ -49,6 +51,33 @@ public class AuthService {
 
         if (!user.isEmailVerified()) {
             throw new NotVerifiedEmailException("Verifique seu email para fazer login");
+        }
+
+        // Verificar se o usuário está banido
+        if (Boolean.TRUE.equals(user.getIsBanned())) {
+            throw new BadCredentialsException("Sua conta foi banida permanentemente da plataforma");
+        }
+
+        // Verificar se o usuário está suspenso
+        if (Boolean.TRUE.equals(user.getIsSuspended())) {
+            if (user.getSuspendedUntil() != null && Instant.now().isBefore(user.getSuspendedUntil())) {
+                // Formatar data em padrão brasileiro
+                java.time.ZonedDateTime zdt = user.getSuspendedUntil()
+                    .atZone(java.time.ZoneId.of("America/Sao_Paulo"));
+                java.time.format.DateTimeFormatter formatter = 
+                    java.time.format.DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy 'às' HH:mm")
+                        .withLocale(new java.util.Locale("pt", "BR"));
+                String dataFormatada = zdt.format(formatter);
+                
+                throw new BadCredentialsException(
+                    String.format("Sua conta está suspensa até %s", dataFormatada)
+                );
+            } else {
+                // Suspensão expirou, remover flag
+                user.setIsSuspended(false);
+                user.setSuspendedUntil(null);
+                user.setSuspensionReason(null);
+            }
         }
 
         String jwtValue = jwtService.generateToken(user);

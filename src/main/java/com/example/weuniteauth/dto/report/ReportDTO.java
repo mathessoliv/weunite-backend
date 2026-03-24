@@ -11,7 +11,9 @@ public record ReportDTO(
         Long entityId,
         String reason,
         String status,
-        Instant createdAt
+        Instant createdAt,
+        Instant resolvedAt,
+        Long resolvedByAdminId
 ) {
 }
 
